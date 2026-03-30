@@ -335,7 +335,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.1 · 30 Mar 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.2 · 30 Mar 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -455,7 +455,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         <select class="fi" id="ftc" onchange="renderCls()"><option value="">Todos los tipos</option></select>
         <select class="fi" id="fes-cl" onchange="renderCls()">
           <option value="">Todos los estados</option>
-          <option value="activo">✅ Activos</option>
+          <option value="activo" selected>✅ Activos</option>
           <option value="deshabilitado">⛔ Deshabilitados</option>
           <option value="perdido">❌ Perdidos</option>
         </select>
@@ -1826,6 +1826,11 @@ function renderTrashBody(){
 // ═══ NAVIGATION ══════════════════════════════════════
 function setV(v){
   curV=v;
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · Marzo 2026'],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v4.1'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  if(TITLES[v]){
+    const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
+    const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
+  }
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.s-item').forEach(el=>el.classList.remove('active'));
   const view=document.getElementById('view-'+v);if(view)view.classList.add('active');
@@ -1887,11 +1892,18 @@ const ESTADO_COBRO_STYLES={
 };
 function estadoCobro(es){const s=ESTADO_COBRO_STYLES[es]||ESTADO_COBRO_STYLES.pendiente;return`<span style="background:${s.bg};color:${s.color};border:1px solid ${s.border};padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;cursor:pointer">${s.icon} ${s.label}</span>`;}
 function updBadges(){
-  const li=deps.filter(d=>d.es===EL).length,pr=deps.filter(d=>d.es==='🔧 En proceso').length;
-  const ini=deps.filter(d=>d.es==='🆕 Por iniciar').length,cap=deps.filter(d=>d.es==='🆕 Capacitación').length;
-  function sb(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-  sb('bd',deps.length);sb('bo',li);sb('bi',pr+ini+cap);sb('bcl',cls.length);
-  sb('bcont',contratos.length);sb('bcob',cobros.filter(c=>c.estado==='pendiente'||c.estado==='atrasado').length);
+  function sb(id,v,hide0){const e=document.getElementById(id);if(e){e.textContent=v;if(hide0)e.style.display=v>0?'':'none';}}
+  // Despliegues: todos los que NO son Listo (en seguimiento)
+  const depsActivos=deps.filter(d=>d.es!==EL);
+  sb('bd',depsActivos.length);
+  // Operativos: deps con estado Listo
+  sb('bo',deps.filter(d=>d.es===EL).length);
+  // Clientes inactivos: cls deshabilitados + perdidos
+  sb('bi',cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido').length);
+  // Clientes: solo activos
+  sb('bcl',cls.filter(c=>c.es==='activo').length);
+  sb('bcont',contratos.length);
+  sb('bcob',cobros.filter(c=>c.estado==='pendiente'||c.estado==='atrasado').length,true);
   updTrashBadge();
 }
 
@@ -2219,14 +2231,14 @@ function renderCls(){
   const fTp=document.getElementById('ftc')?.value||'';
   const fEs=document.getElementById('fes-cl')?.value||'';
   const f=cls.filter(c=>{
-    if(fEs&&c.es!==fEs)return false;
-    if(!fEs&&c.es==='papelera')return false; // nunca mostrar papelera sin filtro
+    const esFilter=fEs||'activo'; // default to activos
+    if(c.es!==esFilter)return false;
     if(s&&!c.nm.toLowerCase().includes(s)&&!(c.ci||'').toLowerCase().includes(s)&&!(c.pa||'').toLowerCase().includes(s))return false;
     if(fAp&&c.ap!==fAp)return false;
     if(fTp&&c.tp!==fTp)return false;
     return true;
   });
-  const _tot=cls.filter(c=>fEs?c.es===fEs:c.es==='activo').length;const ccl=document.getElementById('ccl');if(ccl)ccl.textContent=`${f.length} de ${_tot}`;
+  const _esF=fEs||'activo';const _tot=cls.filter(c=>c.es===_esF).length;const ccl=document.getElementById('ccl');if(ccl)ccl.textContent=`${f.length} de ${_tot}`;
   const tb=document.getElementById('ctb');if(!tb)return;
   tb.innerHTML=f.length?f.map((c,idx)=>{
     const cx=complexBadge({mo:c.mo});
@@ -2316,8 +2328,32 @@ function saveCl(){
     const id=Math.max(...cls.map(c=>c.id),0)+1;
     cls.push({id,...obj});
   }
+  // Create linked deployment if toggle is open
+  if(dOpen){
+    const dtEl=document.getElementById('cm-dt');
+    const dlEl=document.getElementById('cm-dl');
+    const deEl=document.getElementById('cm-de');
+    const newId=editClId?editClId:(Math.max(...cls.map(c=>c.id),0));
+    const linkedCl=cls.find(c=>c.id===newId)||cls[cls.length-1];
+    if(linkedCl&&dtEl?.value){
+      const depId=Math.max(0,...deps.map(d=>d.id))+1;
+      deps.push({
+        id:depId,cid:linkedCl.id,c:linkedCl.nm,
+        pa:linkedCl.pa||'',ci:linkedCl.ci||'',
+        tp:dtEl.value,es:deEl?.value||'🆕 Por iniciar',fase:0,
+        ln:dlEl?.value||LAUNCHERS()[0]||'',
+        fi:document.getElementById('cm-fi')?.value||'',
+        fd:document.getElementById('cm-fid')?.value||'',
+        fe:'',mo:[...linkedCl.mo],pe:'',no:'',lk:'',hrsOp:null,hrsNew:null
+      });
+    }
+    dOpen=false;
+    const tb=document.getElementById('dep-tbod');if(tb)tb.classList.remove('open');
+    const ic=document.getElementById('tic');if(ic)ic.textContent='▸';
+  }
   sv();closeM('cl-modal');
   if(curV==='clientes')renderCls();else if(curV==='inactivos')renderInact();
+  else if(curV==='despliegues')renderDeps();
   updBadges();
 }
 
@@ -3015,6 +3051,7 @@ function setCatTab(t){
   if(renders[t])renders[t]();
 }
 function renderCats(){
+  popAllSelects();
   setCatTab(curCatTab);
   // Populate tp-ap dropdown for types (no longer needed but keep for compat)
   const tpAp=document.getElementById('tp-ap');
@@ -3022,6 +3059,8 @@ function renderCats(){
 }
 function renderMds(){
   const el=document.getElementById('md-tbody');if(!el)return;
+  if(!cats.md||!cats.md.length)cats.md=BASE_MD.map(x=>Object.assign({},x));
+  if(!cats.catmod||!cats.catmod.length)cats.catmod=BASE_CATMOD.map(x=>Object.assign({},x));
   const catSel=document.getElementById('md-cat-f');if(catSel)catSel.innerHTML='<option value="">Todas</option>'+(cats.catmod||[]).map(c=>`<option>${esc(c.name)}</option>`).join('');
   el.innerHTML=(cats.md||[]).length?(cats.md||[]).map(m=>`<tr>
     <td><strong>${esc(m.name)}</strong></td>
@@ -3036,6 +3075,7 @@ function saveMd(){
   sv();renderMds();document.getElementById('md-name').value='';document.getElementById('md-desc').value='';
 }
 function renderCatMods(){
+  if(!cats.catmod||!cats.catmod.length)cats.catmod=BASE_CATMOD.map(x=>Object.assign({},x));
   const el=document.getElementById('cm-tbody');if(!el)return;
   el.innerHTML=(cats.catmod||[]).map((c,idx)=>`<tr><td><strong>${esc(c.name)}</strong></td><td style="color:var(--muted)">${esc(c.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('catmod',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('catmod',${c.id},'${esc(c.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin categorías</td></tr>`;
 }
@@ -3046,6 +3086,7 @@ function saveCatmod(){
   document.getElementById('cm-cname').value='';document.getElementById('cm-icon').value='';
 }
 function renderModDeps(){
+  if(!cats.modal||!cats.modal.length)cats.modal=BASE_MODAL.map(x=>Object.assign({},x));
   const el=document.getElementById('mo-dep-tbody');if(!el)return;
   el.innerHTML=(cats.modal||[]).map(m=>`<tr><td><span>${m.icon||''}</span> <strong>${esc(m.name)}</strong></td><td style="color:var(--muted)">${esc(m.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('modal',${m.id})">✏️</button><button class="icon-btn del" onclick="delCat('modal',${m.id},'${esc(m.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin modalidades</td></tr>`;
 }
@@ -3055,6 +3096,7 @@ function saveModDep(){
   sv();renderModDeps();['mo-dep-name','mo-dep-icon','mo-dep-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderPhases(){
+  if(!cats.phases||!cats.phases.length)cats.phases=BASE_PHASES.map(x=>Object.assign({},x));
   const el=document.getElementById('ph-tbody');if(!el)return;
   el.innerHTML=(cats.phases||[]).map((p,i)=>`<tr><td>${i+1}</td><td>${p.icon||''}</td><td><strong>${esc(p.name)}</strong></td><td style="color:var(--muted)">${esc(p.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('phases',${p.id})">✏️</button><button class="icon-btn del" onclick="delCat('phases',${p.id},'${esc(p.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin fases</td></tr>`;
 }
@@ -3064,6 +3106,7 @@ function savePhase(){
   sv();renderPhases();['ph-icon','ph-name','ph-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderImplTimes(){
+  if(!cats.implTimes||!cats.implTimes.length)cats.implTimes=BASE_IMPL_TIMES.map(x=>Object.assign({},x));
   const el=document.getElementById('it-tbody');if(!el)return;
   el.innerHTML=(cats.implTimes||[]).map(t=>`<tr><td>${esc(t.name)}</td><td><strong>${t.weeks} sem</strong></td><td><button class="icon-btn edit" onclick="editCatItem('implTimes',${t.id})">✏️</button><button class="icon-btn del" onclick="delCat('implTimes',${t.id},'${esc(t.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin tiempos</td></tr>`;
 }
@@ -3073,6 +3116,7 @@ function saveImplTime(){
   sv();renderImplTimes();document.getElementById('it-name').value='';document.getElementById('it-weeks').value='';
 }
 function renderCxs(){
+  if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   const el=document.getElementById('cx-tbody');if(!el)return;
   el.innerHTML=(cats.complexity||[]).map(c=>`<tr>
     <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
@@ -3088,6 +3132,7 @@ function saveCx(){
   sv();renderCxs();['cx-name','cx-mods','cx-peso','cx-icon'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderBTs(){
+  if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   const el=document.getElementById('bt-tbody');if(!el)return;
   el.innerHTML=(cats.billingTypes||[]).map(bt=>`<tr><td>${bt.icon||''} <strong>${esc(bt.name)}</strong></td><td style="color:var(--muted)">${esc(bt.tipo||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button><button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin tipos</td></tr>`;
 }
@@ -3098,6 +3143,7 @@ function saveBillingType(){
   sv();renderBTs();['bt-name','bt-tipo','bt-icon'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderRisks(){
+  if(!cats.risk||!cats.risk.length)cats.risk=BASE_RISK.map(x=>Object.assign({},x));
   const el=document.getElementById('rk-tbody');if(!el)return;
   el.innerHTML=(cats.risk||[]).map(r=>`<tr>
     <td><span style="background:${r.bg||'#fee2e2'};color:${r.color||'#dc2626'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${r.icon||'⚠️'} ${esc(r.name)}</span></td>
@@ -3127,6 +3173,7 @@ function saveRisk(){
   ['rk-name','rk-icon','rk-pct','rk-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderAps(){
+  if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
   const el=document.getElementById('ap-tbody');if(!el)return;
   el.innerHTML=(cats.ap||[]).length?(cats.ap||[]).map(a=>`<tr>
     <td><strong>${esc(a.name)}</strong></td>
@@ -3386,6 +3433,7 @@ function initColResize(e){
 // ═══ LAUNCHERS CATALOG ═══════════════════════════════════════════════════════
 
 function renderLaunchers(){
+  if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
   const el=document.getElementById('ln-tbody');if(!el)return;
   const lns=cats.launchers||[];
   el.innerHTML=lns.length?lns.map((l,i)=>`<tr>
@@ -3792,7 +3840,15 @@ function loadFromSupabase(){
       if(row.key==='roles'){roles=row.value;localStorage.setItem('roles_v1',JSON.stringify(roles));}
       if(row.key==='usuarios'){usuarios=row.value;localStorage.setItem('usuarios_v1',JSON.stringify(usuarios));}
       if(row.key==='cls'){cls=row.value;localStorage.setItem('oc27',JSON.stringify(cls));}
-      if(row.key==='cats'){cats=row.value;localStorage.setItem('ct27',JSON.stringify(cats));}
+      if(row.key==='cats'){
+        // Merge: preserve user-created data, overwrite per-key if Supabase has data
+        const rc=row.value||{};
+        Object.keys(rc).forEach(k=>{
+          if(Array.isArray(rc[k])&&rc[k].length>0) cats[k]=rc[k];
+          else if(rc[k]&&!Array.isArray(rc[k])) cats[k]=rc[k];
+        });
+        localStorage.setItem('ct27',JSON.stringify(cats));
+      }
       if(row.key==='contratos'){contratos=row.value;localStorage.setItem('ct_v1',JSON.stringify(contratos));}
       if(row.key==='cobros'){cobros=row.value;localStorage.setItem('cobros_v1',JSON.stringify(cobros));}
       if(row.key==='checklists'){checklists=row.value;localStorage.setItem('chk_v1',JSON.stringify(checklists));}
@@ -3807,11 +3863,15 @@ function subscribeRealtime(){
       const k=payload.new.key,v=payload.new.value;
       if(k==='deps'){deps=v;localStorage.setItem('od27',JSON.stringify(v));}
       else if(k==='cls'){cls=v;localStorage.setItem('oc27',JSON.stringify(v));}
-      else if(k==='cats'){cats=v;localStorage.setItem('ct27',JSON.stringify(v));}
+      else if(k==='cats'){
+        const rc=v||{};
+        Object.keys(rc).forEach(ck=>{if(Array.isArray(rc[ck])&&rc[ck].length>0)cats[ck]=rc[ck];});
+        localStorage.setItem('ct27',JSON.stringify(cats));
+      }
       else if(k==='contratos'){contratos=v;localStorage.setItem('ct_v1',JSON.stringify(v));}
       else if(k==='cobros'){cobros=v;localStorage.setItem('cobros_v1',JSON.stringify(v));}
       else if(k==='trash'){trash=v;localStorage.setItem('trash_v1',JSON.stringify(v));}
-      // Re-migrate cats in case Supabase had older version without new keys
+      // Re-migrate cats if realtime update has older cats version
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
       if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
       if(!cats.tp)cats.tp=[];
@@ -3829,7 +3889,7 @@ function subscribeRealtime(){
 }
 function bootApp(){
   // DATA RESET: force reload when version changes
-  var DATA_VERSION='v4.0_clean';
+  var DATA_VERSION='v4.2_clean';
   var _needDepsClear=localStorage.getItem('data_version')!==DATA_VERSION;
   if(_needDepsClear){
     // Reset only deps and contracts — keep clients (oc27) and cats (ct27)
@@ -3881,6 +3941,13 @@ function bootApp(){
       // If cls from Supabase is empty or outdated, push the BC data up
       if(!cls.length||cls.length!==BC.length){
         cls=BC.map(function(c){return Object.assign({},c,{mo:Array.isArray(c.mo)?c.mo.slice():[]});});
+      }
+      // If version changed, clear stale deps/contracts from Supabase
+      if(_needDepsClear){
+        deps=[];contratos=[];cobros=[];
+        supabase.from('ops_data').upsert({key:'deps',value:[],updated_at:new Date().toISOString()}).catch(()=>{});
+        supabase.from('ops_data').upsert({key:'contratos',value:[],updated_at:new Date().toISOString()}).catch(()=>{});
+        supabase.from('ops_data').upsert({key:'cobros',value:[],updated_at:new Date().toISOString()}).catch(()=>{});
       }
       // Re-migrate cats in case Supabase had older version without new keys
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
