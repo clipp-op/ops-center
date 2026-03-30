@@ -335,7 +335,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.0 · 30 Mar 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.1 · 30 Mar 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -1099,19 +1099,6 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
 
-      <!-- LAUNCHERS -->
-      <div class="cat-panel" id="cat-launchers">
-        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Los <strong>Launchers</strong> son los responsables de implementar y dar seguimiento a los despliegues. Aparecen en todos los módulos de seguimiento.</p>
-        <div class="cat-add-row">
-          <div class="fr"><label class="fl">Nombre completo</label><input class="cat-input" id="ln-name" placeholder="Ej: María López"></div>
-          <div class="fr"><label class="fl">Email</label><input class="cat-input" id="ln-email" placeholder="maria@clipp.com" type="email"></div>
-          <div class="fr"><label class="fl">Notas</label><input class="cat-input" id="ln-notas" placeholder="Rol o área"></div>
-          <button class="btn btn-p btn-sm" onclick="saveLauncher()">+ Agregar</button>
-        </div>
-        <div class="card"><div style="overflow-x:auto"><table class="cat-table">
-          <thead><tr><th>Nombre</th><th>Email</th><th>Notas</th><th style="width:90px">Acciones</th></tr></thead>
-          <tbody id="ln-tbody"></tbody>
-        </table></div></div>
       </div>
 
       <!-- TIPOS DE CLIENTE -->
@@ -1177,7 +1164,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     </div>
     <div class="fr2">
       <div class="fr"><label class="fl">Aplicativo</label><select class="fld" id="cm-ap"></select></div>
-      <div class="fr"><label class="fl">Tipo de Cliente <span style="font-size:10.5px;color:var(--muted)">(etiqueta libre del catálogo)</span></label><select class="fld" id="cm-tp"></select></div>
+      <div class="fr"><label class="fl">Tipo de Cliente</label><select class="fld" id="cm-tp"></select></div>
     </div>
     <div class="fr"><label class="fl">Módulos Activos</label>
       <div class="bp" id="cm-mods" style="flex-wrap:wrap;gap:5px;max-height:110px;overflow-y:auto;padding:4px 0"></div>
@@ -1274,6 +1261,43 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     </div>
   </div>
 </div>
+
+
+    <!-- ══ USUARIOS Y ROLES ══ -->
+    <div id="view-usuarios" class="view">
+      <div class="sec-hdr">
+        <div><div class="sec-title">👤 Usuarios y Roles</div><div class="sec-sub">Gestiona accesos, permisos y visibilidad de módulos por usuario</div></div>
+        <button class="btn btn-p btn-sm" onclick="openAddUsuario()">+ Nuevo Usuario</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:20px" id="roles-grid"></div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">👥 Usuarios del Sistema</div>
+          <div style="display:flex;gap:8px">
+            <input class="fi" id="s-usr" placeholder="🔍 Buscar..." oninput="renderUsuarios()" style="width:180px">
+            <select class="fi" id="f-rol" onchange="renderUsuarios()">
+              <option value="">Todos los roles</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-b" style="padding:0">
+          <div style="overflow-x:auto">
+            <table class="cat-table">
+              <thead><tr>
+                <th style="width:36px">#</th>
+                <th style="min-width:160px">Nombre</th>
+                <th style="min-width:180px">Email</th>
+                <th style="min-width:120px">Rol</th>
+                <th style="min-width:100px">Estado</th>
+                <th style="min-width:130px">Último acceso</th>
+                <th style="width:80px">Acciones</th>
+              </tr></thead>
+              <tbody id="usr-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 <!-- CAT EDIT MODAL -->
@@ -2462,30 +2486,102 @@ function clearTlFilters(){
   renderTimeline();
 }
 function renderTimeline(){
+  const yearEl=document.getElementById('tl-year');
   const launcher=document.getElementById('tl-launcher')?.value||'';
   const modal=document.getElementById('tl-modal')?.value||'';
   const s1=document.getElementById('tl-s1')?.checked??true;
   const s2=document.getElementById('tl-s2')?.checked??true;
   const s3=document.getElementById('tl-s3')?.checked??true;
   const s4=document.getElementById('tl-s4')?.checked??true;
-  const filtered=deps.filter(d=>(!launcher||d.ln===launcher)&&(!modal||d.tp===modal));
-  const now=new Date();
-  const months=[];
-  for(let i=5;i>=-6;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));}
-  const curIdx=5;
-  function getCountsBy(field,condition){
-    return months.map(m=>filtered.filter(d=>{const val=d[field];if(!val)return false;return val.slice(0,7)===m&&condition(d);}).length);
+  const selYear=parseInt(yearEl?.value||new Date().getFullYear());
+
+  // Populate modalidad filter
+  const modEl=document.getElementById('tl-modal');
+  if(modEl&&modEl.options.length<=1){
+    (cats.modal||[]).forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=(m.icon||'')+' '+m.name;modEl.appendChild(o);});
   }
-  const confirmed=getCountsBy('fconf',()=>true);
-  const finished=getCountsBy('fe',()=>true);
-  const inProcess=months.map(m=>filtered.filter(d=>d.es==='🔧 En proceso'&&d.fi&&d.fi.slice(0,7)<=m&&(!d.fe||d.fe.slice(0,7)>=m)).length);
-  const operativos=months.map(m=>filtered.filter(d=>d.es===EL&&d.fe&&d.fe.slice(0,7)<=m).length);
+
+  // Build 12 months for selected year
+  const months=[];
+  for(let m=1;m<=12;m++) months.push(selYear+'-'+String(m).padStart(2,'0'));
+  const nowYM=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0');
+  const curIdx=months.indexOf(nowYM);
+
+  // Filter deps by launcher/modal
+  const filtDeps=deps.filter(d=>(!launcher||d.ln===launcher)&&(!modal||d.tp===modal));
+
+  // Confirmados: clientes con fconf en ese mes (source: cls)
+  const confirmed=months.map(m=>cls.filter(c=>c.fconf&&c.fconf.slice(0,7)===m).length);
+  // Finalizados: deps con fe en ese mes y estado Listo
+  const finished=months.map(m=>filtDeps.filter(d=>d.fe&&d.fe.slice(0,7)===m&&d.es===EL).length);
+  // En Proceso: deps activos ese mes
+  const inProcess=months.map(m=>filtDeps.filter(d=>
+    d.es!==EL&&d.fi&&d.fi.slice(0,7)<=m&&(!d.fe||d.fe.slice(0,7)>=m)
+  ).length);
+  // Operativos: acumulado de deps finalizados hasta ese mes
+  const operativos=months.map(m=>filtDeps.filter(d=>d.es===EL&&d.fe&&d.fe.slice(0,7)<=m).length);
+
+  // KPIs
+  const kpiEl=document.getElementById('tl-kpis');
+  if(kpiEl){
+    const totConf=confirmed.reduce((a,b)=>a+b,0);
+    const totFin=finished.reduce((a,b)=>a+b,0);
+    const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const fmtM=m=>{if(!m)return'—';const[y,mo]=m.split('-');return MN[parseInt(mo)-1]+' '+y;};
+    const bestConf=months[confirmed.indexOf(Math.max(...confirmed))];
+    const bestFin=months[finished.indexOf(Math.max(...finished))];
+    kpiEl.innerHTML=`
+      <div class="kpi-card"><div class="kpi-val" style="color:#1B4FD8">${totConf}</div><div class="kpi-label">Confirmados ${selYear}</div></div>
+      <div class="kpi-card"><div class="kpi-val" style="color:#0F7E4F">${totFin}</div><div class="kpi-label">Finalizados ${selYear}</div></div>
+      <div class="kpi-card"><div class="kpi-val" style="color:#1B4FD8;font-size:18px">${fmtM(bestConf)}</div><div class="kpi-label">Mejor mes confirmados</div></div>
+      <div class="kpi-card"><div class="kpi-val" style="color:#0F7E4F;font-size:18px">${fmtM(bestFin)}</div><div class="kpi-label">Mejor mes finalizados</div></div>
+    `;
+  }
+
+  // Monthly cards
+  const gridEl=document.getElementById('tl-months');
+  if(gridEl){
+    const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const seriesInfo=[
+      {label:'Confirmados',data:confirmed,color:'#1B4FD8',show:s1},
+      {label:'Finalizados',data:finished,color:'#0F7E4F',show:s2},
+      {label:'En Proceso',data:inProcess,color:'#B45309',show:s3},
+      {label:'Operativos',data:operativos,color:'#5B21B6',show:s4},
+    ];
+    gridEl.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:4px';
+    gridEl.innerHTML=months.map((m,i)=>{
+      const isFuture=m>nowYM;
+      const isCurrent=m===nowYM;
+      const mn=parseInt(m.split('-')[1])-1;
+      const hasSomeData=seriesInfo.some(s=>s.show&&s.data[i]>0);
+      const clsConf=cls.filter(c=>c.fconf&&c.fconf.slice(0,7)===m).map(c=>c.nm);
+      const depsFin=filtDeps.filter(d=>d.fe&&d.fe.slice(0,7)===m&&d.es===EL).map(d=>d.c);
+      const rows=seriesInfo.filter(s=>s.show).map(s=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+          <span style="color:${s.color};font-size:11px">${s.label}</span>
+          <span style="font-weight:700;font-size:14px;color:${s.data[i]>0?s.color:'#aaa'}">${s.data[i]}</span>
+        </div>`).join('');
+      const namesHtml=clsConf.length||depsFin.length?`
+        <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,.07)">
+          ${clsConf.slice(0,2).map(n=>`<div style="font-size:10px;color:#1B4FD8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">✓ ${n}</div>`).join('')}
+          ${clsConf.length>2?`<div style="font-size:10px;color:#1B4FD8">+${clsConf.length-2} más</div>`:''}
+          ${depsFin.slice(0,2).map(n=>`<div style="font-size:10px;color:#0F7E4F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏁 ${n}</div>`).join('')}
+          ${depsFin.length>2?`<div style="font-size:10px;color:#0F7E4F">+${depsFin.length-2} más</div>`:''}
+        </div>`:'';
+      return`<div class="card" style="opacity:${isFuture&&!hasSomeData?.6:1};border:${isCurrent?'2px solid #1B4FD8':'1px solid #e5e7eb'}">
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px;color:${isCurrent?'#1B4FD8':'#374151'}">${MN[mn]} ${selYear}${isCurrent?' ◉':''}</div>
+        ${rows}${namesHtml}
+      </div>`;
+    }).join('');
+  }
+
+  // Chart
   const datasets=[];
   if(s1)datasets.push({label:'Confirmados',data:confirmed,color:'#1B4FD8',dash:[]});
   if(s2)datasets.push({label:'Finalizados',data:finished,color:'#0F7E4F',dash:[]});
   if(s3)datasets.push({label:'En Proceso',data:inProcess,color:'#B45309',dash:[]});
   if(s4)datasets.push({label:'Operativos',data:operativos,color:'#5B21B6',dash:[]});
-  renderTlSVG(datasets,months,curIdx);
+  renderTlSVG(datasets,months,curIdx>=0?curIdx:11);
 }
 function renderTlSVG(datasets,months,curIdx){
   const el=document.getElementById('tl-svg');if(!el)return;
@@ -3733,13 +3829,14 @@ function subscribeRealtime(){
 }
 function bootApp(){
   // DATA RESET: force reload when version changes
-  var DATA_VERSION='v3.8_clean';
-  if(localStorage.getItem('data_version')!==DATA_VERSION){
+  var DATA_VERSION='v4.0_clean';
+  var _needDepsClear=localStorage.getItem('data_version')!==DATA_VERSION;
+  if(_needDepsClear){
     // Reset only deps and contracts — keep clients (oc27) and cats (ct27)
-    localStorage.removeItem('od27');
-    localStorage.removeItem('ct_v1');
-    localStorage.removeItem('cobros_v1');
-    localStorage.removeItem('chk_v1');
+    deps=[];localStorage.removeItem('od27');
+    contratos=[];localStorage.removeItem('ct_v1');
+    cobros=[];localStorage.removeItem('cobros_v1');
+    checklists={};localStorage.removeItem('chk_v1');
     localStorage.setItem('data_version',DATA_VERSION);
   }
   // Load from localStorage
