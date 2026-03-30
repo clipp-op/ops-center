@@ -340,7 +340,9 @@ input[type=date].ei{cursor:pointer;min-width:110px}
   <div class="topbar">
     <div class="tb-l"><h1 id="tb-t">Dashboard Ejecutivo</h1><span id="tb-s">Resumen operativo · Clipp · Marzo 2026</span></div>
     <div class="tb-r">
+      <span id="sync-status" style="font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px"></span>
       <button class="btn btn-g btn-sm" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-g btn-sm" onclick="doLogout()" title="Cerrar sesión" style="color:#DC2626;border-color:#FECDD3">⏻ Salir</button>
       <button class="btn btn-p btn-sm" id="btn-new" style="display:none" onclick="openAdd()">+ Nuevo</button>
     </div>
   </div>
@@ -1003,25 +1005,28 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 <div class="modal-ov" id="dep-modal">
   <div class="modal">
     <div class="m-title"><span>🚀 Nuevo Despliegue</span><button class="m-close" onclick="closeM('dep-modal')">✕</button></div>
-    <div class="fr2">
-      <div class="fr"><label class="fl">📛 Cliente</label><input class="fld" id="dm-c" placeholder="Nombre del cliente"></div>
-      <div class="fr"><label class="fl">🌎 País</label><input class="fld" id="dm-pa" placeholder="Ej: Ecuador"></div>
+    <div class="fr">
+      <label class="fl">👥 Cliente</label>
+      <select class="fld" id="dm-cli" onchange="fillDepFromClient(this.value)">
+        <option value="">— Seleccionar cliente —</option>
+      </select>
     </div>
     <div class="fr2">
-      <div class="fr"><label class="fl">🏙 Ciudad</label><input class="fld" id="dm-ci" placeholder="Ej: Quito"></div>
+      <div class="fr"><label class="fl">🌎 País</label><input class="fld" id="dm-pa" placeholder="Se llena automático"></div>
+      <div class="fr"><label class="fl">🏙 Ciudad</label><input class="fld" id="dm-ci" placeholder="Se llena automático"></div>
+    </div>
+    <div class="fr2">
       <div class="fr"><label class="fl">🏷 Modalidad</label><select class="fld" id="dm-tp"></select></div>
-    </div>
-    <div class="fr2">
       <div class="fr"><label class="fl">📊 Estado Inicial</label>
         <select class="fld" id="dm-es">
           <option>🆕 Por iniciar</option><option>🔧 En proceso</option><option>🆕 Capacitación</option>
         </select>
       </div>
-      <div class="fr"><label class="fl">👤 Launcher</label>
-        <select class="fld" id="dm-ln">
-          <option>Betty Palacios</option><option>Roberto Arrobo</option><option>Pablo Malla</option><option>Vicente Quezada</option>
-        </select>
-      </div>
+    </div>
+    <div class="fr"><label class="fl">👤 Launcher</label>
+      <select class="fld" id="dm-ln">
+        <option>Betty Palacios</option><option>Roberto Arrobo</option><option>Pablo Malla</option><option>Vicente Quezada</option>
+      </select>
     </div>
     <div class="fr3">
       <div class="fr"><label class="fl">📅 F. Inicio</label><input type="date" class="fld" id="dm-fi"></div>
@@ -1030,15 +1035,15 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     </div>
     <div class="fr2">
       <div class="fr">
-        <label class="fl">⏱ Hrs soporte/mes <span style="font-size:10.5px;color:var(--muted)">(cuando esté operativo)</span></label>
-        <input type="number" class="fld" id="dm-hrsop" value="" min="1" max="200" placeholder="Por defecto: global (8h)">
+        <label class="fl">⏱ Hrs soporte/mes <span style="font-size:10.5px;color:var(--muted)">(operativo)</span></label>
+        <input type="number" class="fld" id="dm-hrsop" value="" min="1" max="200" placeholder="Default global (8h)">
       </div>
       <div class="fr">
-        <label class="fl">⏱ Hrs despliegue/mes <span style="font-size:10.5px;color:var(--muted)">(mientras se implementa)</span></label>
-        <input type="number" class="fld" id="dm-hrsnew" value="" min="1" max="200" placeholder="Por defecto: global (24h)">
+        <label class="fl">⏱ Hrs despliegue/mes <span style="font-size:10.5px;color:var(--muted)">(implementación)</span></label>
+        <input type="number" class="fld" id="dm-hrsnew" value="" min="1" max="200" placeholder="Default global (24h)">
       </div>
     </div>
-    <div class="fr"><label class="fl">📝 Pendientes / Acciones</label><textarea class="fld" id="dm-p" rows="3" placeholder="- Acción 1&#10;- Acción 2"></textarea></div>
+    <div class="fr"><label class="fl">📝 Pendientes / Acciones</label><textarea class="fld" id="dm-p" rows="2" placeholder="- Acción 1&#10;- Acción 2"></textarea></div>
     <div class="fr"><label class="fl">🗒 Notas</label><textarea class="fld" id="dm-n" rows="2"></textarea></div>
     <div class="m-actions">
       <button class="btn btn-g" onclick="closeM('dep-modal')">Cancelar</button>
@@ -1261,7 +1266,7 @@ const BC=[
 // SUPABASE CONFIG — reemplaza con tus credenciales
 // ═══════════════════════════════════════════════
 const SB_URL = 'https://owfetilyxgvkrtdopskz.supabase.co';
-const SB_KEY = 'sb_publishable_oF_WRd-avHEkoADZ7e_24w_YljNDFHR';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZmV0aWx5eGd2a3J0ZG9wc2t6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MzcyMzYsImV4cCI6MjA5MDQxMzIzNn0.tQuq7XBTvqhn5dI3XMgm8fEc3c4RsvyF4JbXZ2Ttp0Q';
 let supabase = null;
 
 // Estado en memoria (igual que antes, pero se sincroniza con Supabase)
@@ -1536,6 +1541,7 @@ function depRow(d){
 }
 
 function uD(id,f,v){const d=deps.find(x=>x.id===id);if(d){d[f]=v;sv();}if(['es','tp','ln'].includes(f)){renderDash();updBadges();}}
+function updateCapTooltip(id,el){uD(id,'hrsOp',parseFloat(el.value)||null);if(curV==='capacidad')renderCapacidad();}
 function advanceFase(id){const d=deps.find(x=>x.id===id);if(!d)return;d.fase=Math.min((parseInt(d.fase||0)+1),cats.phases.length-1);sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
 function backFase(id){const d=deps.find(x=>x.id===id);if(!d)return;d.fase=Math.max((parseInt(d.fase||0)-1),0);sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
 function uDEs(id,val){
@@ -1885,23 +1891,59 @@ function closeMP(e){const p=document.getElementById('mod-popup');if(!p.contains(
 // ADD DEP MODAL
 // ═══════════════════════════════════════════════
 function openAddDep(){
+  // Populate client dropdown with active clients
+  const sel=document.getElementById('dm-cli');
+  const activeCls=cls.filter(c=>c.es==='activo').sort((a,b)=>a.nm.localeCompare(b.nm));
+  sel.innerHTML='<option value="">— Seleccionar cliente —</option>'
+    +activeCls.map(c=>`<option value="${c.id}">${esc(c.nm)}${c.ci?' · '+esc(c.ci):''}</option>`).join('');
+
+  // Populate modalidad dropdown
   if(document.getElementById('dm-tp'))
     document.getElementById('dm-tp').innerHTML=TIPOS_DEP().map(t=>`<option>${t}</option>`).join('');
-  ['dm-c','dm-pa','dm-ci','dm-p','dm-n','dm-hrsop','dm-hrsnew'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+
+  // Clear all fields
+  ['dm-pa','dm-ci','dm-p','dm-n','dm-hrsop','dm-hrsnew'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
   ['dm-fi','dm-fid','dm-fe'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
   document.getElementById('dep-modal').classList.add('open');
 }
+
+function fillDepFromClient(cid){
+  if(!cid)return;
+  const cl=cls.find(c=>c.id==cid);
+  if(!cl)return;
+  // Auto-fill País and Ciudad from client record
+  const paEl=document.getElementById('dm-pa');
+  const ciEl=document.getElementById('dm-ci');
+  if(paEl)paEl.value=cl.pa||'';
+  if(ciEl)ciEl.value=cl.ci||'';
+}
+
 function saveNewDep(){
-  const n=document.getElementById('dm-c').value.trim();if(!n){alert('El nombre del cliente es requerido');return;}
+  const cliSel=document.getElementById('dm-cli');
+  const cid=parseInt(cliSel.value)||null;
+  const cl=cid?cls.find(c=>c.id===cid):null;
+  const n=cl?cl.nm:(cliSel.options[cliSel.selectedIndex]?.text||'').split(' · ')[0].trim();
+  if(!n||n==='— Seleccionar cliente —'){alert('Selecciona un cliente');return;}
   const id=Math.max(...deps.map(d=>d.id),0)+1;
   const hrsop=parseFloat(document.getElementById('dm-hrsop')?.value)||null;
   const hrsnew=parseFloat(document.getElementById('dm-hrsnew')?.value)||null;
-  deps.push({id,cid:null,c:n,pa:document.getElementById('dm-pa').value.trim(),ci:document.getElementById('dm-ci').value.trim(),tp:document.getElementById('dm-tp').value,es:document.getElementById('dm-es').value,mo:[],ln:document.getElementById('dm-ln').value,fi:document.getElementById('dm-fi').value,fid:document.getElementById('dm-fid').value,fe:document.getElementById('dm-fe').value,pe:document.getElementById('dm-p').value.trim(),no:document.getElementById('dm-n').value.trim(),lk:'',fase:0,hrsOp:hrsop,hrsNew:hrsnew});
+  deps.push({
+    id,cid,
+    c:n,
+    pa:document.getElementById('dm-pa').value.trim()||cl?.pa||'',
+    ci:document.getElementById('dm-ci').value.trim()||cl?.ci||'',
+    mo:cl?[...cl.mo]:[],
+    tp:document.getElementById('dm-tp').value,
+    es:document.getElementById('dm-es').value,
+    ln:document.getElementById('dm-ln').value,
+    fi:document.getElementById('dm-fi').value,
+    fid:document.getElementById('dm-fid').value,
+    fe:document.getElementById('dm-fe').value,
+    pe:document.getElementById('dm-p').value.trim(),
+    no:document.getElementById('dm-n').value.trim(),
+    lk:'',fase:0,hrsOp:hrsop,hrsNew:hrsnew
+  });
   sv();closeM('dep-modal');renderDeps();renderDash();updBadges();
-}
-function updateCapTooltip(id,el){
-  uD(id,'hrsOp',parseFloat(el.value)||null);
-  if(curV==='capacidad')renderCapacidad();
 }
 
 // ═══════════════════════════════════════════════
@@ -2875,9 +2917,26 @@ function renderTlSVG(datasets){
 // INIT
 // ═══════════════════════════════════════════════
 // ── LOGIN & SUPABASE BOOT ──
-// ── DEMO CREDENTIALS ──
-// En modo demo: cualquier email + cualquier contraseña accede
-// Para Supabase real: cambia SB_URL y SB_KEY
+
+// ════════════════════════════════════════════════════
+// AUTH + SYNC — Supabase con polling y tiempo real
+// ════════════════════════════════════════════════════
+let _syncInterval = null;
+let _lastSync = 0;
+let _currentUser = null;
+
+function setSyncStatus(msg, color){
+  const el = document.getElementById('sync-status');
+  if(el){ el.textContent = msg; el.style.color = color||'var(--muted)'; }
+}
+
+function doLogout(){
+  if(!confirm('¿Cerrar sesión?')) return;
+  sessionStorage.removeItem('clipp_authed');
+  if(supabase) supabase.auth.signOut();
+  clearInterval(_syncInterval);
+  location.reload();
+}
 
 function doLogin(){
   const email = document.getElementById('li-email').value.trim();
@@ -2885,49 +2944,37 @@ function doLogin(){
   const btn   = document.getElementById('li-btn');
   const err   = document.getElementById('li-err');
 
-  if(!email || !pass){ err.textContent='Ingresa email y contraseña'; return; }
-
+  if(!email||!pass){ err.textContent='Ingresa email y contraseña'; return; }
   btn.disabled=true; btn.textContent='Ingresando...'; err.textContent='';
 
-  // ── MODO PRODUCCIÓN: Supabase real ──
-  loadSupabase().then(()=>{
+  loadSupabase().then(function(){
     try{
-      // Supabase v2.49+ supports sb_publishable_ keys
-      // Note: sb_publishable_ keys work with supabase-js v2.49+
-      var clientOpts = {
-        auth:{
-          autoRefreshToken:true,
-          persistSession:true,
-          detectSessionInUrl:false,
-          storageKey:'clipp_ops_session'
-        }
-      };
-      supabase = window.supabase.createClient(SB_URL, SB_KEY, clientOpts);
+      supabase = window.supabase.createClient(SB_URL, SB_KEY, {
+        auth:{ autoRefreshToken:true, persistSession:true, detectSessionInUrl:false, storageKey:'clipp_ops_session' }
+      });
       supabase.auth.signInWithPassword({email:email, password:pass})
         .then(function(res){
           if(res.error){
             err.textContent = res.error.message==='Invalid login credentials'
-              ? 'Email o contraseña incorrectos'
-              : res.error.message;
+              ? 'Email o contraseña incorrectos' : res.error.message;
             btn.disabled=false; btn.textContent='Ingresar';
             return;
           }
+          _currentUser = res.data.user;
           sessionStorage.setItem('clipp_authed','1');
           document.getElementById('login-overlay').classList.add('hidden');
           bootApp();
         })
         .catch(function(e){
-          err.textContent='Error al conectar con Supabase';
+          err.textContent='Error de conexión con Supabase: '+e.message;
           btn.disabled=false; btn.textContent='Ingresar';
-          console.error(e);
         });
     }catch(e){
       err.textContent='Error iniciando Supabase: '+e.message;
       btn.disabled=false; btn.textContent='Ingresar';
     }
-  }).catch(function(e){
-    console.error('CDN load error:', e);
-    err.textContent='Error cargando librería. Intenta de nuevo o usa modo demo.';
+  }).catch(function(){
+    err.textContent='Sin conexión. Intenta de nuevo.';
     btn.disabled=false; btn.textContent='Ingresar';
   });
 }
@@ -2935,25 +2982,17 @@ function doLogin(){
 function loadSupabase(){
   return new Promise(function(resolve,reject){
     if(window.supabase && typeof window.supabase.createClient==='function'){ resolve(); return; }
-    // Try multiple CDNs
     var cdns=[
       'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js',
       'https://unpkg.com/@supabase/supabase-js@2.49.4/dist/umd/supabase.js',
       'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.0/umd/supabase.min.js'
     ];
     var idx=0;
-    var dbg=document.getElementById('li-debug');
-    if(dbg){dbg.style.display='block';dbg.textContent='Cargando librería...';}
     function tryNext(){
-      if(idx>=cdns.length){reject(new Error('All CDNs failed'));return;}
+      if(idx>=cdns.length){reject(new Error('CDN failed'));return;}
       var s=document.createElement('script');
       s.src=cdns[idx++];
-      s.onload=function(){
-        if(window.supabase && typeof window.supabase.createClient==='function'){
-          if(dbg)dbg.textContent='Librería cargada ✓';
-          resolve();
-        } else tryNext();
-      };
+      s.onload=function(){ if(window.supabase&&typeof window.supabase.createClient==='function') resolve(); else tryNext(); };
       s.onerror=tryNext;
       document.head.appendChild(s);
     }
@@ -2961,67 +3000,173 @@ function loadSupabase(){
   });
 }
 
+// ── Save to Supabase + localStorage ──
+function sv(){
+  localStorage.setItem('od27',JSON.stringify(deps));
+  localStorage.setItem('oc27',JSON.stringify(cls));
+  localStorage.setItem('ct27',JSON.stringify(cats));
+  sessionStorage.setItem('clipp_authed','1');
+  if(supabase){
+    var ts = new Date().toISOString();
+    Promise.all([
+      supabase.from('ops_data').upsert({key:'deps',   value:deps,    updated_at:ts}),
+      supabase.from('ops_data').upsert({key:'cls',    value:cls,     updated_at:ts}),
+      supabase.from('ops_data').upsert({key:'cats',   value:cats,    updated_at:ts}),
+    ]).then(function(){ setSyncStatus('✓ Guardado', '#0F7E4F'); setTimeout(function(){setSyncStatus('');},2000); })
+      .catch(function(e){ setSyncStatus('⚠ Error al guardar','#DC2626'); console.error(e); });
+  }
+}
+function svCont(){ svCont2(); }
+function svCobros(){ svCobros2(); }
+function svCont2(){
+  localStorage.setItem('ct_v1',JSON.stringify(contratos));
+  if(supabase) supabase.from('ops_data').upsert({key:'contratos',value:contratos,updated_at:new Date().toISOString()}).catch(function(){});
+}
+function svCobros2(){
+  localStorage.setItem('cobros_v1',JSON.stringify(cobros));
+  if(supabase) supabase.from('ops_data').upsert({key:'cobros',value:cobros,updated_at:new Date().toISOString()}).catch(function(){});
+}
+
+// ── Load all data from Supabase ──
+function loadFromSupabase(){
+  if(!supabase) return Promise.resolve();
+  return supabase.from('ops_data').select('key,value,updated_at')
+    .then(function(res){
+      if(res.error) throw res.error;
+      var rows = res.data||[];
+      var changed = false;
+      rows.forEach(function(row){
+        if(!row.value) return;
+        if(row.key==='deps'   ){ deps=row.value;       localStorage.setItem('od27',JSON.stringify(deps));   changed=true; }
+        if(row.key==='cls'    ){ cls=row.value;        localStorage.setItem('oc27',JSON.stringify(cls));    changed=true; }
+        if(row.key==='cats'   ){ cats=row.value;       localStorage.setItem('ct27',JSON.stringify(cats));   changed=true; }
+        if(row.key==='contratos'){ contratos=row.value;localStorage.setItem('ct_v1',JSON.stringify(contratos)); changed=true; }
+        if(row.key==='cobros'){ cobros=row.value;      localStorage.setItem('cobros_v1',JSON.stringify(cobros)); changed=true; }
+        if(row.key==='checklists'){ checklists=row.value; localStorage.setItem('chk_v1',JSON.stringify(checklists)); changed=true; }
+      });
+      return changed;
+    });
+}
+
+// ── Re-render everything after remote update ──
+function refreshAllViews(){
+  ALL_M = cats.md.map(function(m){return m.name;});
+  if(curV==='dashboard')   renderDash();
+  if(curV==='despliegues') renderDeps();
+  if(curV==='operativos')  renderOps();
+  if(curV==='inactivos')   renderInact();
+  if(curV==='clientes')    renderCls();
+  if(curV==='contratos')   renderContratos();
+  if(curV==='cobranzas')   renderCobranzas();
+  if(curV==='catalogos')   renderCats();
+  updBadges();
+}
+
+// ── Poll every 10 seconds for changes ──
+function startPolling(){
+  if(_syncInterval) clearInterval(_syncInterval);
+  _syncInterval = setInterval(function(){
+    loadFromSupabase().then(function(changed){
+      if(changed){
+        setSyncStatus('↺ Actualizando...','#1B4FD8');
+        refreshAllViews();
+        setTimeout(function(){setSyncStatus('✓ Sincronizado','#0F7E4F');setTimeout(function(){setSyncStatus('');},2000);},500);
+      }
+    }).catch(function(){});
+  }, 10000); // every 10 seconds
+}
+
+// ── Subscribe to real-time changes ──
+function subscribeRealtime(){
+  if(!supabase) return;
+  supabase.channel('ops-realtime')
+    .on('postgres_changes', {event:'*', schema:'public', table:'ops_data'}, function(payload){
+      if(!payload.new) return;
+      var key=payload.new.key, val=payload.new.value;
+      if(!val) return;
+      var needsRefresh=true;
+      if(key==='deps')       deps=val;
+      else if(key==='cls')   cls=val;
+      else if(key==='cats')  cats=val;
+      else if(key==='contratos') contratos=val;
+      else if(key==='cobros')    cobros=val;
+      else needsRefresh=false;
+      if(needsRefresh){
+        setSyncStatus('↺ Cambio recibido...','#1B4FD8');
+        refreshAllViews();
+        setTimeout(function(){setSyncStatus('');},2000);
+      }
+    })
+    .subscribe(function(status){
+      if(status==='SUBSCRIBED') setSyncStatus('● En línea','#0F7E4F');
+      if(status==='CLOSED')     setSyncStatus('○ Sin conexión','#DC2626');
+    });
+}
+
 function bootApp(){
-  // Load from localStorage
+  // 1. Load from localStorage first (instant)
   try{
-    const sd=JSON.parse(localStorage.getItem('od27')); if(sd&&sd.length)deps=sd;
-    const sc=JSON.parse(localStorage.getItem('oc27')); if(sc&&sc.length)cls=sc;
-    const scat=JSON.parse(localStorage.getItem('ct27')); if(scat)cats=scat;
-    const scont=JSON.parse(localStorage.getItem('ct_v1')); if(scont&&scont.length)contratos=scont;
-    const scob=JSON.parse(localStorage.getItem('cobros_v1')); if(scob)cobros=scob;
-    const schk=JSON.parse(localStorage.getItem('chk_v1')); if(schk)checklists=schk;
+    var sd=JSON.parse(localStorage.getItem('od27')); if(sd&&sd.length) deps=sd;
+    var sc=JSON.parse(localStorage.getItem('oc27')); if(sc&&sc.length) cls=sc;
+    var scat=JSON.parse(localStorage.getItem('ct27')); if(scat) cats=scat;
+    var scont=JSON.parse(localStorage.getItem('ct_v1')); if(scont&&scont.length) contratos=scont;
+    var scob=JSON.parse(localStorage.getItem('cobros_v1')); if(scob) cobros=scob;
+    var schk=JSON.parse(localStorage.getItem('chk_v1')); if(schk) checklists=schk;
   }catch(e){}
 
-  // Migrations
+  // 2. Migrations
   try{
-    if(!cats.modal)cats.modal=BASE_MODAL.map(x=>({...x}));
-    if(!cats.risk)cats.risk=BASE_RISK.map(x=>({...x}));
-    if(!cats.implTimes)cats.implTimes=BASE_IMPL_TIMES.map(x=>({...x}));
-    if(!cats.phases)cats.phases=BASE_PHASES.map(x=>({...x}));
-    if(cls.length < BC.length){ cls=BC.map(c=>({...c,mo:[...c.mo]})); }
-    cls.forEach(c=>{if(c.fconf===undefined)c.fconf='';});
-    contratos.forEach(c=>{
+    if(!cats.modal)     cats.modal=BASE_MODAL.map(function(x){return Object.assign({},x);});
+    if(!cats.risk)      cats.risk=BASE_RISK.map(function(x){return Object.assign({},x);});
+    if(!cats.implTimes) cats.implTimes=BASE_IMPL_TIMES.map(function(x){return Object.assign({},x);});
+    if(!cats.phases)    cats.phases=BASE_PHASES.map(function(x){return Object.assign({},x);});
+    if(cls.length<BC.length){ cls=BC.map(function(c){return Object.assign({},c,{mo:[].concat(c.mo)});}); }
+    cls.forEach(function(c){ if(c.fconf===undefined)c.fconf=''; });
+    contratos.forEach(function(c){
       if(c.valorFijo===undefined)c.valorFijo=0;
       if(c.setupFee===undefined)c.setupFee=0;
       if(!c.descuentos)c.descuentos=[];
     });
-    deps.forEach(d=>{
+    deps.forEach(function(d){
       if(d.fase===undefined)d.fase=0;
       if(d.hrsOp===undefined)d.hrsOp=null;
       if(d.hrsNew===undefined)d.hrsNew=null;
     });
-  }catch(e){ console.warn('Migration error:',e); }
+  }catch(e){ console.warn('Migration:',e); }
 
+  // 3. Render immediately with local data
   renderDash(); updBadges();
 
-  // Supabase real-time sync (only if configured)
-  if(SB_URL !== 'SUPABASE_URL_AQUI' && supabase){
-    supabase.channel('ops-sync')
-      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'ops_data'},payload=>{
-        const {key,value}=payload.new;
-        if(key==='deps'&&value){deps=value;if(curV==='despliegues')renderDeps();if(curV==='operativos')renderOps();renderDash();updBadges();}
-        if(key==='cls'&&value){cls=value;if(curV==='clientes')renderCls();if(curV==='inactivos')renderInact();updBadges();}
-        if(key==='cats'&&value){cats=value;ALL_M=cats.md.map(m=>m.name);if(curV==='catalogos')renderCats();}
-        if(key==='contratos'&&value){contratos=value;if(curV==='contratos')renderContratos();if(curV==='cobranzas')renderCobranzas();}
-        if(key==='cobros'&&value){cobros=value;if(curV==='cobranzas')renderCobranzas();}
-      }).subscribe();
+  // 4. If Supabase connected: load fresh data, then start realtime
+  if(supabase){
+    setSyncStatus('↺ Cargando...','#1B4FD8');
+    loadFromSupabase().then(function(){
+      refreshAllViews();
+      setSyncStatus('✓ Datos actualizados','#0F7E4F');
+      setTimeout(function(){setSyncStatus('');},2000);
+      subscribeRealtime();
+      startPolling();
+    }).catch(function(e){
+      console.warn('Supabase load error:',e);
+      setSyncStatus('○ Sin datos en nube','#B45309');
+    });
   }
 }
 
-// ── AUTO-LOGIN CHECK ──
+// ── Auto-check existing session on page load ──
 (function(){
-  // Press Enter on password field
-  const passEl=document.getElementById('li-pass');
+  var passEl=document.getElementById('li-pass');
   if(passEl) passEl.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
-  // Check for existing Supabase session
   loadSupabase().then(function(){
     try{
-      const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:false,storageKey:'clipp_ops_session'}});
+      var sb=window.supabase.createClient(SB_URL,SB_KEY,{
+        auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:false,storageKey:'clipp_ops_session'}
+      });
       sb.auth.getSession().then(function(res){
         if(res.data&&res.data.session){
           supabase=sb;
-          sessionStorage.setItem('clipp_authed','1');
+          _currentUser=res.data.session.user;
           document.getElementById('login-overlay').classList.add('hidden');
           bootApp();
         }
