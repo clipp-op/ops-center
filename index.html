@@ -643,10 +643,10 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div id="view-cobranzas" class="view">
       <div class="sec-hdr"><div><div class="sec-title">Dashboard de Cobranzas <span class="sec-stat" id="cob-stat-hdr">—</span></div><div class="sec-sub">Solo clientes operativos · Registro mensual · Estados de pago</div></div></div>
       <div class="action-grid" style="grid-template-columns:repeat(4,1fr);max-width:580px;margin-bottom:16px">
-        <div class="action-card" onclick="generarMesActual()">
+        <div class="action-card" onclick="openGenerarCobros()">
           <div class="action-card-icon">⚡</div>
           <div class="action-card-label">Generar Cobros</div>
-          <div class="action-card-sub">Mes actual</div>
+          <div class="action-card-sub">Definir activos por cliente</div>
         </div>
         <div class="action-card" onclick="setV('contratos')">
           <div class="action-card-icon">📋</div>
@@ -669,7 +669,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       <div class="filter-bar" style="margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <label>📅 Mes:</label>
         <input type="month" class="fi" id="cob-mes" onchange="renderCobranzas()">
-        <button class="btn btn-p btn-sm" onclick="generarMesActual()" style="white-space:nowrap">⚡ Generar mes actual</button>
+        <button class="btn btn-p btn-sm" onclick="openGenerarCobros()" style="white-space:nowrap">⚡ Generar Cobros</button>
         <div style="display:flex;align-items:center;gap:6px;margin-left:8px;padding-left:8px;border-left:1px solid var(--border)">
           <label style="font-size:12px;color:var(--muted);white-space:nowrap">📥 Mes pasado:</label>
           <input type="month" class="fi" id="cob-mes-hist" style="max-width:155px">
@@ -845,7 +845,9 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
         <!-- ESTRATEGIA -->
         <div class="card"><div class="card-h"><div class="card-title">🎯 Estrategia de Despliegue</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
-          <p><strong>Complejidad automática</strong> = se asigna según módulos activos del cliente. Configurable en Catálogos → Complejidad.</p>
+          <p><strong>Complejidad automática</strong> = se asigna cuando el cliente tiene <strong>EXACTAMENTE todos</strong> los módulos definidos como disparadores en ese nivel. Si no coincide exactamente, la complejidad queda vacía.</p>
+          <p><strong>Ejemplo:</strong> Si "Avanzado" tiene disparadores [CallCenter, App Cliente], el cliente debe tener AMBOS para que se asigne Avanzado. Si solo tiene CallCenter, no se asigna.</p>
+          <p>Los módulos disparadores se seleccionan con una lista múltiple en Catálogos → Complejidad.</p>
           <p><strong>Fases de Implementación:</strong></p>
           <ul style="padding-left:16px;margin:4px 0">
             <li>Avanza con ▶ / retrocede con ◀ en la tabla de Despliegues</li>
@@ -904,6 +906,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         <div class="cat-tab" onclick="setCatTab('fases')">📍 Fases</div>
         <div class="cat-tab" onclick="setCatTab('implTimes')">⏱ T. Implementación</div>
         <div class="cat-tab" onclick="setCatTab('complejidad')">🎯 Complejidad</div>
+        <div class="cat-tab" onclick="setCatTab('billingTypes')">💰 Tipos de Cobro</div>
         <div class="cat-tab" onclick="setCatTab('riesgos')">🚦 Estados de Riesgo</div>
         <div class="cat-tab" onclick="setCatTab('aplicativos')">🖥 Aplicativos</div>
         <div class="cat-tab" onclick="setCatTab('tipos')">🏷 Tipos de Cliente</div>
@@ -1030,8 +1033,11 @@ input[type=date].ei{cursor:pointer;min-width:110px}
           </div>
           <div class="fr"><label class="fl">Peso capacidad</label><input class="cat-input" id="cx-peso" type="number" step="0.1" min="0.1" max="10" placeholder="Ej: 1.0" style="max-width:80px"></div>
           <div class="fr"><label class="fl">Prioridad (1=más alta)</label><input class="cat-input" id="cx-prio" type="number" min="1" max="99" placeholder="1" style="max-width:70px"></div>
-          <div class="fr" style="flex:2;min-width:280px"><label class="fl">Módulos disparadores <span style="font-weight:400;color:var(--subtle)">(separados por coma)</span></label>
-            <input class="cat-input" id="cx-mods" placeholder="Ej: CallCenter, Counter, Desborde"></div>
+          <div class="fr" style="flex:2;min-width:280px">
+            <label class="fl">Módulos disparadores <span style="font-weight:400;color:var(--subtle)">(todos deben estar presentes — coincidencia exacta)</span></label>
+            <select class="cat-input" id="cx-mods" multiple style="height:90px;min-height:90px"></select>
+            <div style="font-size:10.5px;color:var(--subtle);margin-top:3px">Ctrl+clic para seleccionar varios</div>
+          </div>
           <div class="fr"><label class="fl">Descripción</label><input class="cat-input" id="cx-desc" placeholder="Descripción breve"></div>
           <button class="btn btn-p btn-sm" onclick="saveCx()" style="align-self:flex-end">+ Agregar</button>
         </div>
@@ -1040,6 +1046,23 @@ input[type=date].ei{cursor:pointer;min-width:110px}
             <th>Nivel</th><th>Peso cap.</th><th>Prioridad</th><th>Módulos disparadores</th><th>Descripción</th><th style="width:90px">Acciones</th>
           </tr></thead>
           <tbody id="cx-tbody"></tbody>
+        </table></div></div>
+      </div>
+
+      <!-- TIPOS DE COBRO -->
+      <div class="cat-panel" id="cat-billingTypes">
+        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Define los <strong>tipos de componente de cobro</strong> disponibles. Cada contrato puede mezclar varios tipos. Estos tipos aparecen al crear o editar contratos.</p>
+        <div class="cat-add-row" style="flex-wrap:wrap;gap:10px">
+          <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="bt-icon" placeholder="💬" style="max-width:70px"></div>
+          <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="bt-name" placeholder="Ej: Por Bot WA"></div>
+          <div class="fr"><label class="fl">Tipo (clave)</label><input class="cat-input" id="bt-tipo" placeholder="Ej: bot_wa" style="max-width:120px"></div>
+          <div class="fr"><label class="fl">Unidad</label><input class="cat-input" id="bt-unit" placeholder="Ej: bot/mes" style="max-width:110px"></div>
+          <div class="fr" style="flex:2"><label class="fl">Descripción</label><input class="cat-input" id="bt-desc" placeholder="Descripción breve"></div>
+          <button class="btn btn-p btn-sm" onclick="saveBillingType()">+ Agregar</button>
+        </div>
+        <div class="card"><div style="overflow-x:auto"><table class="cat-table">
+          <thead><tr><th>Tipo</th><th>Clave</th><th>Unidad</th><th>Descripción</th><th style="width:90px">Acciones</th></tr></thead>
+          <tbody id="bt-tbody"></tbody>
         </table></div></div>
       </div>
 
@@ -1247,6 +1270,26 @@ input[type=date].ei{cursor:pointer;min-width:110px}
   </div>
 </div>
 
+<!-- GENERAR COBROS MODAL -->
+<div class="modal-ov" id="gen-cobro-modal">
+  <div class="modal" style="max-width:820px;width:95vw">
+    <div class="m-title"><span>⚡ Generar Cobros del Mes</span><button class="m-close" onclick="closeM('gen-cobro-modal')">✕</button></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div class="fr" style="flex:1;margin:0"><label class="fl">Mes a facturar</label><input type="month" class="fld" id="gcm-mes" style="max-width:180px"></div>
+      <button class="btn btn-g btn-sm" onclick="gcmSelectAll(true)">✓ Seleccionar todos</button>
+      <button class="btn btn-g btn-sm" onclick="gcmSelectAll(false)">✗ Deseleccionar</button>
+    </div>
+    <div id="gcm-tabla" style="overflow-y:auto;max-height:420px"></div>
+    <div style="background:var(--bg2);padding:12px 14px;border-radius:8px;border:1px solid var(--border);margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;color:var(--muted)">Total a generar: <strong id="gcm-total" style="color:var(--green)">$0</strong></span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('gen-cobro-modal')">Cancelar</button>
+        <button class="btn btn-p" onclick="confirmarGenerarCobros()">⚡ Confirmar y Generar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CONTRATO MODAL -->
 <div class="modal-ov" id="cont-modal">
   <div class="modal">
@@ -1347,6 +1390,17 @@ const BASE_CATMOD=[
   {id:4,name:'Operaciones',icon:'⚙️',color:'#B45309'},
   {id:5,name:'Capacitación',icon:'🎓',color:'#0891B2'},
   {id:6,name:'Infraestructura',icon:'🖥',color:'#BE123C'},
+];
+// Billing component types catalog — editable
+const BASE_BILLING_TYPES=[
+  {id:1,icon:'👤',name:'Por Conductor',tipo:'conductor',unidad:'conductor/mes',desc:'Cobra por cada conductor activo en el mes'},
+  {id:2,icon:'🚗',name:'Por Vehículo',tipo:'vehiculo',unidad:'veh/mes',desc:'Cobra por cada vehículo activo en el mes'},
+  {id:3,icon:'📅',name:'Cobro Fijo Mensual',tipo:'fijo',unidad:'mes',desc:'Monto fijo independiente de activos'},
+  {id:4,icon:'⚡',name:'Mínimo Operativo',tipo:'minimo',unidad:'mínimo/mes',desc:'Garantía mínima mensual si activos < mínimo'},
+  {id:5,icon:'🔧',name:'Setup (Único)',tipo:'setup',unidad:'único',desc:'Pago único de configuración inicial'},
+  {id:6,icon:'💵',name:'Depósito',tipo:'deposito',unidad:'único',desc:'Depósito reembolsable'},
+  {id:7,icon:'💬',name:'Bot WA Coexistencia',tipo:'bot_wa',unidad:'bot/mes',desc:'Costo mensual por bot WA en coexistencia'},
+  {id:8,icon:'📱',name:'Por Módulo Adicional',tipo:'modulo',unidad:'módulo/mes',desc:'Cobro por módulo activado'},
 ];
 // Complexity levels catalog — fully configurable
 const BASE_COMPLEXITY=[
@@ -1489,6 +1543,7 @@ if(!cats.implTimes) cats.implTimes=BASE_IMPL_TIMES.map(x=>({...x}));
 if(!cats.phases) cats.phases=BASE_PHASES.map(x=>({...x}));
 if(!cats.complexity) cats.complexity=BASE_COMPLEXITY.map(x=>({...x}));
 if(!cats.catmod) cats.catmod=BASE_CATMOD.map(x=>({...x}));
+if(!cats.billingTypes) cats.billingTypes=BASE_BILLING_TYPES.map(x=>({...x}));
 let ALL_M= cats.md.map(m=>m.name);
 function getModalNames(){return cats.modal.map(m=>`${m.icon} ${m.name}`);}
 let mTgt=null, editClId=null, dOpen=false, curV='dashboard', curCatTab='modulos';
@@ -1557,16 +1612,17 @@ function phaseBadge(dep){
 // ── COMPLEXITY from catalog ──
 function getComplexityFromCatalog(dep){
   if(!cats.complexity||!cats.complexity.length) return null;
-  const mods=dep.mo||[];
-  // Sort by priority ascending (1 = highest priority)
+  const mods=(dep.mo||[]).map(m=>m.toLowerCase().trim());
+  if(!mods.length) return null;
   const sorted=[...cats.complexity].sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
   for(const lvl of sorted){
-    const triggers=(lvl.mods||'').split(',').map(s=>s.trim()).filter(Boolean);
-    if(triggers.length&&triggers.some(t=>mods.some(m=>m.toLowerCase().includes(t.toLowerCase()))))
-      return lvl;
+    const triggers=(lvl.mods||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    if(!triggers.length) continue;
+    // EXACT match: ALL triggers must be present in the client modules
+    const allMatch=triggers.every(t=>mods.some(m=>m===t));
+    if(allMatch) return lvl;
   }
-  // No match → return last level (lowest priority = default)
-  return sorted[sorted.length-1]||null;
+  return null; // No exact match → empty (no complexity assigned)
 }
 function getComplexityScore(dep){
   if(!cats.complexity||!cats.complexity.length) return 0;
@@ -1582,7 +1638,7 @@ function complexBadge(dep){
 // Weight for capacity: read from catalog
 function getComplexityWeight(dep){
   const lvl=getComplexityFromCatalog(dep);
-  return lvl?(parseFloat(lvl.peso)||1.0):1.0;
+  return lvl?(parseFloat(lvl.peso)||1.0):1.0; // 1.0 = neutral weight if no match
 }
 const COMPLEXITY_WEIGHT=[1.0,1.5,2.5]; // legacy fallback (replaced by catalog above)
 const C6=['#1B4FD8','#0F7E4F','#B45309','#5B21B6','#DC2626','#0891B2'];
@@ -1769,7 +1825,26 @@ function depRow(d){
 </tr>`;
 }
 
-function uD(id,f,v){const d=deps.find(x=>x.id===id);if(d){d[f]=v;sv();}if(['es','tp','ln'].includes(f)){renderDash();updBadges();}}
+function renderCurrentView(){
+  if(curV==='despliegues')renderDeps();
+  else if(curV==='operativos')renderOps();
+  else if(curV==='clientes')renderCls();
+  else if(curV==='inactivos')renderInact();
+  else if(curV==='contratos')renderContratos();
+  else if(curV==='cobranzas')renderCobranzas();
+  else if(curV==='capacidad')renderCapacidad();
+  else if(curV==='estrategia')renderEstrategia();
+  else if(curV==='dashboard')renderDash();
+}
+function uD(id,f,v){
+  const d=deps.find(x=>x.id===id);
+  if(d){d[f]=v;sv();}
+  if(['es','tp','ln','mo','fase','pe','no','lk','fi','fid','fe','hrsOp','hrsNew'].includes(f)){
+    updBadges();renderDash();
+    if(curV==='despliegues')renderDeps();
+    else if(curV==='operativos')renderOps();
+  }
+}
 function updateCapTooltip(id,el){uD(id,'hrsOp',parseFloat(el.value)||null);if(curV==='capacidad')renderCapacidad();}
 function advanceFase(id){const d=deps.find(x=>x.id===id);if(!d)return;d.fase=Math.min((parseInt(d.fase||0)+1),cats.phases.length-1);sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
 function backFase(id){const d=deps.find(x=>x.id===id);if(!d)return;d.fase=Math.max((parseInt(d.fase||0)-1),0);sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
@@ -2182,7 +2257,7 @@ function saveNewDep(){
 // ═══════════════════════════════════════════════
 function setCatTab(t){
   curCatTab=t;
-  const order=['modulos','categorias','modalidades','fases','implTimes','complejidad','riesgos','aplicativos','tipos'];
+  const order=['modulos','categorias','modalidades','fases','implTimes','complejidad','billingTypes','riesgos','aplicativos','tipos'];
   document.querySelectorAll('.cat-tab').forEach((el,i)=>el.classList.toggle('active',order[i]===t));
   document.querySelectorAll('.cat-panel').forEach(el=>el.classList.remove('active'));
   const panel=document.getElementById('cat-'+t);
@@ -2190,8 +2265,11 @@ function setCatTab(t){
 }
 function renderCats(){
   renderCatmod();renderMds();renderModDeps();renderAps();renderTps();
-  renderPhases();renderImplTimes();renderRisks();renderCx();
+  renderPhases();renderImplTimes();renderRisks();renderCx();renderBillingTypes();
   document.getElementById('tp-ap').innerHTML='<option value="">Sin asociar</option>'+cats.ap.map(a=>`<option>${esc(a.name)}</option>`).join('');
+  // Populate complexity multiselect with current modules
+  const cxModSel=document.getElementById('cx-mods');
+  if(cxModSel) cxModSel.innerHTML=cats.md.map(m=>`<option value="${esc(m.name)}">${esc(m.name)}</option>`).join('');
 }
 function renderCx(){
   if(!cats.complexity)return;
@@ -2224,11 +2302,35 @@ function saveCx(){
     border:brMap[color]||'#CBD5E1',
     peso:parseFloat(document.getElementById('cx-peso').value)||1.0,
     prioridad:parseInt(document.getElementById('cx-prio').value)||cats.complexity.length+1,
-    mods:document.getElementById('cx-mods').value.trim(),
+    mods:Array.from(document.getElementById('cx-mods').selectedOptions||[]).map(o=>o.value).join(','),
     desc:document.getElementById('cx-desc').value.trim(),
   });
   sv();renderCx();
-  ['cx-name','cx-icon','cx-peso','cx-prio','cx-mods','cx-desc'].forEach(i=>document.getElementById(i).value='');
+  ['cx-name','cx-icon','cx-peso','cx-prio','cx-desc'].forEach(i=>document.getElementById(i).value='');
+  const cxm=document.getElementById('cx-mods');if(cxm)Array.from(cxm.options).forEach(o=>o.selected=false);
+}
+// ── BILLING TYPES CATALOG RENDER ──
+function renderBillingTypes(){
+  if(!cats.billingTypes)cats.billingTypes=BASE_BILLING_TYPES.map(x=>({...x}));
+  const tbody=document.getElementById('bt-tbody');
+  if(!tbody)return;
+  tbody.innerHTML=cats.billingTypes.map(bt=>`<tr>
+    <td><span style="font-size:14px">${bt.icon||'💰'}</span> <strong>${esc(bt.name)}</strong></td>
+    <td><code style="background:var(--bg2);padding:2px 7px;border-radius:4px;font-size:11px">${esc(bt.tipo)}</code></td>
+    <td style="color:var(--muted);font-size:12px">${esc(bt.unidad||'')}</td>
+    <td style="color:var(--muted);font-size:12px">${esc(bt.desc||'')}</td>
+    <td style="display:flex;gap:4px">
+      <button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button>
+      <button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button>
+    </td>
+  </tr>`).join('');
+}
+function saveBillingType(){
+  const n=document.getElementById('bt-name').value.trim();if(!n)return;
+  if(!cats.billingTypes)cats.billingTypes=[];
+  cats.billingTypes.push({id:Date.now(),icon:document.getElementById('bt-icon').value.trim()||'💰',name:n,tipo:document.getElementById('bt-tipo').value.trim().replace(/\s+/g,'_').toLowerCase()||'custom',unidad:document.getElementById('bt-unit').value.trim(),desc:document.getElementById('bt-desc').value.trim()});
+  sv();renderBillingTypes();
+  ['bt-name','bt-icon','bt-tipo','bt-unit','bt-desc'].forEach(i=>document.getElementById(i).value='');
 }
 // ── MODULE CATEGORIES CATALOG ──
 function renderCatmod(){
@@ -2387,6 +2489,8 @@ function editCatItem(type,id){
     };
   } else if(type==='complexity'){
     const colOpts=[['#0F7E4F','🟢 Verde'],['#B45309','🟡 Ámbar'],['#BE123C','🔴 Rojo'],['#5B21B6','🟣 Violeta'],['#1B4FD8','🔵 Azul']];
+    const currentMods=(item.mods||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const modOpts=cats.md.map(m=>`<option value="${esc(m.name)}" ${currentMods.includes(m.name.toLowerCase())?'selected':''}>${esc(m.name)}</option>`).join('');
     document.getElementById('cat-mb').innerHTML=`
       <div class="fr2">
         <div class="fr"><label class="fl">Ícono</label><input class="fld" id="em-ic" value="${esc(item.icon||'')}" style="max-width:80px"></div>
@@ -2400,8 +2504,11 @@ function editCatItem(type,id){
         <div class="fr"><label class="fl">Prioridad <span style="font-size:10px;color:var(--muted)">(1 = más alta)</span></label><input type="number" class="fld" id="em-pr" value="${item.prioridad||1}" min="1" max="99"></div>
         <div class="fr"><label class="fl">Descripción</label><input class="fld" id="em-d" value="${esc(item.desc||'')}"></div>
       </div>
-      <div class="fr"><label class="fl">Módulos disparadores <span style="font-size:10px;color:var(--muted)">(separados por coma — si el cliente tiene alguno, se asigna este nivel)</span></label>
-        <input class="fld" id="em-m" value="${esc(item.mods||'')}" placeholder="Ej: CallCenter, Counter, Desborde"></div>`;
+      <div class="fr">
+        <label class="fl">Módulos disparadores <span style="font-size:10px;color:var(--muted)">— el cliente debe tener EXACTAMENTE todos para asignarse este nivel</span></label>
+        <select class="fld" id="em-m" multiple style="height:110px">${modOpts}</select>
+        <div style="font-size:10.5px;color:var(--subtle);margin-top:3px">Ctrl+clic (Windows) o Cmd+clic (Mac) para seleccionar varios</div>
+      </div>`;
     document.getElementById('cat-ms').onclick=()=>{
       const col=document.getElementById('em-c').value;
       const bgMap={'#0F7E4F':'#ECFDF5','#B45309':'#FFFBEB','#BE123C':'#FFF1F2','#5B21B6':'#F5F3FF','#1B4FD8':'#EEF2FF'};
@@ -2412,7 +2519,7 @@ function editCatItem(type,id){
       item.peso=parseFloat(document.getElementById('em-p').value)||1;
       item.prioridad=parseInt(document.getElementById('em-pr').value)||1;
       item.desc=document.getElementById('em-d').value.trim();
-      item.mods=document.getElementById('em-m').value.trim();
+      item.mods=Array.from(document.getElementById('em-m').selectedOptions||[]).map(o=>o.value).join(',');
       sv();renderCx();closeM('cat-modal');
     };
   } else if(type==='phases'){
@@ -2536,34 +2643,196 @@ function svCont(){svCont2();}
 let cobros=JSON.parse(localStorage.getItem('cobros_v1'))||[];
 function svCobros(){svCobros2();}
 
-// Helper: calculate billing for a contract in a given month
-function calcFactura(contrato, mes){
-  const activos=contrato.modalidad==='vehiculo'?contrato.vehiculosActivos:contrato.conductoresActivos;
-  const minimos=contrato.modalidad==='vehiculo'?contrato.minV:contrato.minC;
-  const unidadesCobrar=Math.max(activos,minimos);
-  const baseVariable=contrato.precio*unidadesCobrar;
-  const total=baseVariable+(contrato.valorFijo||0);
-  const descObj=contrato.descuentos&&contrato.descuentos.find(d=>d.mes===mes);
-  const descPct=descObj?descObj.pct:0;
-  const descMonto=Math.round(total*descPct/100);
-  return{baseVariable,valorFijo:contrato.valorFijo||0,total,descPct,descMonto,neto:total-descMonto,activos,minimos,unidadesCobrar};
+// ═══════════════════════════════════════════════
+// BILLING ENGINE — flexible multi-component
+// ═══════════════════════════════════════════════
+
+// Calculate total for a contract given monthly actives override
+// activos = {conductores: N, vehiculos: N, bots: N}
+function calcFactura(contrato, mes, activosOverride){
+  const comps = contrato.componentes || [];
+  const actCond = activosOverride?.conductores ?? contrato.conductoresActivos ?? 0;
+  const actVeh  = activosOverride?.vehiculos   ?? contrato.vehiculosActivos   ?? 0;
+  const actBot  = activosOverride?.bots        ?? contrato.botsActivos        ?? 0;
+
+  let totalVariable = 0, totalFijo = 0, totalSetup = 0, desglose = [];
+
+  if(comps.length > 0){
+    // New component-based billing
+    comps.forEach(comp => {
+      const bt = cats.billingTypes?.find(t => t.tipo === comp.tipo) || {name: comp.tipo, unidad:'unid'};
+      let monto = 0, detalle = '';
+      if(comp.tipo === 'conductor'){
+        const usar = Math.max(actCond, comp.minimo||0);
+        monto = (comp.precio||0) * usar;
+        detalle = `${usar} cond × $${comp.precio}`;
+        totalVariable += monto;
+      } else if(comp.tipo === 'vehiculo'){
+        const usar = Math.max(actVeh, comp.minimo||0);
+        monto = (comp.precio||0) * usar;
+        detalle = `${usar} veh × $${comp.precio}`;
+        totalVariable += monto;
+      } else if(comp.tipo === 'bot_wa'){
+        const usar = actBot || comp.cantidad || 0;
+        monto = (comp.precio||0) * usar;
+        detalle = `${usar} bots × $${comp.precio}`;
+        totalVariable += monto;
+      } else if(comp.tipo === 'fijo'){
+        monto = comp.precio || 0;
+        detalle = `Fijo: $${monto}`;
+        totalFijo += monto;
+      } else if(comp.tipo === 'minimo'){
+        // Minimum guarantee: charge if variable < minimum
+        const varNow = totalVariable;
+        if(varNow < (comp.precio||0)){
+          monto = (comp.precio||0) - varNow;
+          detalle = `Diferencia mínimo: $${monto}`;
+          totalFijo += monto;
+        } else { monto = 0; detalle = 'Mínimo cubierto'; }
+      } else if(comp.tipo === 'setup' || comp.tipo === 'deposito'){
+        // One-time: only charge if this month is the first cobro for this contract
+        const prevCobros = cobros.filter(cb => cb.contratoId === contrato.id);
+        if(prevCobros.length === 0){
+          monto = comp.precio || 0;
+          detalle = `${comp.tipo === 'setup' ? 'Setup' : 'Depósito'}: $${monto}`;
+          totalSetup += monto;
+        } else { monto = 0; detalle = 'Ya cobrado'; }
+      } else if(comp.tipo === 'modulo'){
+        monto = (comp.precio||0) * (comp.cantidad||1);
+        detalle = `Módulo × ${comp.cantidad||1}: $${monto}`;
+        totalFijo += monto;
+      } else {
+        monto = comp.precio || 0;
+        detalle = `${bt.name}: $${monto}`;
+        totalFijo += monto;
+      }
+      if(monto > 0 || comp.tipo === 'minimo')
+        desglose.push({nombre: comp.nombre || bt.name, tipo: comp.tipo, monto, detalle});
+    });
+  } else {
+    // Legacy billing (backwards compatible)
+    const activos = contrato.modalidad === 'vehiculo' ? actVeh : actCond;
+    const minimos = contrato.modalidad === 'vehiculo' ? (contrato.minV||0) : (contrato.minC||0);
+    const usar = Math.max(activos, minimos);
+    totalVariable = (contrato.precio||0) * usar + (contrato.valorFijo||0);
+    desglose = [{nombre: contrato.modalidad, tipo: contrato.modalidad, monto: totalVariable, detalle: `${usar} × $${contrato.precio}`}];
+  }
+
+  const total = totalVariable + totalFijo + totalSetup;
+  const descObj = contrato.descuentos?.find(d => d.mes === mes);
+  const descPct = descObj?.pct || 0;
+  const descMonto = Math.round(total * descPct / 100);
+
+  return {total, descPct, descMonto, neto: total - descMonto, desglose,
+    conductoresActivos: actCond, vehiculosActivos: actVeh, botsActivos: actBot};
 }
 
-// Generate cobros for a month for all operativos
-function generarCobrosDelMes(mes){
-  const operativos=deps.filter(d=>d.es==='✅ Listo');
-  let added=0;
-  operativos.forEach(dep=>{
-    const cont=contratos.find(c=>c.clienteId===dep.cid||c.cliente===dep.c);
-    if(!cont)return;
-    const exists=cobros.find(cb=>cb.contratoId===cont.id&&cb.mes===mes);
-    if(exists)return;
-    const f=calcFactura(cont,mes);
-    cobros.push({id:Date.now()+Math.random(),contratoId:cont.id,cliente:cont.cliente,mes,montoBase:f.total,descuento:f.descMonto,montoFinal:f.neto,estado:'pendiente',notas:'',conductoresActivos:cont.conductoresActivos,vehiculosActivos:cont.vehiculosActivos});
+// ── GENERAR COBROS MODAL ──
+let _gcmData = []; // [{contrato, activos, incluir, mes}]
+
+function openGenerarCobros(){
+  const now = new Date();
+  const mesEl = document.getElementById('gcm-mes');
+  if(mesEl) mesEl.value = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  buildGcmTabla();
+  document.getElementById('gen-cobro-modal').classList.add('open');
+}
+
+function buildGcmTabla(){
+  const mes = document.getElementById('gcm-mes')?.value || '';
+  // Include ALL clients with a contract (not just operativos)
+  _gcmData = contratos.map(cont => {
+    const exists = cobros.find(cb => cb.contratoId === cont.id && cb.mes === mes);
+    return {
+      cont,
+      conductores: cont.conductoresActivos || 0,
+      vehiculos: cont.vehiculosActivos || 0,
+      bots: cont.botsActivos || 0,
+      incluir: !exists,
+      yaExiste: !!exists
+    };
+  });
+  renderGcmTabla(mes);
+}
+
+function renderGcmTabla(mes){
+  const wrap = document.getElementById('gcm-tabla');
+  if(!wrap) return;
+  if(!_gcmData.length){wrap.innerHTML='<p style="color:var(--subtle);padding:16px">Sin contratos creados</p>';return;}
+
+  let totalPreview = 0;
+  const rows = _gcmData.map((item, idx) => {
+    const f = calcFactura(item.cont, mes, {conductores: item.conductores, vehiculos: item.vehiculos, bots: item.bots});
+    if(item.incluir && !item.yaExiste) totalPreview += f.neto;
+    const tieneComp = (item.cont.componentes||[]).length > 0;
+    const hasCond = tieneComp ? item.cont.componentes.some(x=>x.tipo==='conductor') : item.cont.modalidad==='conductor'||item.cont.modalidad==='mixto';
+    const hasVeh  = tieneComp ? item.cont.componentes.some(x=>x.tipo==='vehiculo')  : item.cont.modalidad==='vehiculo'||item.cont.modalidad==='mixto';
+    const hasBot  = tieneComp ? item.cont.componentes.some(x=>x.tipo==='bot_wa')    : false;
+
+    return `<div style="display:grid;grid-template-columns:28px 140px ${hasCond?'90px':''}${hasVeh?'90px':''}${hasBot?'80px':''} 1fr 90px;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border);background:${item.yaExiste?'var(--bg2)':'var(--bg)'}">
+      <input type="checkbox" ${item.incluir&&!item.yaExiste?'checked':''} ${item.yaExiste?'disabled':''} onchange="_gcmData[${idx}].incluir=this.checked;gcmRecalc('${mes||''}')">
+      <span style="font-size:12.5px;font-weight:600;${item.yaExiste?'color:var(--muted)':''}">${esc(item.cont.cliente)}${item.yaExiste?' <span style="font-size:10px;color:var(--muted)">(ya generado)</span>':''}</span>
+      ${hasCond?`<div><label style="font-size:10px;color:var(--muted)">Cond.</label><input type="number" style="width:70px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit" value="${item.conductores}" min="0" ${item.yaExiste?'disabled':''} onchange="_gcmData[${idx}].conductores=parseInt(this.value)||0;gcmRecalc('${mes||''}')"></div>`:''}
+      ${hasVeh?`<div><label style="font-size:10px;color:var(--muted)">Veh.</label><input type="number" style="width:70px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit" value="${item.vehiculos}" min="0" ${item.yaExiste?'disabled':''} onchange="_gcmData[${idx}].vehiculos=parseInt(this.value)||0;gcmRecalc('${mes||''}')"></div>`:''}
+      ${hasBot?`<div><label style="font-size:10px;color:var(--muted)">Bots</label><input type="number" style="width:55px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit" value="${item.bots}" min="0" ${item.yaExiste?'disabled':''} onchange="_gcmData[${idx}].bots=parseInt(this.value)||0;gcmRecalc('${mes||''}')"></div>`:''}
+      <div style="font-size:11.5px;color:var(--muted)">${f.desglose.map(d=>`<span>${esc(d.detalle)}</span>`).join('<br>')}</div>
+      <div style="font-weight:700;color:${item.yaExiste?'var(--muted)':'var(--green)'};text-align:right;font-size:13px">$${f.neto.toLocaleString()}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = `<div style="display:grid;grid-template-columns:28px 140px 1fr 90px;padding:7px 12px;background:var(--bg2);border-bottom:2px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">
+    <span></span><span>Cliente</span><span>Detalle cobro</span><span style="text-align:right">Total</span></div>${rows}`;
+  const el = document.getElementById('gcm-total');
+  if(el) el.textContent = '$'+totalPreview.toLocaleString();
+}
+
+function gcmRecalc(mes){ renderGcmTabla(mes); }
+function gcmSelectAll(v){ _gcmData.forEach((item,i)=>{if(!item.yaExiste)item.incluir=v;}); const mes=document.getElementById('gcm-mes')?.value||''; renderGcmTabla(mes); }
+
+function confirmarGenerarCobros(){
+  const mes = document.getElementById('gcm-mes')?.value;
+  if(!mes){alert('Selecciona un mes');return;}
+  let added = 0;
+  _gcmData.forEach(item => {
+    if(!item.incluir || item.yaExiste) return;
+    const f = calcFactura(item.cont, mes, {conductores: item.conductores, vehiculos: item.vehiculos, bots: item.bots});
+    cobros.push({
+      id: Date.now()+Math.random(),
+      contratoId: item.cont.id,
+      cliente: item.cont.cliente,
+      mes,
+      montoBase: f.total,
+      descuento: f.descMonto,
+      montoFinal: f.neto,
+      estado: 'pendiente',
+      notas: '',
+      conductoresActivos: item.conductores,
+      vehiculosActivos: item.vehiculos,
+      botsActivos: item.bots,
+      desglose: f.desglose,
+    });
     added++;
   });
-  if(added>0){svCobros();return added;}
-  return 0;
+  if(added > 0){ svCobros(); }
+  closeM('gen-cobro-modal');
+  const mesEl = document.getElementById('cob-mes');
+  if(mesEl) mesEl.value = mes;
+  renderCobranzas();
+  if(added > 0) alert(`✅ Se generaron ${added} cobros para ${mes}`);
+  else alert('ℹ️ No se generaron cobros nuevos.');
+}
+
+function generarMesPasado(){
+  const el = document.getElementById('cob-mes-hist');
+  if(!el||!el.value){alert('Selecciona el mes a registrar');return;}
+  const mes = el.value;
+  // Set mes in modal and open it
+  const gcmMes = document.getElementById('gcm-mes');
+  if(gcmMes) gcmMes.value = mes;
+  buildGcmTabla();
+  document.getElementById('gen-cobro-modal').classList.add('open');
+}
+function generarMesActual(){
+  openGenerarCobros();
 }
 
 // Checklists state
@@ -3471,6 +3740,7 @@ function bootApp(){
     if(!cats.phases)    cats.phases=BASE_PHASES.map(function(x){return Object.assign({},x);});
     if(!cats.complexity)cats.complexity=BASE_COMPLEXITY.map(function(x){return Object.assign({},x);});
     if(!cats.catmod)cats.catmod=BASE_CATMOD.map(function(x){return Object.assign({},x);});
+    if(!cats.billingTypes)cats.billingTypes=BASE_BILLING_TYPES.map(function(x){return Object.assign({},x);});
     if(cls.length<BC.length){ cls=BC.map(function(c){return Object.assign({},c,{mo:[].concat(c.mo)});}); }
     cls.forEach(function(c){ if(c.fconf===undefined)c.fconf=''; });
     contratos.forEach(function(c){
