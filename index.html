@@ -3918,40 +3918,6 @@ function doLogin(){
     btn.disabled=false; btn.textContent='Ingresar';
   });
 }
-  btn.disabled=true; btn.textContent='Ingresando...'; err.textContent='';
-
-  loadSupabase().then(function(){
-    try{
-      supabase = window.supabase.createClient(SB_URL, SB_KEY, {
-        auth:{ autoRefreshToken:true, persistSession:true, detectSessionInUrl:false, storageKey:'clipp_ops_session' }
-      });
-      supabase.auth.signInWithPassword({email:email, password:pass})
-        .then(function(res){
-          if(res.error){
-            err.textContent = res.error.message==='Invalid login credentials'
-              ? 'Email o contraseña incorrectos' : res.error.message;
-            btn.disabled=false; btn.textContent='Ingresar';
-            return;
-          }
-          _currentUser = res.data.user;
-          sessionStorage.setItem('clipp_authed','1');
-          document.getElementById('login-overlay').classList.add('hidden');
-          bootApp();
-        })
-        .catch(function(e){
-          err.textContent='Error de conexión con Supabase: '+e.message;
-          btn.disabled=false; btn.textContent='Ingresar';
-        });
-    }catch(e){
-      err.textContent='Error iniciando Supabase: '+e.message;
-      btn.disabled=false; btn.textContent='Ingresar';
-    }
-  }).catch(function(){
-    err.textContent='Sin conexión. Intenta de nuevo.';
-    btn.disabled=false; btn.textContent='Ingresar';
-  });
-}
-
 function loadSupabase(){
   return new Promise(function(resolve,reject){
     if(window.supabase && typeof window.supabase.createClient==='function'){ resolve(); return; }
