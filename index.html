@@ -1276,7 +1276,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="m-title"><span>⚡ Generar Cobros</span><button class="m-close" onclick="closeM('gen-cobro-modal')">✕</button></div>
     <div class="fr">
       <label class="fl">📅 Mes a facturar</label>
-      <input type="month" class="fld" id="gcm-mes">
+      <input type="month" class="fld" id="gcm-mes" onchange="updateGcmInfo()">
     </div>
     <div style="padding:10px 14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);margin:10px 0;font-size:13px;color:var(--muted)">
       Se generará un cobro pendiente por cada cliente con contrato activo.<br>
@@ -1381,16 +1381,6 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
     </div>
     <div id="csm-body" style="padding:4px 0"></div>
-  </div>
-</div>
-  <div class="modal modal-sm">
-    <div class="m-title"><span>Confirmar eliminación</span><button class="m-close" onclick="closeM('conf-modal')">✕</button></div>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:6px">¿Eliminar <strong id="del-n"></strong>?</p>
-    <p style="font-size:12px;color:var(--red)">Esta acción no se puede deshacer.</p>
-    <div class="m-actions">
-      <button class="btn btn-g" onclick="closeM('conf-modal')">Cancelar</button>
-      <button class="btn btn-d" id="del-btn">Sí, eliminar</button>
-    </div>
   </div>
 </div>
 
@@ -2997,20 +2987,6 @@ function confirmarGenerarCobros(){
   else alert(`ℹ️ Todos los cobros de ${mes} ya existen.`);
 }
 
-function generarMesPasado(){
-  const el = document.getElementById('cob-mes-hist');
-  if(!el||!el.value){alert('Selecciona el mes a registrar');return;}
-  const mes = el.value;
-  // Set mes in modal and open it
-  const gcmMes = document.getElementById('gcm-mes');
-  if(gcmMes) gcmMes.value = mes;
-  buildGcmTabla();
-  document.getElementById('gen-cobro-modal').classList.add('open');
-}
-function generarMesActual(){
-  openGenerarCobros();
-}
-
 // Checklists state
 let checklists=JSON.parse(localStorage.getItem('chk_v1'))||{};
 function svChk(){localStorage.setItem('chk_v1',JSON.stringify(checklists));}
@@ -3227,29 +3203,6 @@ const ESTADO_COBRO_STYLES={
 };
 function estadoCobro(es){const s=ESTADO_COBRO_STYLES[es]||ESTADO_COBRO_STYLES.pendiente;return`<span style="background:${s.bg};color:${s.color};border:1px solid ${s.border};padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700">${s.icon} ${s.label}</span>`;}
 
-function generarMesPasado(){
-  const el=document.getElementById('cob-mes-hist');
-  if(!el||!el.value){alert('Selecciona el mes a registrar');return;}
-  const mes=el.value;
-  const added=generarCobrosDelMes(mes);
-  // Set the main selector to that month and render
-  const mesEl=document.getElementById('cob-mes');
-  if(mesEl)mesEl.value=mes;
-  renderCobranzas();
-  if(added>0)alert(`✅ Se generaron ${added} cobros para ${mes}\nAhora actualiza el estado de cada cobro (Pagado/Atrasado/Parcial)`);
-  else alert(`ℹ️ Los cobros de ${mes} ya existen o no hay clientes operativos con contrato.`);
-}
-function generarMesActual(){
-  const now=new Date();
-  const mes=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-  const added=generarCobrosDelMes(mes);
-  const el=document.getElementById('cob-mes');
-  if(el)el.value=mes;
-  renderCobranzas();
-  if(added>0)alert(`✅ Se generaron ${added} cobros para ${mes}`);
-  else alert(`ℹ️ Los cobros de ${mes} ya existen o no hay clientes operativos con contrato.`);
-}
-function exportCobrosCSV(){
   const h=['Mes','Cliente','Monto Base','Descuento','Monto Final','Estado','Notas'];
   const rows=cobros.map(c=>[c.mes,c.cliente,c.montoBase,c.descuento,c.montoFinal,c.estado,c.notas||'']);
   const csv=[h,...rows].map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -3970,34 +3923,6 @@ function loadSupabase(){
     tryNext();
   });
 }
-
-// ── Save to Supabase + localStorage ──
-function sv(){
-  localStorage.setItem('od27',JSON.stringify(deps));
-  localStorage.setItem('oc27',JSON.stringify(cls));
-  localStorage.setItem('ct27',JSON.stringify(cats));
-  sessionStorage.setItem('clipp_authed','1');
-  if(supabase){
-    var ts = new Date().toISOString();
-    Promise.all([
-      supabase.from('ops_data').upsert({key:'deps',   value:deps,    updated_at:ts}),
-      supabase.from('ops_data').upsert({key:'cls',    value:cls,     updated_at:ts}),
-      supabase.from('ops_data').upsert({key:'cats',   value:cats,    updated_at:ts}),
-    ]).then(function(){ setSyncStatus('✓ Guardado', '#0F7E4F'); setTimeout(function(){setSyncStatus('');},2000); })
-      .catch(function(e){ setSyncStatus('⚠ Error al guardar','#DC2626'); console.error(e); });
-  }
-}
-function svCont(){ svCont2(); }
-function svCobros(){ svCobros2(); }
-function svCont2(){
-  localStorage.setItem('ct_v1',JSON.stringify(contratos));
-  if(supabase) supabase.from('ops_data').upsert({key:'contratos',value:contratos,updated_at:new Date().toISOString()}).catch(function(){});
-}
-function svCobros2(){
-  localStorage.setItem('cobros_v1',JSON.stringify(cobros));
-  if(supabase) supabase.from('ops_data').upsert({key:'cobros',value:cobros,updated_at:new Date().toISOString()}).catch(function(){});
-}
-
 // ── Load all data from Supabase ──
 function loadFromSupabase(){
   if(!supabase) return Promise.resolve();
