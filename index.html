@@ -331,6 +331,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('estrategia')" id="nav-estrategia"><span>🎯</span> Estrategia Despliegue</div>
     <div class="s-sec">Configuración</div>
     <div class="s-item" onclick="setV('catalogos')" id="nav-catalogos"><span>🗂</span> Catálogos</div>
+    <div class="s-item" onclick="setV('manual')" id="nav-manual"><span>📖</span> Manual de Uso</div>
   </nav>
   <div class="s-foot">Ops Center · Clipp · 2026</div>
 </aside>
@@ -429,6 +430,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
           <th style="width:110px">Estado<div class="col-r"></div></th>
           <th style="width:200px">Módulos<div class="col-r"></div></th>
           <th style="width:120px">Contacto<div class="col-r"></div></th>
+          <th style="width:125px">Teléfono<div class="col-r"></div></th>
           <th style="width:170px">Notas<div class="col-r"></div></th>
           <th style="width:72px">Acciones</th>
         </tr></thead><tbody id="itb"></tbody></table>
@@ -664,9 +666,15 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
       <div id="cob-kpis" class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:18px"></div>
       <!-- Mes selector + filter -->
-      <div class="filter-bar" style="margin-bottom:14px">
+      <div class="filter-bar" style="margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <label>📅 Mes:</label>
         <input type="month" class="fi" id="cob-mes" onchange="renderCobranzas()">
+        <button class="btn btn-p btn-sm" onclick="generarMesActual()" style="white-space:nowrap">⚡ Generar mes actual</button>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:8px;padding-left:8px;border-left:1px solid var(--border)">
+          <label style="font-size:12px;color:var(--muted);white-space:nowrap">📥 Mes pasado:</label>
+          <input type="month" class="fi" id="cob-mes-hist" style="max-width:155px">
+          <button class="btn btn-g btn-sm" onclick="generarMesPasado()" style="white-space:nowrap">Registrar</button>
+        </div>
         <select class="fi" id="cob-estado" onchange="renderCobranzas()">
           <option value="">Todos los estados</option>
           <option value="pendiente">⏳ Pendiente</option>
@@ -752,28 +760,182 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
     </div>
 
+    <!-- ══ MANUAL DE USO ══ -->
+    <div id="view-manual" class="view">
+      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center · Clipp</div><div class="sec-sub">Guía completa de módulos, flujos y reportes</div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+
+        <!-- CLIENTES -->
+        <div class="card"><div class="card-h"><div class="card-title">👥 Clientes</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Qué es?</strong> Registro maestro de todos tus clientes (activos, inactivos, perdidos).</p>
+          <p><strong>¿Cómo usarlo?</strong></p>
+          <ul style="padding-left:16px;margin:4px 0">
+            <li>Crea el cliente primero antes de crear un despliegue o contrato</li>
+            <li>Asigna <strong>Fecha de Confirmación</strong> = cuando firmó o se confirmó la venta</li>
+            <li>El estado <strong>activo</strong> = cliente registrado. Solo pasan a "operativo" cuando el despliegue se marca ✅ Listo</li>
+          </ul>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> Línea de Tiempo (confirmados), Capacidad (conteo), Dashboard KPIs</p>
+        </div></div>
+
+        <!-- DESPLIEGUES -->
+        <div class="card"><div class="card-h"><div class="card-title">🚀 Despliegues</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Qué es?</strong> Seguimiento de cada implementación técnica por cliente.</p>
+          <p><strong>Flujo correcto:</strong></p>
+          <ul style="padding-left:16px;margin:4px 0">
+            <li><strong>1.</strong> Clic en "+ Nuevo Despliegue" → elige cliente de la lista</li>
+            <li><strong>2.</strong> Asigna módulos, launcher, fechas de inicio e ideal</li>
+            <li><strong>3.</strong> Avanza la <strong>Fase</strong> con ▶ según el progreso real</li>
+            <li><strong>4.</strong> Cuando termina → cambia estado a <strong>✅ Listo</strong> y llena F. Entrega</li>
+            <li><strong>5.</strong> Al marcar ✅ Listo → pasa automáticamente a <strong>Clientes Operativos</strong></li>
+          </ul>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> Dashboard, Línea de Tiempo (finalizados/en proceso), Capacidad Operativa, Estrategia</p>
+        </div></div>
+
+        <!-- COBRANZAS -->
+        <div class="card"><div class="card-h"><div class="card-title">💰 Cobranzas — Cómo registrar cobros</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Quién entra en cobranza?</strong> Solo clientes con estado <strong>✅ Listo (Operativos)</strong> que tengan un contrato creado.</p>
+          <p><strong>Para registrar cobros de meses anteriores (Ene, Feb, Mar):</strong></p>
+          <ol style="padding-left:16px;margin:4px 0">
+            <li>Ve a <strong>Cobranzas</strong></li>
+            <li>En el selector de mes, elige el mes a registrar (ej: 2026-01)</li>
+            <li>Clic en <strong>⚡ Generar Cobros</strong> — crea una fila por cada cliente operativo</li>
+            <li>Cambia el estado de cada cobro según lo real: ✅ Pagado / 🔴 Atrasado / 🔶 Parcial</li>
+            <li>Repite para cada mes pasado</li>
+          </ol>
+          <p style="margin-top:6px;font-size:12px;color:var(--muted)">💡 El estado de cada cobro se cambia con un solo clic en la columna "Estado Pago"</p>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> KPIs de cobranza, gráfico de tendencia, distribución por estado</p>
+        </div></div>
+
+        <!-- CONTRATOS -->
+        <div class="card"><div class="card-h"><div class="card-title">📋 Contratos</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Qué es?</strong> Condiciones comerciales de cada cliente: modalidad de cobro, precio y mínimos.</p>
+          <p><strong>Modalidades:</strong></p>
+          <ul style="padding-left:16px;margin:4px 0">
+            <li><strong>Por Conductor</strong> → cobra por número de conductores activos (mín. X)</li>
+            <li><strong>Por Vehículo</strong> → cobra por vehículos activos</li>
+            <li><strong>Mixto</strong> → promedio de ambos</li>
+          </ul>
+          <p><strong>Campos clave:</strong> Valor Fijo/mes + Setup Fee inicial + Descuentos por mes</p>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> Cálculo de cobranzas, monto base vs real, alertas de riesgo</p>
+        </div></div>
+
+        <!-- CAPACIDAD OPERATIVA -->
+        <div class="card"><div class="card-h"><div class="card-title">⚡ Capacidad Operativa</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Qué calcula?</strong> Cuántos clientes puede soportar el equipo sin colapsar.</p>
+          <p><strong>Fórmula:</strong><br>
+          <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:11.5px">Hrs disponibles = Operadores × Hrs/día × Días/mes</code><br>
+          <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:11.5px">Hrs consumidas = Σ(hrsOp × peso) + Σ(hrsNew × peso)</code></p>
+          <p><strong>Peso por complejidad</strong> = configurable en Catálogos → Complejidad<br>Ej: Avanzado = 2.5× consume 2.5 veces más horas que un Básico</p>
+          <p><strong>Hrs individuales:</strong> En la tabla de Despliegues, columna <strong>Hrs/mes</strong> — si la dejas vacía usa el global × peso.</p>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> KPIs de capacidad, proyección 6 meses, alerta de saturación</p>
+        </div></div>
+
+        <!-- LÍNEA DE TIEMPO -->
+        <div class="card"><div class="card-h"><div class="card-title">📅 Línea de Tiempo</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>¿Qué muestra?</strong> Actividad mensual del año seleccionado con 4 series:</p>
+          <ul style="padding-left:16px;margin:4px 0">
+            <li>🟢 <strong>Confirmados</strong> = clientes con <em>Fecha de Confirmación</em> en ese mes</li>
+            <li>🔵 <strong>Finalizados</strong> = despliegues con <em>F. Entrega</em> real en ese mes</li>
+            <li>🟡 <strong>En Proceso</strong> = despliegues con <em>F. Inicio</em> en ese mes (no ✅ Listo)</li>
+            <li>🟣 <strong>Operativos</strong> = despliegues que pasaron a ✅ Listo ese mes</li>
+          </ul>
+          <p style="margin-top:6px;font-size:12px;color:var(--muted)">💡 Para que aparezcan datos, debes llenar las fechas correctas en cada módulo</p>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>Alimentado por:</strong> Clientes (fconf) + Despliegues (fi, fe, es)</p>
+        </div></div>
+
+        <!-- ESTRATEGIA -->
+        <div class="card"><div class="card-h"><div class="card-title">🎯 Estrategia de Despliegue</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <p><strong>Complejidad automática</strong> = se asigna según módulos activos del cliente. Configurable en Catálogos → Complejidad.</p>
+          <p><strong>Fases de Implementación:</strong></p>
+          <ul style="padding-left:16px;margin:4px 0">
+            <li>Avanza con ▶ / retrocede con ◀ en la tabla de Despliegues</li>
+            <li>También puedes avanzarlas desde Estrategia → selecciona el cliente</li>
+            <li>Las fases son configurables en Catálogos → Fases</li>
+          </ul>
+          <p><strong>Checklists:</strong> Selecciona un cliente → marca cada tarea completada por módulo. El progreso se guarda individualmente.</p>
+          <p style="margin-top:8px;padding:8px;background:var(--blue-l);border-radius:6px;font-size:12px"><strong>📊 Afecta:</strong> Conteo por complejidad, horas en Capacidad</p>
+        </div></div>
+
+        <!-- CATÁLOGOS -->
+        <div class="card"><div class="card-h"><div class="card-title">🗂 Catálogos — Qué configura cada pestaña</div></div><div class="card-b" style="font-size:13px;line-height:1.7">
+          <ul style="padding-left:16px;margin:0;line-height:2">
+            <li><strong>Módulos</strong> → los módulos disponibles al crear despliegues/clientes</li>
+            <li><strong>Categorías</strong> → cómo se agrupan los módulos en el selector</li>
+            <li><strong>Modalidades</strong> → tipos de despliegue (Cliente Nuevo, Update…)</li>
+            <li><strong>Fases</strong> → etapas del proceso de implementación</li>
+            <li><strong>T. Implementación</strong> → tiempos estándar por paquete de módulos</li>
+            <li><strong>Complejidad</strong> → niveles con peso para cálculo de capacidad</li>
+            <li><strong>Estados de Riesgo</strong> → umbrales % para alertas en Cobranzas</li>
+            <li><strong>Aplicativos</strong> → plataformas (Clipp, Azutaxo…)</li>
+            <li><strong>Tipos de Cliente</strong> → categoría del cliente por aplicativo</li>
+          </ul>
+        </div></div>
+
+      </div>
+
+      <!-- Quick reference table -->
+      <div class="card">
+        <div class="card-h"><div class="card-title">📌 Referencia rápida — ¿Qué dato alimenta qué reporte?</div></div>
+        <div style="overflow-x:auto"><table class="cont-table">
+          <thead><tr><th>Si llenas este dato en...</th><th>Aparece en estos reportes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cliente → Fecha de Confirmación</strong></td><td>Línea de Tiempo (columna Confirmados)</td></tr>
+            <tr><td><strong>Despliegue → F. Inicio</strong></td><td>Línea de Tiempo (En Proceso), Dashboard</td></tr>
+            <tr><td><strong>Despliegue → F. Entrega + estado ✅ Listo</strong></td><td>Línea de Tiempo (Finalizados + Operativos), Dashboard</td></tr>
+            <tr><td><strong>Despliegue → Módulos</strong></td><td>Complejidad automática, Checklist, Capacidad</td></tr>
+            <tr><td><strong>Despliegue → Hrs/mes</strong></td><td>Capacidad Operativa (horas consumidas)</td></tr>
+            <tr><td><strong>Despliegue → Fase ▶◀</strong></td><td>Estrategia de Despliegue (barra de progreso)</td></tr>
+            <tr><td><strong>Contrato → Precio + Mínimos</strong></td><td>Cobranzas (monto base, alertas de riesgo)</td></tr>
+            <tr><td><strong>Cobro mensual → Estado Pago</strong></td><td>Cobranzas (KPIs cobrado vs facturado, gráfico tendencia)</td></tr>
+            <tr><td><strong>Catálogo → Complejidad (peso)</strong></td><td>Capacidad Operativa (hrs por cliente)</td></tr>
+            <tr><td><strong>Catálogo → Estados de Riesgo (%)</strong></td><td>Contratos (badge estado), Cobranzas (badge pago)</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
     <!-- ══ CATÁLOGOS ══ -->
     <div id="view-catalogos" class="view">
       <div class="sec-hdr"><div><div class="sec-title">Gestión de Catálogos</div><div class="sec-sub">Administra Aplicativos, Tipos y Módulos disponibles en el sistema</div></div></div>
       <div class="cat-tabs">
         <div class="cat-tab active" onclick="setCatTab('modulos')">⚙️ Módulos</div>
+        <div class="cat-tab" onclick="setCatTab('categorias')">🏷 Categorías</div>
         <div class="cat-tab" onclick="setCatTab('modalidades')">🚀 Modalidades</div>
         <div class="cat-tab" onclick="setCatTab('fases')">📍 Fases</div>
         <div class="cat-tab" onclick="setCatTab('implTimes')">⏱ T. Implementación</div>
+        <div class="cat-tab" onclick="setCatTab('complejidad')">🎯 Complejidad</div>
         <div class="cat-tab" onclick="setCatTab('riesgos')">🚦 Estados de Riesgo</div>
         <div class="cat-tab" onclick="setCatTab('aplicativos')">🖥 Aplicativos</div>
         <div class="cat-tab" onclick="setCatTab('tipos')">🏷 Tipos de Cliente</div>
       </div>
+      <!-- CATEGORÍAS DE MÓDULOS -->
+      <div class="cat-panel" id="cat-categorias">
+        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Las <strong>Categorías</strong> agrupan los módulos en la tabla de catálogo y en el selector de módulos. Puedes crear las que necesites.</p>
+        <div class="cat-add-row">
+          <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="cm-icon" placeholder="💬" style="max-width:70px"></div>
+          <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="cm-cname" placeholder="Ej: Integración"></div>
+          <div class="fr"><label class="fl">Color</label>
+            <select class="cat-input" id="cm-col">
+              <option value="#1B4FD8">🔵 Azul</option><option value="#0F7E4F">🟢 Verde</option>
+              <option value="#B45309">🟡 Ámbar</option><option value="#5B21B6">🟣 Violeta</option>
+              <option value="#BE123C">🔴 Rojo</option><option value="#0891B2">🩵 Celeste</option>
+            </select>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="saveCatmod()">+ Agregar</button>
+        </div>
+        <div class="card"><div style="overflow-x:auto"><table class="cat-table">
+          <thead><tr><th>Ícono</th><th>Nombre</th><th>Color</th><th style="width:90px">Acciones</th></tr></thead>
+          <tbody id="cm-tbody"></tbody>
+        </table></div></div>
+      </div>
+
       <!-- MÓDULOS -->
       <div class="cat-panel active" id="cat-modulos">
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre del Módulo</label><input class="cat-input" id="md-name" placeholder="Ej: Bot WA Normal"></div>
           <div class="fr"><label class="fl">Descripción</label><input class="cat-input" id="md-desc" placeholder="Descripción breve"></div>
           <div class="fr"><label class="fl">Categoría</label>
-            <select class="cat-input" id="md-cat">
-              <option>Bot / Mensajería</option><option>App Conductor</option><option>App Cliente</option>
-              <option>Operaciones</option><option>Capacitación</option><option>Infraestructura</option>
-            </select>
+            <select class="cat-input" id="md-cat"></select>
           </div>
           <button class="btn btn-p btn-sm" onclick="saveMd()">+ Agregar</button>
         </div>
@@ -848,6 +1010,39 @@ input[type=date].ei{cursor:pointer;min-width:110px}
           <tbody id="it-tbody"></tbody>
         </table></div></div>
       </div>
+      <!-- NIVELES DE COMPLEJIDAD -->
+      <div class="cat-panel" id="cat-complejidad">
+        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">
+          Define los <strong>niveles de complejidad</strong> de despliegue. Cada nivel tiene un <strong>peso</strong> que afecta el cálculo de capacidad operativa y una lista de <strong>módulos disparadores</strong> — si el cliente tiene alguno de esos módulos, se asigna ese nivel automáticamente.<br>
+          <span style="font-size:11.5px;color:var(--blue)">💡 El sistema aplica el nivel de mayor prioridad cuyos módulos coincidan. Si no hay coincidencia, aplica el primer nivel.</span>
+        </p>
+        <div class="cat-add-row" style="flex-wrap:wrap;gap:10px">
+          <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="cx-icon" placeholder="🟢" style="max-width:70px"></div>
+          <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="cx-name" placeholder="Ej: Básico"></div>
+          <div class="fr"><label class="fl">Color</label>
+            <select class="cat-input" id="cx-color">
+              <option value="#0F7E4F">🟢 Verde</option>
+              <option value="#B45309">🟡 Ámbar</option>
+              <option value="#BE123C">🔴 Rojo</option>
+              <option value="#5B21B6">🟣 Violeta</option>
+              <option value="#1B4FD8">🔵 Azul</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Peso capacidad</label><input class="cat-input" id="cx-peso" type="number" step="0.1" min="0.1" max="10" placeholder="Ej: 1.0" style="max-width:80px"></div>
+          <div class="fr"><label class="fl">Prioridad (1=más alta)</label><input class="cat-input" id="cx-prio" type="number" min="1" max="99" placeholder="1" style="max-width:70px"></div>
+          <div class="fr" style="flex:2;min-width:280px"><label class="fl">Módulos disparadores <span style="font-weight:400;color:var(--subtle)">(separados por coma)</span></label>
+            <input class="cat-input" id="cx-mods" placeholder="Ej: CallCenter, Counter, Desborde"></div>
+          <div class="fr"><label class="fl">Descripción</label><input class="cat-input" id="cx-desc" placeholder="Descripción breve"></div>
+          <button class="btn btn-p btn-sm" onclick="saveCx()" style="align-self:flex-end">+ Agregar</button>
+        </div>
+        <div class="card"><div style="overflow-x:auto"><table class="cat-table">
+          <thead><tr>
+            <th>Nivel</th><th>Peso cap.</th><th>Prioridad</th><th>Módulos disparadores</th><th>Descripción</th><th style="width:90px">Acciones</th>
+          </tr></thead>
+          <tbody id="cx-tbody"></tbody>
+        </table></div></div>
+      </div>
+
       <!-- ESTADOS DE RIESGO -->
       <div class="cat-panel" id="cat-riesgos">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Define los umbrales de riesgo para <strong>Cobranzas</strong> y <strong>Contratos</strong>. El sistema calcula automáticamente el estado según el % del mínimo contratado que el cliente está cumpliendo.</p>
@@ -1144,6 +1339,21 @@ const BASE_PHASES=[
   {id:6,name:'Lanzamiento',icon:'🌟',desc:'Go-live en producción'},
   {id:7,name:'Post-launch',icon:'📊',desc:'Seguimiento y ajustes post lanzamiento'},
 ];
+// Module categories catalog
+const BASE_CATMOD=[
+  {id:1,name:'Bot / Mensajería',icon:'💬',color:'#1B4FD8'},
+  {id:2,name:'App Conductor',icon:'🚗',color:'#0F7E4F'},
+  {id:3,name:'App Cliente',icon:'📱',color:'#5B21B6'},
+  {id:4,name:'Operaciones',icon:'⚙️',color:'#B45309'},
+  {id:5,name:'Capacitación',icon:'🎓',color:'#0891B2'},
+  {id:6,name:'Infraestructura',icon:'🖥',color:'#BE123C'},
+];
+// Complexity levels catalog — fully configurable
+const BASE_COMPLEXITY=[
+  {id:1,icon:'🟢',name:'Básico',    color:'#0F7E4F',bg:'#ECFDF5',border:'#6EE7B7',peso:1.0,prioridad:3,mods:'Bot WA Normal,App Conductor TaxiSoS,App Conductor Clipp',desc:'Bot WA + App Conductor'},
+  {id:2,icon:'🟡',name:'Medio',     color:'#B45309',bg:'#FFFBEB',border:'#FDE68A',peso:1.5,prioridad:2,mods:'App Cliente,CallerID,Refuerzo Capacitación',desc:'Bot + App Cliente + App Conductor'},
+  {id:3,icon:'🔴',name:'Avanzado',  color:'#BE123C',bg:'#FFF1F2',border:'#FECDD3',peso:2.5,prioridad:1,mods:'CallCenter,Desborde,Counter,Bot WA Bilingüe',desc:'Bot + CallCenter + App Cliente + Conductor'},
+];
 const BASE_MD=[
   {id:1,name:'Bot WA Normal',desc:'Bot WhatsApp estándar',cat:'Bot / Mensajería'},
   {id:2,name:'Bot WA Coexistencia',desc:'Bot en coexistencia con operadora',cat:'Bot / Mensajería'},
@@ -1277,6 +1487,8 @@ if(!cats.modal) cats.modal=BASE_MODAL.map(x=>({...x}));
 if(!cats.risk) cats.risk=BASE_RISK.map(x=>({...x}));
 if(!cats.implTimes) cats.implTimes=BASE_IMPL_TIMES.map(x=>({...x}));
 if(!cats.phases) cats.phases=BASE_PHASES.map(x=>({...x}));
+if(!cats.complexity) cats.complexity=BASE_COMPLEXITY.map(x=>({...x}));
+if(!cats.catmod) cats.catmod=BASE_CATMOD.map(x=>({...x}));
 let ALL_M= cats.md.map(m=>m.name);
 function getModalNames(){return cats.modal.map(m=>`${m.icon} ${m.name}`);}
 let mTgt=null, editClId=null, dOpen=false, curV='dashboard', curCatTab='modulos';
@@ -1342,21 +1554,37 @@ function phaseBadge(dep){
   return`<span class="tag tag-blue" style="font-size:11px">${ph.icon||''} ${esc(ph.name)}</span>`;
 }
 // Complexity badge — used in tables and capacity
-function complexBadge(dep){
-  const cx=getComplexity(dep);
-  if(!cx)return'';
-  const icons={0:'🟢',1:'🟡',2:'🔴'};
-  const lbls={0:'Básico',1:'Medio',2:'Avanzado'};
-  const score=(dep.mo||[]).some(m=>m.includes('CallCenter')||m.includes('Counter')||m.includes('Desborde'))?2:(dep.mo||[]).some(m=>m.includes('App Cliente')||m.includes('CallerID'))?1:0;
-  return`<span style="background:${cx.bg};color:${cx.color};border:1px solid ${cx.border};padding:2px 7px;border-radius:12px;font-size:10.5px;font-weight:700;white-space:nowrap">${icons[score]} ${lbls[score]}</span>`;
+// ── COMPLEXITY from catalog ──
+function getComplexityFromCatalog(dep){
+  if(!cats.complexity||!cats.complexity.length) return null;
+  const mods=dep.mo||[];
+  // Sort by priority ascending (1 = highest priority)
+  const sorted=[...cats.complexity].sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
+  for(const lvl of sorted){
+    const triggers=(lvl.mods||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if(triggers.length&&triggers.some(t=>mods.some(m=>m.toLowerCase().includes(t.toLowerCase()))))
+      return lvl;
+  }
+  // No match → return last level (lowest priority = default)
+  return sorted[sorted.length-1]||null;
 }
-const COMPLEXITY_WEIGHT=[1.0,1.5,2.5]; // Básico, Intermedio, Avanzado
 function getComplexityScore(dep){
-  const mo=dep.mo||[];
-  if(mo.some(m=>m.includes('CallCenter')||m.includes('Counter')||m.includes('Desborde')))return 2;
-  if(mo.some(m=>m.includes('App Cliente')||m.includes('CallerID')))return 1;
-  return 0;
+  if(!cats.complexity||!cats.complexity.length) return 0;
+  const lvl=getComplexityFromCatalog(dep);
+  const idx=cats.complexity.findIndex(c=>c.id===lvl?.id);
+  return Math.max(0,idx);
 }
+function complexBadge(dep){
+  const lvl=getComplexityFromCatalog(dep);
+  if(!lvl)return'';
+  return`<span style="background:${lvl.bg};color:${lvl.color};border:1px solid ${lvl.border};padding:2px 7px;border-radius:12px;font-size:10.5px;font-weight:700;white-space:nowrap">${lvl.icon||''} ${esc(lvl.name)}</span>`;
+}
+// Weight for capacity: read from catalog
+function getComplexityWeight(dep){
+  const lvl=getComplexityFromCatalog(dep);
+  return lvl?(parseFloat(lvl.peso)||1.0):1.0;
+}
+const COMPLEXITY_WEIGHT=[1.0,1.5,2.5]; // legacy fallback (replaced by catalog above)
 const C6=['#1B4FD8','#0F7E4F','#B45309','#5B21B6','#DC2626','#0891B2'];
 
 // ═══════════════════════════════════════════════
@@ -1433,6 +1661,7 @@ function setV(v){
   if(v==='cobranzas')renderCobranzas();
   if(v==='estrategia')renderEstrategia();
   if(v==='catalogos')renderCats();
+  if(v==='manual'){}
 }
 function openAdd(){if(curV==='clientes')openAddCl();else openAddDep();}
 
@@ -1740,6 +1969,7 @@ function renderInact(){
     <td><span class="chip ${c.es==='deshabilitado'?'chip-deshabilitado':'chip-perdido'}">${c.es==='deshabilitado'?'⛔ Deshabilitado':'❌ Perdido'}</span></td>
     <td><div class="cl-mods-ro">${c.mo.map(m=>`<span class="mt">${esc(m)}</span>`).join('')||'<span style="color:var(--subtle);font-size:11px">—</span>'}</div></td>
     <td style="color:var(--muted)">${esc(c.co||'—')}</td>
+    <td style="color:var(--muted);font-size:12px">${esc(c.ph||'—')}</td>
     <td style="color:var(--muted);font-size:12px">${esc(c.no||'')}</td>
     <td><button class="icon-btn edit" onclick="editCl(${c.id})" title="Editar / Reactivar">✏️</button></td>
   </tr>`).join('')||'<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--subtle)">No hay clientes inactivos</td></tr>';
@@ -1772,7 +2002,8 @@ function renderCls(){
     <td class="cl-ro" style="color:${c.fconf?'var(--green)':'var(--subtle)'};font-size:12px;font-weight:${c.fconf?'600':'400'}">${c.fconf?fmtD(c.fconf):'—'}</td>
     <td><div class="cl-mods-ro">${c.mo.map(m=>`<span class="mt">${esc(m)}</span>`).join('')||'<span style="color:var(--subtle);font-size:11px">—</span>'}</div></td>
     <td>${complexBadge({mo:c.mo})}</td>
-    <td class="cl-ro">${esc(c.ph||'—')}</td>
+    <td class="cl-ro">${esc(c.co||'—')}</td>
+    <td class="cl-ro" style="font-size:12px;color:var(--muted)">${esc(c.ph||'—')}</td>
     <td class="cl-ro" style="font-size:12px;color:var(--muted)">${esc(c.no||'')}</td>
     <td style="display:flex;gap:4px;align-items:center">
       <button class="icon-btn edit" onclick="editCl(${c.id})" title="Editar">✏️</button>
@@ -1951,16 +2182,79 @@ function saveNewDep(){
 // ═══════════════════════════════════════════════
 function setCatTab(t){
   curCatTab=t;
-  const order=['modulos','modalidades','fases','implTimes','riesgos','aplicativos','tipos'];
+  const order=['modulos','categorias','modalidades','fases','implTimes','complejidad','riesgos','aplicativos','tipos'];
   document.querySelectorAll('.cat-tab').forEach((el,i)=>el.classList.toggle('active',order[i]===t));
   document.querySelectorAll('.cat-panel').forEach(el=>el.classList.remove('active'));
   const panel=document.getElementById('cat-'+t);
   if(panel)panel.classList.add('active');
 }
 function renderCats(){
-  renderMds();renderModDeps();renderAps();renderTps();
-  renderPhases();renderImplTimes();renderRisks();
+  renderCatmod();renderMds();renderModDeps();renderAps();renderTps();
+  renderPhases();renderImplTimes();renderRisks();renderCx();
   document.getElementById('tp-ap').innerHTML='<option value="">Sin asociar</option>'+cats.ap.map(a=>`<option>${esc(a.name)}</option>`).join('');
+}
+function renderCx(){
+  if(!cats.complexity)return;
+  const sorted=[...cats.complexity].sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
+  document.getElementById('cx-tbody').innerHTML=sorted.length
+    ?sorted.map(cx=>`<tr>
+        <td><span style="background:${cx.bg};color:${cx.color};border:1px solid ${cx.border};padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">${cx.icon||''} ${esc(cx.name)}</span></td>
+        <td style="font-weight:700;color:${cx.color}">${cx.peso}×</td>
+        <td style="text-align:center;font-weight:600">${cx.prioridad}</td>
+        <td style="font-size:12px;color:var(--muted)">${esc(cx.mods||'')}</td>
+        <td style="font-size:12px;color:var(--muted)">${esc(cx.desc||'')}</td>
+        <td style="display:flex;gap:4px">
+          <button class="icon-btn edit" onclick="editCatItem('complexity',${cx.id})">✏️</button>
+          <button class="icon-btn del" onclick="delCat('complexity',${cx.id},'${esc(cx.name)}')">🗑</button>
+        </td>
+      </tr>`).join('')
+    :'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--subtle)">Sin niveles definidos</td></tr>';
+}
+function saveCx(){
+  const n=document.getElementById('cx-name').value.trim();if(!n)return;
+  const color=document.getElementById('cx-color').value;
+  const bgMap={'#0F7E4F':'#ECFDF5','#B45309':'#FFFBEB','#BE123C':'#FFF1F2','#5B21B6':'#F5F3FF','#1B4FD8':'#EEF2FF'};
+  const brMap={'#0F7E4F':'#6EE7B7','#B45309':'#FDE68A','#BE123C':'#FECDD3','#5B21B6':'#C4B5FD','#1B4FD8':'#BFDBFE'};
+  if(!cats.complexity)cats.complexity=[];
+  cats.complexity.push({
+    id:Date.now(),
+    icon:document.getElementById('cx-icon').value.trim()||'●',
+    name:n,color,
+    bg:bgMap[color]||'#F8FAFC',
+    border:brMap[color]||'#CBD5E1',
+    peso:parseFloat(document.getElementById('cx-peso').value)||1.0,
+    prioridad:parseInt(document.getElementById('cx-prio').value)||cats.complexity.length+1,
+    mods:document.getElementById('cx-mods').value.trim(),
+    desc:document.getElementById('cx-desc').value.trim(),
+  });
+  sv();renderCx();
+  ['cx-name','cx-icon','cx-peso','cx-prio','cx-mods','cx-desc'].forEach(i=>document.getElementById(i).value='');
+}
+// ── MODULE CATEGORIES CATALOG ──
+function renderCatmod(){
+  if(!cats.catmod)cats.catmod=BASE_CATMOD.map(x=>({...x}));
+  // Populate the md-cat dropdown
+  const sel=document.getElementById('md-cat');
+  if(sel) sel.innerHTML=cats.catmod.map(cm=>`<option value="${esc(cm.name)}">${cm.icon?cm.icon+' ':''}${esc(cm.name)}</option>`).join('');
+  // Render the table
+  const tbody=document.getElementById('cm-tbody');
+  if(!tbody)return;
+  tbody.innerHTML=cats.catmod.length?cats.catmod.map(cm=>`<tr>
+    <td style="font-size:18px;text-align:center">${cm.icon||'📁'}</td>
+    <td style="font-weight:600;color:${cm.color||'var(--text)'}">${esc(cm.name)}</td>
+    <td><span style="width:14px;height:14px;border-radius:50%;background:${cm.color||'#637087'};display:inline-block"></span></td>
+    <td style="display:flex;gap:4px">
+      <button class="icon-btn edit" onclick="editCatItem('catmod',${cm.id})">✏️</button>
+      <button class="icon-btn del" onclick="delCat('catmod',${cm.id},'${esc(cm.name)}')">🗑</button>
+    </td>
+  </tr>`).join(''):'<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin categorías</td></tr>';
+}
+function saveCatmod(){
+  const n=document.getElementById('cm-cname').value.trim();if(!n)return;
+  if(!cats.catmod)cats.catmod=[];
+  cats.catmod.push({id:Date.now(),icon:document.getElementById('cm-icon').value.trim()||'📁',name:n,color:document.getElementById('cm-col').value});
+  sv();renderCatmod();
+  document.getElementById('cm-cname').value='';document.getElementById('cm-icon').value='';
 }
 
 function renderPhases(){
@@ -2074,10 +2368,54 @@ function saveTp(){const n=document.getElementById('tp-name').value.trim();if(!n)
 
 function editCatItem(type,id){
   const arr=cats[type];const item=arr.find(x=>x.id===id);if(!item)return;
-  const titles={md:'Editar Módulo',modal:'Editar Modalidad',ap:'Editar Aplicativo',tp:'Editar Tipo de Cliente',phases:'Editar Fase',implTimes:'Editar Tiempo de Implementación',risk:'Editar Estado de Riesgo'};
+  const titles={md:'Editar Módulo',catmod:'Editar Categoría',modal:'Editar Modalidad',ap:'Editar Aplicativo',tp:'Editar Tipo de Cliente',phases:'Editar Fase',implTimes:'Editar Tiempo de Implementación',risk:'Editar Estado de Riesgo',complexity:'Editar Nivel de Complejidad'};
   document.getElementById('cat-mt').textContent=titles[type]||'Editar';
 
-  if(type==='phases'){
+  if(type==='catmod'){
+    const colOpts=[['#1B4FD8','🔵 Azul'],['#0F7E4F','🟢 Verde'],['#B45309','🟡 Ámbar'],['#5B21B6','🟣 Violeta'],['#BE123C','🔴 Rojo'],['#0891B2','🩵 Celeste']];
+    document.getElementById('cat-mb').innerHTML=`
+      <div class="fr2">
+        <div class="fr"><label class="fl">Ícono</label><input class="fld" id="em-ic" value="${esc(item.icon||'')}" style="max-width:80px"></div>
+        <div class="fr"><label class="fl">Nombre</label><input class="fld" id="em-n" value="${esc(item.name)}"></div>
+      </div>
+      <div class="fr"><label class="fl">Color</label><select class="fld" id="em-c">${colOpts.map(([v,l])=>`<option value="${v}" ${item.color===v?'selected':''}>${l}</option>`).join('')}</select></div>`;
+    document.getElementById('cat-ms').onclick=()=>{
+      item.icon=document.getElementById('em-ic').value.trim();
+      item.name=document.getElementById('em-n').value.trim();
+      item.color=document.getElementById('em-c').value;
+      sv();renderCatmod();closeM('cat-modal');
+    };
+  } else if(type==='complexity'){
+    const colOpts=[['#0F7E4F','🟢 Verde'],['#B45309','🟡 Ámbar'],['#BE123C','🔴 Rojo'],['#5B21B6','🟣 Violeta'],['#1B4FD8','🔵 Azul']];
+    document.getElementById('cat-mb').innerHTML=`
+      <div class="fr2">
+        <div class="fr"><label class="fl">Ícono</label><input class="fld" id="em-ic" value="${esc(item.icon||'')}" style="max-width:80px"></div>
+        <div class="fr"><label class="fl">Nombre</label><input class="fld" id="em-n" value="${esc(item.name)}"></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Color</label><select class="fld" id="em-c">${colOpts.map(([v,l])=>`<option value="${v}" ${item.color===v?'selected':''}>${l}</option>`).join('')}</select></div>
+        <div class="fr"><label class="fl">Peso capacidad <span style="font-size:10px;color:var(--muted)">(1.0 = normal)</span></label><input type="number" class="fld" id="em-p" value="${item.peso||1}" step="0.1" min="0.1" max="10"></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Prioridad <span style="font-size:10px;color:var(--muted)">(1 = más alta)</span></label><input type="number" class="fld" id="em-pr" value="${item.prioridad||1}" min="1" max="99"></div>
+        <div class="fr"><label class="fl">Descripción</label><input class="fld" id="em-d" value="${esc(item.desc||'')}"></div>
+      </div>
+      <div class="fr"><label class="fl">Módulos disparadores <span style="font-size:10px;color:var(--muted)">(separados por coma — si el cliente tiene alguno, se asigna este nivel)</span></label>
+        <input class="fld" id="em-m" value="${esc(item.mods||'')}" placeholder="Ej: CallCenter, Counter, Desborde"></div>`;
+    document.getElementById('cat-ms').onclick=()=>{
+      const col=document.getElementById('em-c').value;
+      const bgMap={'#0F7E4F':'#ECFDF5','#B45309':'#FFFBEB','#BE123C':'#FFF1F2','#5B21B6':'#F5F3FF','#1B4FD8':'#EEF2FF'};
+      const brMap={'#0F7E4F':'#6EE7B7','#B45309':'#FDE68A','#BE123C':'#FECDD3','#5B21B6':'#C4B5FD','#1B4FD8':'#BFDBFE'};
+      item.icon=document.getElementById('em-ic').value.trim();
+      item.name=document.getElementById('em-n').value.trim();
+      item.color=col; item.bg=bgMap[col]||'#F8FAFC'; item.border=brMap[col]||'#CBD5E1';
+      item.peso=parseFloat(document.getElementById('em-p').value)||1;
+      item.prioridad=parseInt(document.getElementById('em-pr').value)||1;
+      item.desc=document.getElementById('em-d').value.trim();
+      item.mods=document.getElementById('em-m').value.trim();
+      sv();renderCx();closeM('cat-modal');
+    };
+  } else if(type==='phases'){
     document.getElementById('cat-mb').innerHTML=`
       <div class="fr"><label class="fl">Ícono</label><input class="fld" id="em-ic" value="${esc(item.icon||'')}" style="max-width:80px"></div>
       <div class="fr"><label class="fl">Nombre</label><input class="fld" id="em-n" value="${esc(item.name)}"></div>
@@ -2379,6 +2717,18 @@ const ESTADO_COBRO_STYLES={
 };
 function estadoCobro(es){const s=ESTADO_COBRO_STYLES[es]||ESTADO_COBRO_STYLES.pendiente;return`<span style="background:${s.bg};color:${s.color};border:1px solid ${s.border};padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700">${s.icon} ${s.label}</span>`;}
 
+function generarMesPasado(){
+  const el=document.getElementById('cob-mes-hist');
+  if(!el||!el.value){alert('Selecciona el mes a registrar');return;}
+  const mes=el.value;
+  const added=generarCobrosDelMes(mes);
+  // Set the main selector to that month and render
+  const mesEl=document.getElementById('cob-mes');
+  if(mesEl)mesEl.value=mes;
+  renderCobranzas();
+  if(added>0)alert(`✅ Se generaron ${added} cobros para ${mes}\nAhora actualiza el estado de cada cobro (Pagado/Atrasado/Parcial)`);
+  else alert(`ℹ️ Los cobros de ${mes} ya existen o no hay clientes operativos con contrato.`);
+}
 function generarMesActual(){
   const now=new Date();
   const mes=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
@@ -2502,12 +2852,12 @@ function renderCapacidad(){
 
   // Per-client hours: use individual hrsOp/hrsNew if set, else global default × complexity weight
   const hrsOperativos=operativos.reduce((sum,d)=>{
-    const w=COMPLEXITY_WEIGHT[getComplexityScore(d)]||1;
+    const w=getComplexityWeight(d);
     const hrs=d.hrsOp!=null?d.hrsOp:hca*w;  // individual override or global×weight
     return sum+hrs;
   },0);
   const hrsNuevos=enProceso.reduce((sum,d)=>{
-    const w=COMPLEXITY_WEIGHT[getComplexityScore(d)]||1;
+    const w=getComplexityWeight(d);
     const hrs=d.hrsNew!=null?d.hrsNew:hcn*w;  // individual override or global×weight
     return sum+hrs;
   },0);
@@ -2526,7 +2876,7 @@ function renderCapacidad(){
   },{});
 
   // Max clients (unweighted simple) and weighted
-  const avgWeight=operativos.length?operativos.reduce((s,d)=>s+COMPLEXITY_WEIGHT[getComplexityScore(d)],0)/operativos.length:1;
+  const avgWeight=operativos.length?operativos.reduce((s,d)=>s+getComplexityWeight(d),0)/operativos.length:1;
   const maxClientes=Math.floor(hrsTotal/(hca*avgWeight));
   const hrsLibres=Math.max(0,hrsTotal-hrsUsed);
   const maxNuevos=Math.floor(hrsLibres/hcn);
@@ -2551,10 +2901,13 @@ function renderCapacidad(){
     <div style="margin-top:4px">${k.detail}</div>
   </div>`).join('');
 
-  // Complexity breakdown pills
-  const pills=['🟢 Básico','🟡 Intermedio','🔴 Avanzado'].map((lbl,i)=>`
-    <span style="background:${['#ECFDF5','#FFFBEB','#FFF1F2'][i]};color:${['#0F7E4F','#B45309','#BE123C'][i]};border:1px solid ${['#6EE7B7','#FDE68A','#FECDD3'][i]};padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700">
-      ${lbl}: ${byComplexity[i]||0} <span style="font-size:10px;font-weight:400">(×${COMPLEXITY_WEIGHT[i]})</span>
+  // Complexity breakdown pills from catalog
+  const cxGroups={};
+  (cats.complexity||[]).forEach(lvl=>cxGroups[lvl.id]=0);
+  [...operativos,...enProceso].forEach(d=>{const lvl=getComplexityFromCatalog(d);if(lvl)cxGroups[lvl.id]=(cxGroups[lvl.id]||0)+1;});
+  const pills=(cats.complexity||[]).slice().sort((a,b)=>(a.prioridad||99)-(b.prioridad||99)).map(lvl=>`
+    <span style="background:${lvl.bg};color:${lvl.color};border:1px solid ${lvl.border};padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700">
+      ${lvl.icon||''} ${esc(lvl.name)}: ${cxGroups[lvl.id]||0} <span style="font-size:10px;font-weight:400">(×${lvl.peso})</span>
     </span>`).join('');
 
   // Saturation card
@@ -2611,11 +2964,9 @@ function renderCapacidad(){
   const allActive=[...operativos,...enProceso];
   const clTbody=document.getElementById('cap-clients-tbody');
   if(clTbody){
-    const lblCx=['🟢 Básico','🟡 Intermedio','🔴 Avanzado'];
-    const colCx=['#0F7E4F','#B45309','#BE123C'];
     clTbody.innerHTML=allActive.length?allActive.map(d=>{
-      const score=getComplexityScore(d);
-      const w=COMPLEXITY_WEIGHT[score];
+      const lvl=getComplexityFromCatalog(d);
+      const w=getComplexityWeight(d);
       const isOp=d.es==='✅ Listo';
       const hrsIndividual=isOp?d.hrsOp:d.hrsNew;
       const hrsUsedClient=hrsIndividual!=null?hrsIndividual:(isOp?hca:hcn)*w;
@@ -2623,8 +2974,8 @@ function renderCapacidad(){
       return`<tr>
         <td style="font-weight:600">${esc(d.c)}</td>
         <td><span style="background:${isOp?'#ECFDF5':'#EEF2FF'};color:${isOp?'#0F7E4F':'#1B4FD8'};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">${isOp?'✅ Operativo':'🔧 En proceso'}</span></td>
-        <td><span style="color:${colCx[score]};font-size:11.5px;font-weight:700">${lblCx[score]}</span></td>
-        <td style="font-weight:600;color:${colCx[score]}">${w}×</td>
+        <td>${lvl?`<span style="background:${lvl.bg};color:${lvl.color};border:1px solid ${lvl.border};padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700">${lvl.icon||''} ${esc(lvl.name)}</span>`:'—'}</td>
+        <td style="font-weight:600;color:${lvl?.color||'var(--text)'}">${w}×</td>
         <td>
           <div style="display:flex;align-items:center;gap:8px">
             <strong style="font-size:14px;color:${hrsIndividual!=null?'#1B4FD8':'var(--text)'}">${hrsUsedClient}h</strong>
@@ -2654,48 +3005,46 @@ function renderCapacidad(){
 // ═══════════════════════════════════════════════
 // ESTRATEGIA DE DESPLIEGUE
 // ═══════════════════════════════════════════════
-const COMPLEXITY_RULES=[
-  {label:'🟢 Básico',color:'#0F7E4F',bg:'#ECFDF5',border:'#6EE7B7',mods:['Bot WA Normal','App Conductor TaxiSoS','App Conductor Clipp'],implIdx:0,desc:'Bot WA + App Conductor'},
-  {label:'🟡 Intermedio',color:'#B45309',bg:'#FFFBEB',border:'#FDE68A',mods:['App Cliente','Refuerzo Capacitación','CallerID'],implIdx:1,desc:'Bot + App Cliente + App Conductor'},
-  {label:'🔴 Avanzado',color:'#BE123C',bg:'#FFF1F2',border:'#FECDD3',mods:['CallCenter','Desborde','Counter','Bot WA Bilingüe'],implIdx:2,desc:'Bot + CallCenter + App Cliente + App Conductor'},
-];
-function getComplexityWeeks(rule){
-  // Link to catalog implTimes by index if available, else fallback to fixed
-  const t=cats.implTimes&&cats.implTimes[rule.implIdx];
-  return t?t.semanas:rule.implIdx===0?1:rule.implIdx===1?2:3;
+// Legacy COMPLEXITY_RULES replaced by cats.complexity catalog
+// getComplexity now reads from catalog
+function getComplexityWeeks(lvl){
+  if(!lvl) return 1;
+  // Try to match by name/position in implTimes
+  const implIdx=(cats.complexity||[]).findIndex(c=>c.id===lvl.id);
+  const t=cats.implTimes&&cats.implTimes[implIdx>=0?implIdx:0];
+  return t?t.semanas:(implIdx===0?1:implIdx===1?2:3);
 }
-
 function getComplexity(dep){
-  const mods=dep.mo||[];
-  let score=0;
-  if(mods.some(m=>m.includes('CallCenter')||m.includes('Desborde')||m.includes('Counter')||m.includes('Bilingüe')))score=2;
-  else if(mods.some(m=>m.includes('App Cliente')||m.includes('CallerID')||m.includes('Capacitación')))score=1;
-  const rule=COMPLEXITY_RULES[score];
-  return {...rule,weeks:getComplexityWeeks(rule)};
+  const lvl=getComplexityFromCatalog(dep);
+  if(!lvl)return{label:'🟢 Básico',color:'#0F7E4F',bg:'#ECFDF5',border:'#6EE7B7',desc:'Básico',weeks:1};
+  return{...lvl,label:`${lvl.icon||''} ${lvl.name}`,weeks:getComplexityWeeks(lvl)};
 }
 
 function renderEstrategia(){
-  // Complexity breakdown — weeks come from cats.implTimes
-  const groups={0:[],1:[],2:[]};
+  // Complexity breakdown from catalog
+  const cxLevels=(cats.complexity||[]).slice().sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
+  const groups={};
+  cxLevels.forEach(lvl=>groups[lvl.id]=[]);
+  groups['_none']=[];
   deps.forEach(d=>{
-    const s=d.mo&&(d.mo.some(m=>m.includes('CallCenter')||m.includes('Desborde')||m.includes('Counter')))?2:d.mo&&d.mo.some(m=>m.includes('App Cliente')||m.includes('CallerID'))?1:0;
-    groups[s].push(d);
+    const lvl=getComplexityFromCatalog(d);
+    if(lvl&&groups[lvl.id]) groups[lvl.id].push(d);
+    else groups['_none'].push(d);
   });
-  document.getElementById('est-complexity').innerHTML=COMPLEXITY_RULES.map((r,i)=>{
-    const weeks=getComplexityWeeks(r);
-    const linkedTime=cats.implTimes&&cats.implTimes[r.implIdx];
+  document.getElementById('est-complexity').innerHTML=cxLevels.map(r=>{
+    const cnt=(groups[r.id]||[]).length;
     return`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;background:${r.bg};border:1px solid ${r.border};margin-bottom:10px">
       <span style="width:14px;height:14px;border-radius:50%;background:${r.color};flex-shrink:0"></span>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:${r.color}">${r.label}</div>
-        <div style="font-size:11.5px;color:var(--muted)">${linkedTime?esc(linkedTime.name):r.desc}</div>
+        <div style="font-size:13px;font-weight:700;color:${r.color}">${r.icon||''} ${esc(r.name)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${esc(r.desc||'')} · Peso: ${r.peso}× · Módulos: ${esc(r.mods||'—')}</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:22px;font-weight:700;color:${r.color}">${groups[i].length}</div>
-        <div style="font-size:10.5px;color:var(--muted)">${weeks} sem. <span style="font-size:9.5px;color:var(--subtle)">${linkedTime?'(catálogo)':'(por defecto)'}</span></div>
+        <div style="font-size:22px;font-weight:700;color:${r.color}">${cnt}</div>
+        <div style="font-size:10.5px;color:var(--muted)">despliegues</div>
       </div>
     </div>`;
-  }).join('');
+  }).join('') + (groups['_none'].length?`<div style="font-size:12px;color:var(--subtle);padding:8px 0">Sin clasificar: ${groups['_none'].length}</div>`:'')+'';
 
   // Time standards from catalog
   document.getElementById('est-times').innerHTML=cats.implTimes.map(t=>`
@@ -3120,6 +3469,8 @@ function bootApp(){
     if(!cats.risk)      cats.risk=BASE_RISK.map(function(x){return Object.assign({},x);});
     if(!cats.implTimes) cats.implTimes=BASE_IMPL_TIMES.map(function(x){return Object.assign({},x);});
     if(!cats.phases)    cats.phases=BASE_PHASES.map(function(x){return Object.assign({},x);});
+    if(!cats.complexity)cats.complexity=BASE_COMPLEXITY.map(function(x){return Object.assign({},x);});
+    if(!cats.catmod)cats.catmod=BASE_CATMOD.map(function(x){return Object.assign({},x);});
     if(cls.length<BC.length){ cls=BC.map(function(c){return Object.assign({},c,{mo:[].concat(c.mo)});}); }
     cls.forEach(function(c){ if(c.fconf===undefined)c.fconf=''; });
     contratos.forEach(function(c){
