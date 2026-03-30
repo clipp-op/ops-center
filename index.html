@@ -3262,7 +3262,25 @@ function doLogin(){
     document.getElementById('login-overlay').classList.add('hidden');
     bootApp();return;
   }
-  loadSupabase().then// ═══ COLUMN RESIZE ══════════════════════════════════
+  loadSupabase().then(function(){
+    try{
+      const sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:false,storageKey:'clipp_ops_session'}});
+      sb.auth.signInWithPassword({email,password:pass}).then(function(res){
+        if(res.error){
+          err.textContent=res.error.message==='Invalid login credentials'?'Email o contraseña incorrectos':res.error.message;
+          btn.disabled=false;btn.textContent='Ingresar';return;
+        }
+        supabase=sb;
+        _currentUser=res.data.user;
+        sessionStorage.setItem('clipp_authed','1');
+        document.getElementById('login-overlay').classList.add('hidden');
+        bootApp();
+      }).catch(function(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';});
+    }catch(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';}
+  }).catch(function(){err.textContent='Sin conexión. Usa "🚀 Modo demo".';btn.disabled=false;btn.textContent='Ingresar';});
+}
+
+// ═══ COLUMN RESIZE ══════════════════════════════════
 function initColResize(e){
   const th=e.target.closest('th');if(!th)return;
   const startX=e.clientX,startW=th.offsetWidth;
@@ -3617,22 +3635,7 @@ function bootRoles(){
   if(btnRoles)btnRoles.style.display='';
 }
 
-(function(){
-    try{
-      supabase=window.supabase.createClient(SB_URL,SB_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:false,storageKey:'clipp_ops_session'}});
-      supabase.auth.signInWithPassword({email,password:pass}).then(function(res){
-        if(res.error){
-          err.textContent=res.error.message==='Invalid login credentials'?'Email o contraseña incorrectos':res.error.message;
-          btn.disabled=false;btn.textContent='Ingresar';return;
-        }
-        _currentUser=res.data.user;
-        sessionStorage.setItem('clipp_authed','1');
-        document.getElementById('login-overlay').classList.add('hidden');
-        bootApp();
-      }).catch(function(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';});
-    }catch(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';}
-  }).catch(function(){err.textContent='Sin conexión. Usa "🚀 Modo demo".';btn.disabled=false;btn.textContent='Ingresar';});
-}
+
 function doLogout(){
   if(supabase)supabase.auth.signOut().catch(()=>{});
   sessionStorage.removeItem('clipp_authed');
@@ -3710,7 +3713,7 @@ function bootApp(){
   if(!cats.tp)cats.tp=[];
 
   // Load roles
-  bootRoles();
+  try{bootRoles();}catch(e){console.warn('bootRoles:',e);}
   // Render
   renderDash();updBadges();updTrashBadge();
   setV('dashboard');
