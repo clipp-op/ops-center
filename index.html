@@ -112,7 +112,7 @@ td{padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:middle;o
 tr:hover td{background:#FAFBFD}
 tr:last-child td{border-bottom:none}
 /* INLINE EDIT */
-.ei{border:1px solid transparent;border-radius:5px;padding:4px 6px;font-size:12.5px;font-family:'DM Sans',sans-serif;background:transparent;width:100%;transition:all .15s;color:var(--text)}
+.ei{border:1px solid transparent;border-radius:5px;padding:4px 6px;font-size:12.5px;font-family:'DM Sans',sans-serif;background:transparent;width:auto;min-width:60px;transition:all .15s;color:var(--text);box-sizing:border-box;min-width:60px}
 .ei:hover{border-color:var(--border2);background:var(--bg)}
 .ei:focus{border-color:var(--blue);background:var(--bg);outline:none;box-shadow:0 0 0 2px var(--blue-m)}
 select.ei{cursor:pointer}
@@ -184,12 +184,12 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .bp-o{padding:4px 11px;border-radius:20px;border:2px solid var(--border);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:var(--bg2)}
 .bp-o.sel{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
 /* CAT TABS */
-.cat-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px}
+.cat-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
 .cat-tab{padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
 .cat-tab:hover{color:var(--text)}
 .cat-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-.cat-panel{display:none !important}.cat-panel.active{display:block !important}
-  .cat-panel.cat-panel-visible{display:block !important}
+.cat-panel{display:none}.cat-panel.active{display:block}
+  .cat-panel.cat-panel-visible{display:block}
 .cat-table{width:100%;border-collapse:collapse}
 .cat-table thead th{padding:9px 13px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--bg2);border-bottom:2px solid var(--border)}
 .cat-table td{padding:9px 13px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
@@ -200,8 +200,8 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .cat-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;background:var(--bg)}
 .cat-input:focus{border-color:var(--blue)}
 .sync-note{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;margin-top:4px}
-.view{display:none}.view.active{display:block}
-/* ── INFO TOOLTIP ── */
+.view{display:none}.view.active{display:block;padding:20px 24px}
+/* ──INFO TOOLTIP ── */
 .info-btn{background:var(--blue-l);border:1px solid var(--blue-m);color:var(--blue);border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:middle;margin-left:6px;transition:all .15s}
 .info-btn:hover{background:var(--blue);color:#fff}
 .info-popover{position:fixed;z-index:5000;background:#0D1B2E;color:#fff;border-radius:10px;padding:14px 16px;max-width:320px;font-size:12.5px;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,.25);display:none}
@@ -336,7 +336,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.5 · 30 Mar 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.6 · 30 Mar 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -911,7 +911,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="cat-tab" onclick="setCatTab('launchers')" id="nav-cat-launchers">👤 Launchers</div>
       </div>
       <!-- CATEGORÍAS DE MÓDULOS -->
-      <div class="cat-panel" id="cat-categorias">
+      <div class="cat-panel" id="cat-categorias" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Las <strong>Categorías</strong> agrupan los módulos en la tabla de catálogo y en el selector de módulos. Puedes crear las que necesites.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="cm-icon" placeholder="💬" style="max-width:70px"></div>
@@ -932,7 +932,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <!-- MÓDULOS -->
-      <div class="cat-panel cat-panel-visible" id="cat-modulos">
+      <div class="cat-panel" id="cat-modulos" style="display:block">
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre del Módulo</label><input class="cat-input" id="md-name" placeholder="Ej: Bot WA Normal"></div>
           <div class="fr"><label class="fl">Descripción</label><input class="cat-input" id="md-desc" placeholder="Descripción breve"></div>
@@ -947,7 +947,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
       <!-- APLICATIVOS -->
-      <div class="cat-panel" id="cat-aplicativos">
+      <div class="cat-panel" id="cat-aplicativos" style="display:none">
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="ap-name" placeholder="Ej: Clipp"></div>
           <div class="fr"><label class="fl">Descripción</label><input class="cat-input" id="ap-desc" placeholder="Descripción"></div>
@@ -966,7 +966,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
       <!-- MODALIDADES DE DESPLIEGUE -->
-      <div class="cat-panel" id="cat-modalidades">
+      <div class="cat-panel" id="cat-modalidades" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Las <strong>Modalidades</strong> son la categoría del despliegue (ej: Cliente Nuevo, Update). Aparecen en la columna <strong>Modalidad</strong> de la tabla de despliegues.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="mo-dep-name" placeholder="Ej: Cliente Nuevo"></div>
@@ -980,7 +980,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
       <!-- LAUNCHERS -->
-      <div class="cat-panel" id="cat-launchers">
+      <div class="cat-panel" id="cat-launchers" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Los <strong>Launchers</strong> son los responsables de implementar y dar seguimiento a los despliegues. Aparecen en todos los módulos de seguimiento.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre completo</label><input class="cat-input" id="ln-name" placeholder="Ej: María López"></div>
@@ -996,7 +996,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
       <!-- TIPOS DE CLIENTE -->
       <!-- FASES DE IMPLEMENTACIÓN -->
-      <div class="cat-panel" id="cat-fases">
+      <div class="cat-panel" id="cat-fases" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Las <strong>Fases</strong> representan el progreso de cada despliegue. Puedes avanzar o retroceder la fase directamente desde la tabla de Despliegues con los botones ▶ ◀.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="ph-icon" placeholder="🚀" style="max-width:70px"></div>
@@ -1010,7 +1010,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
       <!-- TIEMPOS DE IMPLEMENTACIÓN -->
-      <div class="cat-panel" id="cat-implTimes">
+      <div class="cat-panel" id="cat-implTimes" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Tiempos estándar por paquete de módulos. Se usan como referencia en la <strong>Estrategia de Despliegue</strong>.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Descripción del Paquete</label><input class="cat-input" id="it-name" placeholder="Ej: Bot + CallCenter + App Cliente"></div>
@@ -1028,7 +1028,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </table></div></div>
       </div>
       <!-- NIVELES DE COMPLEJIDAD -->
-      <div class="cat-panel" id="cat-complejidad">
+      <div class="cat-panel" id="cat-complejidad" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">
           Define los <strong>niveles de complejidad</strong> de despliegue. Cada nivel tiene un <strong>peso</strong> que afecta el cálculo de capacidad operativa y una lista de <strong>módulos disparadores</strong> — si el cliente tiene alguno de esos módulos, se asigna ese nivel automáticamente.<br>
           <span style="font-size:11.5px;color:var(--blue)">💡 El sistema aplica el nivel de mayor prioridad cuyos módulos coincidan. Si no hay coincidencia, aplica el primer nivel.</span>
@@ -1064,7 +1064,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <!-- TIPOS DE COBRO -->
-      <div class="cat-panel" id="cat-billingTypes">
+      <div class="cat-panel" id="cat-billingTypes" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Define los <strong>tipos de componente de cobro</strong> disponibles. Cada contrato puede mezclar varios tipos. Estos tipos aparecen al crear o editar contratos.</p>
         <div class="cat-add-row" style="flex-wrap:wrap;gap:10px">
           <div class="fr"><label class="fl">Ícono</label><input class="cat-input" id="bt-icon" placeholder="💬" style="max-width:70px"></div>
@@ -1081,7 +1081,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <!-- ESTADOS DE RIESGO -->
-      <div class="cat-panel" id="cat-riesgos">
+      <div class="cat-panel" id="cat-riesgos" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Define los umbrales de riesgo para <strong>Cobranzas</strong> y <strong>Contratos</strong>. El sistema calcula automáticamente el estado según el % del mínimo contratado que el cliente está cumpliendo.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre</label><input class="cat-input" id="rk-name" placeholder="Ej: Alerta"></div>
@@ -1106,7 +1106,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <!-- TIPOS DE CLIENTE -->
-      <div class="cat-panel" id="cat-tipos">
+      <div class="cat-panel" id="cat-tipos" style="display:none">
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px">Los <strong>Tipos de Cliente</strong> son etiquetas libres que asignas a tus clientes para clasificarlos (ej: Taxi Convencional, Ejecutivo, Moto, Empresas, etc). Se seleccionan en la ficha de cada cliente.</p>
         <div class="cat-add-row">
           <div class="fr"><label class="fl">Nombre / Etiqueta</label><input class="cat-input" id="tp-name" placeholder="Ej: Taxi Convencional"></div>
@@ -2084,24 +2084,24 @@ function depTH(headerId){
   const el=document.getElementById(headerId);if(!el)return;
   el.innerHTML=[
     '<th style="width:36px">#</th>',
-    '<th style="min-width:130px">Cliente</th>',
-    '<th style="min-width:80px">País</th>',
-    '<th style="min-width:90px">Ciudad</th>',
-    '<th style="min-width:120px">Modalidad</th>',
-    '<th style="min-width:130px">Estado</th>',
-    '<th style="min-width:110px">Fase</th>',
-    '<th style="min-width:90px">Complejidad</th>',
-    '<th style="min-width:180px">Módulos</th>',
-    '<th style="min-width:120px">Launcher</th>',
-    '<th style="min-width:110px">F. Inicio</th>',
-    '<th style="min-width:110px">F. Ideal</th>',
-    '<th style="min-width:110px">F. Entrega</th>',
-    '<th style="width:60px;text-align:center">Días</th>',
-    '<th style="min-width:130px">Pendientes</th>',
-    '<th style="width:75px;text-align:center">Hrs Sop.</th>',
-    '<th style="width:75px;text-align:center">Hrs Desp.</th>',
-    '<th style="min-width:130px">Notas</th>',
-    '<th style="min-width:90px">Link</th>',
+    '<th style="min-width:140px">Cliente</th>',
+    '<th style="min-width:90px">País</th>',
+    '<th style="min-width:100px">Ciudad</th>',
+    '<th style="min-width:140px">Modalidad</th>',
+    '<th style="min-width:145px">Estado</th>',
+    '<th style="min-width:160px">Fase</th>',
+    '<th style="min-width:110px">Complejidad</th>',
+    '<th style="min-width:200px">Módulos</th>',
+    '<th style="min-width:140px">Launcher</th>',
+    '<th style="min-width:120px">F. Inicio</th>',
+    '<th style="min-width:120px">F. Ideal</th>',
+    '<th style="min-width:120px">F. Entrega</th>',
+    '<th style="min-width:70px;text-align:center">Días</th>',
+    '<th style="min-width:150px">Pendientes</th>',
+    '<th style="min-width:90px;text-align:center">Hrs Sop.</th>',
+    '<th style="min-width:90px;text-align:center">Hrs Desp.</th>',
+    '<th style="min-width:150px">Notas</th>',
+    '<th style="min-width:100px">Link</th>',
     '<th style="width:44px"></th>',
   ].join('');
   el.querySelectorAll('th').forEach(th=>{if(!th.querySelector('.col-r')){const r=document.createElement('span');r.className='col-r';r.addEventListener('mousedown',initColResize);th.appendChild(r);}});
@@ -2130,16 +2130,16 @@ function depRow(d){
     <td><select class="ei" onchange="uDEs(${d.id},this.value)">${esOpts}</select></td>
     <td style="white-space:nowrap">${phaseBadge(d)}<button class="icon-btn" onclick="advanceFase(${d.id})" title="Avanzar">▶</button><button class="icon-btn" onclick="backFase(${d.id})" title="Retroceder">◀</button></td>
     <td>${complexBadge(d)}</td>
-    <td><div class="cl-mods-ro" title="Editar módulos desde el cliente">${moHtml}</div></td>
+    <td><div class="cl-mods-ro" onclick="openMO(${d.id},'dep')" style="cursor:pointer;min-width:120px" title="Clic para editar módulos">${moHtml||'<span style=\"color:var(--subtle);font-size:11px\">+ módulos</span>'}</div></td>
     <td><select class="ei" onchange="uD(${d.id},'ln',this.value)">${lnOpts}</select></td>
-    <td><input type="date" class="ei" value="${d.fi||''}" onchange="uD(${d.id},'fi',this.value)"></td>
-    <td><input type="date" class="ei" value="${d.fd||''}" onchange="uD(${d.id},'fd',this.value)"></td>
-    <td><input type="date" class="ei" value="${d.fe||''}" onchange="uD(${d.id},'fe',this.value)"></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fi||''}" onchange="uD(${d.id},'fi',this.value)"></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fd||''}" onchange="uD(${d.id},'fd',this.value)"></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fe||''}" onchange="uD(${d.id},'fe',this.value)"></td>
     <td>${diasBadge(d)}</td>
-    <td><input class="ei" style="min-width:120px" value="${esc(d.pe||'')}" placeholder="Pendientes..." onchange="uD(${d.id},'pe',this.value)"></td>
+    <td><input class="ei" style="min-width:140px" value="${esc(d.pe||'')}" placeholder="Pendientes..." onchange="uD(${d.id},'pe',this.value)"></td>
     <td><input type="number" class="ei" style="width:60px" value="${d.hrsOp||''}" placeholder="—" onchange="uD(${d.id},'hrsOp',this.value)"></td>
     <td><input type="number" class="ei" style="width:60px" value="${d.hrsNew||''}" placeholder="—" onchange="uD(${d.id},'hrsNew',this.value)"></td>
-    <td><input class="ei" style="min-width:120px" value="${esc(d.no||'')}" placeholder="Notas..." onchange="uD(${d.id},'no',this.value)"></td>
+    <td><input class="ei" style="min-width:140px" value="${esc(d.no||'')}" placeholder="Notas..." onchange="uD(${d.id},'no',this.value)"></td>
     <td>${d.lk?`<a href="${esc(d.lk)}" target="_blank" class="icon-btn" title="Abrir">🔗</a>`:''}<input class="ei" style="width:80px" value="${esc(d.lk||'')}" placeholder="URL" onchange="uD(${d.id},'lk',this.value)"></td>
     <td style="white-space:nowrap"><button class="icon-btn del" onclick="confDel('dep',${d.id},'${esc(d.c)}')">🗑</button></td>
   </tr>`;
@@ -3060,19 +3060,25 @@ function togChk(key,item,checked){
 // ═══ CATALOGS ════════════════════════════════════════
 function setCatTab(t){
   curCatTab=t;
-  // Update tab active state
+  // Activate tab button
   document.querySelectorAll('.cat-tab').forEach(el=>el.classList.remove('active'));
-  const tabEl=document.querySelector(`.cat-tab[onclick*="'${t}'"]`);if(tabEl)tabEl.classList.add('active');
-  // Show/hide panels using ONLY class (avoid inline style conflicts)
-  document.querySelectorAll('.cat-panel').forEach(el=>{
-    el.classList.remove('cat-panel-visible');
-    el.style.removeProperty('display');
+  const tabEl=document.querySelector('.cat-tab[onclick*="setCatTab(\''+t+'\'"]');
+  if(tabEl)tabEl.classList.add('active');
+  // Show only the selected panel — direct style manipulation, no class tricks
+  const allPanels=['modulos','categorias','modalidades','fases','implTimes',
+    'complejidad','billingTypes','riesgos','aplicativos','tipos','launchers'];
+  allPanels.forEach(id=>{
+    const el=document.getElementById('cat-'+id);
+    if(el)el.style.display=(id===t)?'block':'none';
   });
-  const panel=document.getElementById('cat-'+t);
-  if(panel){panel.classList.add('cat-panel-visible');}
-  // Render content
-  const renders={modulos:renderMds,categorias:renderCatMods,modalidades:renderModDeps,fases:renderPhases,implTimes:renderImplTimes,complejidad:renderCxs,billingTypes:renderBTs,riesgos:renderRisks,aplicativos:renderAps,tipos:renderTps,launchers:renderLaunchers};
-  if(renders[t]){try{renders[t]();}catch(e){console.error('setCatTab render error:',t,e);}}
+  // Render content into the visible panel
+  const renders={
+    modulos:renderMds, categorias:renderCatMods, modalidades:renderModDeps,
+    fases:renderPhases, implTimes:renderImplTimes, complejidad:renderCxs,
+    billingTypes:renderBTs, riesgos:renderRisks, aplicativos:renderAps,
+    tipos:renderTps, launchers:renderLaunchers
+  };
+  if(renders[t])try{renders[t]();}catch(e){console.error('CatTab error:',t,e);}
 }
 
 function reloadCatsFromSupabase(){
