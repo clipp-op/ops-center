@@ -172,6 +172,12 @@
   min-height:70px;
   line-height:1.35;
 }
+.dep-module-picker{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
+.dep-module-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #d6deeb;border-radius:999px;background:#fff;color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s ease}
+.dep-module-chip:hover{border-color:#93c5fd;background:#f8fbff}
+.dep-module-chip.active{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8}
+.dep-module-chip input{display:none}
+.dep-auto-note{display:block;font-size:11px;color:var(--muted);margin-top:6px;line-height:1.3}
 .dep-grid-2{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -485,6 +491,9 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .chart-wrap{position:relative;height:240px}
 .chart-wrap-sm{position:relative;height:180px}
+.mini-stat{padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+.mini-stat-l{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;margin-bottom:6px}
+.mini-stat-v{font-size:18px;font-weight:800;color:var(--text)}
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;gap:4px}
 .tag-blue{background:var(--blue-l);color:var(--blue)}
 .tag-green{background:var(--green-l);color:var(--green)}
@@ -518,7 +527,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="login-err" id="li-err"></div>
     <div class="login-status" id="li-status"></div>
     <div style="margin-top:16px;border-top:1px solid #E4E9F0;padding-top:14px">
-      <button onclick="document.getElementById('li-email').value='demo@clipp.com';document.getElementById('li-pass').value='demo';doLogin();"
+      <button onclick="enterDemo()"
         style="background:none;border:1.5px solid #E4E9F0;border-radius:8px;padding:9px 18px;font-size:13px;color:#637087;cursor:pointer;width:100%;font-family:inherit;transition:all .2s"
         onmouseover="this.style.borderColor='#1B4FD8';this.style.color='#1B4FD8'"
         onmouseout="this.style.borderColor='#E4E9F0';this.style.color='#637087'">
@@ -554,7 +563,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v4.7 · 30 Mar 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.0 · 31 Mar 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -633,7 +642,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ OPERATIVOS ══ -->
     <div id="view-operativos" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">Clientes Operativos</div><div class="sec-sub">Implementaciones completadas · Cambiar estado regresa a Despliegues</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">Clientes Operativos</div><div class="sec-sub">Implementaciones completadas · Edición por fila con estado, fase, launcher y fechas; módulos leídos desde Clientes</div></div></div>
       <div class="filters">
         <input type="text" class="fi" id="so" placeholder="🔍 Buscar..." oninput="renderOps()">
         <select class="fi" id="flo" onchange="renderOps()"><option value="">Todos los launchers</option></select>
@@ -1048,7 +1057,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v4.0</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.0</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
 
       <!-- REFERENCE TABLE -->
       <div class="card" style="margin-bottom:16px">
@@ -1990,7 +1999,8 @@ let mTgt=null,editClId=null,clMods=new Set(),dOpen=false,curV='dashboard',curCat
 let _contComps=[],editingContratoId=null,_editCobroId=null,_csmClientId=null;
 let cobCharts={trend:null,pie:null};
 let tlChart=null;
-let _editDepId=null,_depDraft=null;
+let capCharts={projection:null,saturation:null};
+let _editDepId=null,_depDraft=null,_editDepMode='dep';
 
 // ═══ UTILS ═══════════════════════════════════════════
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -2034,7 +2044,7 @@ function svTrash(){
 
 // ═══ BACKUP / RESTORE ════════════════════════════════
 function exportFullBackup(){
-  const data={version:'3.1',exportedAt:new Date().toISOString(),deps,cls,cats,contratos,cobros,checklists,trash};
+  const data={version:'5.0',exportedAt:new Date().toISOString(),deps,cls,cats,contratos,cobros,checklists,trash};
   const a=document.createElement('a');
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(data,null,2));
   a.download='ops_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
@@ -2125,7 +2135,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · Marzo 2026'],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v4.1'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · Marzo 2026'],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.0'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2210,11 +2220,20 @@ function updBadges(){
 // ═══ COMPLEXITY ══════════════════════════════════════
 function getComplexityFromCatalog(dep){
   if(!cats.complexity||!cats.complexity.length)return null;
-  const mods=(dep.mo||[]).map(m=>m.toLowerCase().trim());
+  let mods=[];
+  if(Array.isArray(dep?.mo)&&dep.mo.length) mods=dep.mo;
+  else {
+    const ref=dep?.cid!=null
+      ? cls.find(c=>String(c.id)===String(dep.cid))
+      : cls.find(c=>String(c.nm||'').trim().toLowerCase()===String(dep?.c||'').trim().toLowerCase());
+    mods=Array.isArray(ref?.mo)?ref.mo:[];
+  }
+  mods=mods.map(m=>String(m||'').toLowerCase().trim()).filter(Boolean);
   if(!mods.length)return null;
   const sorted=[...cats.complexity].sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
   for(const lvl of sorted){
-    const triggers=(lvl.mods||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const raw=Array.isArray(lvl.mods)?lvl.mods.join(','):String(lvl.mods||'');
+    const triggers=raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
     if(triggers.length&&triggers.every(t=>mods.some(m=>m===t)))return lvl;
   }
   return null;
@@ -2375,7 +2394,7 @@ function clearDashF(){['sf','st','sf-ln'].forEach(id=>{const e=document.getEleme
 
 function depTH(headerId){
   const el=document.getElementById(headerId);if(!el)return;
-  const isActive = headerId==='th-d';
+  const isActive = headerId==='th-d' || headerId==='th-o';
   const cols = [
     ['#','dep-col-id'],
     ['Cliente','dep-col-client'],
@@ -2481,16 +2500,30 @@ function depPhaseOptions(){
   return phases.map((p,i)=>({value:String(i),label:`${p.icon||'📍'} ${p.name}`}));
 }
 function depRiskFree(v){ return v==null?'':String(v); }
+function depClientMatch(value, fallbackId=''){
+  const byId=fallbackId!==''&&fallbackId!=null?cls.find(c=>String(c.id)===String(fallbackId)):null;
+  if(byId)return byId;
+  const q=String(value||'').trim().toLowerCase();
+  if(!q)return null;
+  return cls.find(c=>String(c.nm||'').trim().toLowerCase()===q)||null;
+}
+function depCatalogModules(){
+  const arr=(cats.md&&cats.md.length?cats.md:BASE_MD)||[];
+  return arr.map(m=>m.name).filter(Boolean);
+}
 function depDraftFrom(d){
+  const linked=depClientMatch(d.c,d.cid);
+  const baseMods=Array.isArray(d.mo)&&d.mo.length ? [...d.mo] : (Array.isArray(linked?.mo)?[...linked.mo]:[]);
   return {
+    cid: linked?.id ?? d.cid ?? '',
     c: depRiskFree(d.c),
-    pa: depRiskFree(d.pa),
-    ci: depRiskFree(d.ci),
-    tp: depRiskFree(d.tp),
+    pa: depRiskFree(d.pa || linked?.pa),
+    ci: depRiskFree(d.ci || linked?.ci),
+    tp: depRiskFree(d.tp || linked?.tp),
     es: depRiskFree(d.es),
     fase: String(Number.isFinite(+d.fase)?+d.fase:0),
     cx: depRiskFree(d.cx),
-    mo: Array.isArray(d.mo)?[...d.mo]:[],
+    mo: baseMods,
     ln: depRiskFree(d.ln),
     fi: isD(d.fi)?d.fi:'',
     fd: isD(d.fd)?d.fd:'',
@@ -2502,20 +2535,59 @@ function depDraftFrom(d){
     lk: depRiskFree(d.lk)
   };
 }
-function depEnterEdit(id){
-  const d=deps.find(x=>x.id===id); if(!d) return;
-  _editDepId=id;
-  _depDraft=depDraftFrom(d);
+function depClientDatalist(){
+  return `<datalist id="dep-client-list">${cls.map(c=>`<option value="${esc(c.nm)}">${esc((c.ci||'')+(c.pa?' · '+c.pa:''))}</option>`).join('')}</datalist>`;
+}
+function depSyncDraftFromClient(value){
+  if(!_depDraft) return;
+  const cl=depClientMatch(value,_depDraft.cid);
+  if(!cl) return;
+  _depDraft.cid=cl.id;
+  _depDraft.c=cl.nm||_depDraft.c;
+  if(!_depDraft.pa) _depDraft.pa=cl.pa||'';
+  if(!_depDraft.ci) _depDraft.ci=cl.ci||'';
+  if(!_depDraft.tp) _depDraft.tp=cl.tp||'';
+  if((!Array.isArray(_depDraft.mo) || !_depDraft.mo.length) && Array.isArray(cl.mo)) _depDraft.mo=[...cl.mo];
+}
+function depHandleClientInput(value){
+  depSetDraft('c',value);
+  depSyncDraftFromClient(value);
+}
+function depToggleModule(name){
+  if(!_depDraft || _editDepMode==='ops') return;
+  const current=new Set(Array.isArray(_depDraft.mo)?_depDraft.mo:[]);
+  if(current.has(name)) current.delete(name); else current.add(name);
+  _depDraft.mo=Array.from(current);
   renderDeps();
 }
+function depModulePicker(selected){
+  const current=new Set(Array.isArray(selected)?selected:[]);
+  const mods=depCatalogModules();
+  if(!mods.length) return `<span class="dep-text muted">Sin módulos en catálogo</span>`;
+  return `<div class="dep-module-picker">${mods.map(name=>`<button type="button" class="dep-module-chip ${current.has(name)?'active':''}" onclick="depToggleModule('${name.replace(/'/g,"\'")}')">${current.has(name)?'✓':''} ${esc(name)}</button>`).join('')}</div>`;
+}
+function depEnterEdit(id, mode='dep'){
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  _editDepId=id;
+  _editDepMode=mode;
+  _depDraft=depDraftFrom(d);
+  if(mode==='ops'){
+    const linked=depClientMatch(_depDraft.c,_depDraft.cid);
+    _depDraft.mo = Array.isArray(linked?.mo) ? [...linked.mo] : (Array.isArray(d.mo)?[...d.mo]:[]);
+  }
+  mode==='ops' ? renderOps() : renderDeps();
+}
 function depCancelEdit(){
+  const mode=_editDepMode||'dep';
   _editDepId=null;
   _depDraft=null;
-  renderDeps();
+  _editDepMode='dep';
+  mode==='ops' ? renderOps() : renderDeps();
 }
 function depSetDraft(field, value){
   if(!_depDraft) return;
   _depDraft[field]=value;
+  if(field==='c') _depDraft.cid='';
 }
 function depSetDraftModules(value){
   if(!_depDraft) return;
@@ -2523,15 +2595,21 @@ function depSetDraftModules(value){
 }
 function depSaveEdit(id){
   const d=deps.find(x=>x.id===id); if(!d||!_depDraft) return;
+  const mode=_editDepMode||'dep';
+  const matchedClient=depClientMatch(_depDraft.c,_depDraft.cid);
+  const resolvedModules = mode==='ops'
+    ? (Array.isArray(matchedClient?.mo)?matchedClient.mo:(Array.isArray(d.mo)?d.mo:[]))
+    : (Array.isArray(_depDraft.mo)?_depDraft.mo:(Array.isArray(matchedClient?.mo)?matchedClient.mo:[]));
   const next = {
     ...d,
-    c: depRiskFree(_depDraft.c),
-    pa: depRiskFree(_depDraft.pa),
-    ci: depRiskFree(_depDraft.ci),
-    tp: depRiskFree(_depDraft.tp),
+    cid: matchedClient?.id ?? _depDraft.cid ?? d.cid,
+    c: depRiskFree(_depDraft.c || matchedClient?.nm),
+    pa: depRiskFree(_depDraft.pa || matchedClient?.pa),
+    ci: depRiskFree(_depDraft.ci || matchedClient?.ci),
+    tp: depRiskFree(_depDraft.tp || matchedClient?.tp),
     es: depRiskFree(_depDraft.es),
     fase: Math.max(0, parseInt(_depDraft.fase,10)||0),
-    mo: Array.isArray(_depDraft.mo)?_depDraft.mo:[],
+    mo: resolvedModules,
     ln: depRiskFree(_depDraft.ln),
     fi: isD(_depDraft.fi)?_depDraft.fi:'',
     fd: isD(_depDraft.fd)?_depDraft.fd:'',
@@ -2609,34 +2687,44 @@ function depRowRead(d){
     <td>${depNotesRead(d.no)}</td>
     <td>${depLinkCell(d.lk)}</td>
     <td class="dep-actions">
-      <button class="icon-btn edit" title="Editar fila" onclick="depEnterEdit(${d.id})">✏️</button>
+      <button class="icon-btn edit" title="Editar fila" onclick="depEnterEdit(${d.id},'dep')">✏️</button>
       <button class="icon-btn del" title="Eliminar" onclick="confDel('dep',${d.id},'${esc(d.c)}')">🗑</button>
     </td>
   </tr>`;
 }
-function depRowEdit(d){
+function depModulesClientRead(mods){
+  if(!mods||!mods.length) return `<span class="dep-text muted">El cliente no tiene módulos asignados</span>`;
+  return `<div class="dep-modules">${mods.map(m=>`<span class="mt" title="${esc(m)}">${esc(m)}</span>`).join('')}</div>`;
+}
+function depRowEditFor(d, mode='dep'){
   const draft = _depDraft || depDraftFrom(d);
+  const linked=depClientMatch(draft.c,draft.cid);
+  const effectiveModules=(Array.isArray(draft.mo)&&draft.mo.length)?draft.mo:(Array.isArray(linked?.mo)?linked.mo:[]);
+  const modulesCell = mode==='ops'
+    ? `${depModulesClientRead(effectiveModules)}<div class="dep-edit-help">Los módulos se leen desde la ficha del cliente en Gestión de Clientes.</div>`
+    : `${depModulePicker(effectiveModules)}<div class="dep-edit-help">Selecciona los módulos del catálogo. Se guardan en el registro y afectan la complejidad.</div>`;
+  const complexNote = mode==='ops'
+    ? 'Se calcula automáticamente según el catálogo de complejidad y los módulos del cliente.'
+    : 'Se calcula automáticamente según catálogo de complejidad y módulos del cliente.';
   return `<tr class="dep-editing">
     <td class="dep-cell-id">${String(d.id).padStart(2,'0')}</td>
     <td>
-      ${depInput(draft.c,'c','Cliente')}
-      <div class="dep-edit-help">Edita nombre comercial del despliegue</div>
+      ${depClientDatalist()}
+      <input class="dep-inline-input" list="dep-client-list" value="${esc(draft.c||'')}" placeholder="Cliente" oninput="depHandleClientInput(this.value)">
+      <div class="dep-edit-help">Puedes escribir libremente o elegir un cliente existente</div>
     </td>
     <td>${depInput(draft.pa,'pa','País')}</td>
     <td>${depInput(draft.ci,'ci','Ciudad')}</td>
     <td>${depSelect(draft.tp,'tp',depModalOptions())}</td>
     <td>${depSelect(draft.es,'es',ESTADOS.map(e=>({value:e,label:e})))}</td>
     <td>${depSelect(draft.fase,'fase',depPhaseOptions())}</td>
-    <td>${complexBadge({...d,mo:draft.mo})}</td>
-    <td>
-      ${depTextarea((draft.mo||[]).join(', '),'mo','Módulos separados por coma').replace('oninput="depSetDraft(\'mo\',this.value)"','oninput="depSetDraftModules(this.value)"')}
-      <div class="dep-edit-help">Ejemplo: Bot, App Cliente, Conductor</div>
-    </td>
+    <td>${complexBadge({...d,cid:draft.cid,c:draft.c,mo:effectiveModules})}<span class="dep-auto-note">${complexNote}</span></td>
+    <td>${modulesCell}</td>
     <td>${depSelect(draft.ln,'ln',depLauncherOptions())}</td>
     <td>${depDateInput(draft.fi,'fi')}</td>
     <td>${depDateInput(draft.fd,'fd')}</td>
     <td>${depDateInput(draft.fe,'fe')}</td>
-    <td class="dep-num">${diasBadge({...d,fi:draft.fi,fe:draft.fe})}</td>
+    <td class="dep-num">${diasBadge({...d,fi:draft.fi,fe:draft.fe})}<span class="dep-auto-note">Automático por rango de fechas</span></td>
     <td>${depTextarea(draft.pe,'pe','Pendientes')}</td>
     <td>${depNumInput(draft.hrsOp,'hrsOp','0')}</td>
     <td>${depNumInput(draft.hrsNew,'hrsNew','0')}</td>
@@ -2648,8 +2736,21 @@ function depRowEdit(d){
     </td>
   </tr>`;
 }
+function depRowEdit(d){
+  return depRowEditFor(d,'dep');
+}
+function depRowEditOps(d){
+  return depRowEditFor(d,'ops');
+}
 function depRowView(d){
   return _editDepId===d.id ? depRowEdit(d) : depRowRead(d);
+}
+function depRowViewOps(d){
+  return _editDepId===d.id ? depRowEditOps(d) : depRowReadOps(d);
+}
+function depRowReadOps(d){
+  const row = depRowRead(d);
+  return row.replace(/onclick=\"depEnterEdit\\([^\"]+\"/, `onclick="depEnterEdit(${d.id},'ops')"`);
 }
 
 // ═══ RENDER DEPS / OPS / INACT ═══════════════════════
@@ -2671,7 +2772,7 @@ function renderDeps(){
   const cd=document.getElementById('cd');if(cd)cd.textContent=`${f.length} de ${deps.filter(d=>d.es!==EL).length}`;
   const tb=document.getElementById('dtb');
   if(tb)tb.innerHTML=f.length
-    ? f.map(depRowView).join('')
+    ? f.map(depRowViewOps).join('')
     : `<tr><td colspan="20" class="dep-empty">
         <div style="font-size:34px">🚀</div>
         <div class="dep-empty-title">Sin despliegues activos</div>
@@ -2686,12 +2787,22 @@ function renderOps(){
   const from=document.getElementById('fdo')?.value||'',to=document.getElementById('fto')?.value||'';
   const f=deps.filter(d=>{
     if(d.es!==EL)return false;
-    if(s&&!d.c.toLowerCase().includes(s)&&!(d.ci||'').toLowerCase().includes(s))return false;
-    if(fL&&d.ln!==fL)return false;if(from&&d.fe&&d.fe<from)return false;if(to&&d.fe&&d.fe>to)return false;
+    if(s && !String(d.c||'').toLowerCase().includes(s) && !String(d.ci||'').toLowerCase().includes(s) && !String(d.pa||'').toLowerCase().includes(s)) return false;
+    if(fL && d.ln!==fL) return false;
+    if(from && d.fe && d.fe<from) return false;
+    if(to && d.fe && d.fe>to) return false;
     return true;
   });
-  const co=document.getElementById('co');if(co)co.textContent=`${f.length} de ${deps.filter(d=>d.es===EL).length}`;
-  const tb=document.getElementById('otb');if(tb)tb.innerHTML=f.map(depRowLegacy).join('');
+  const total=deps.filter(d=>d.es===EL).length;
+  const co=document.getElementById('co');if(co)co.textContent=`${f.length} de ${total}`;
+  const tb=document.getElementById('otb');
+  if(tb)tb.innerHTML=f.length
+    ? f.map(depRowView).join('')
+    : `<tr><td colspan="20" class="dep-empty">
+        <div style="font-size:34px">✅</div>
+        <div class="dep-empty-title">Sin clientes operativos</div>
+        <div style="font-size:12px">No hay registros operativos que coincidan con los filtros actuales.</div>
+      </td></tr>`;
 }
 function renderInact(){
   const f=cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido');
@@ -3230,40 +3341,187 @@ function renderTlSVG(datasets,months,curIdx){
 
 // ═══ CAPACIDAD ═══════════════════════════════════════
 function setScenario(s){curScenario=s;renderCapacidad();}
+function destroyCapCharts(){
+  try{ if(capCharts.projection){ capCharts.projection.destroy(); capCharts.projection=null; } }catch(e){ console.warn('[Capacidad] No se pudo destruir projection chart', e); }
+  try{ if(capCharts.saturation){ capCharts.saturation.destroy(); capCharts.saturation=null; } }catch(e){ console.warn('[Capacidad] No se pudo destruir saturation chart', e); }
+}
 function renderCapacidad(){
-  const ops=deps.filter(d=>d.es===EL);
-  const scenarios={mod:{label:'Moderado',nuevos:3},ag:{label:'Agresivo',nuevos:8},est:{label:'Estabilización',nuevos:0}};
-  const sc=scenarios[curScenario]||scenarios.mod;
-  const globalHrsOp=parseFloat(document.getElementById('global-hrs-op')?.value)||8;
-  const globalHrsDep=parseFloat(document.getElementById('global-hrs-dep')?.value)||24;
-  let totalHrs=0;
-  const rows=ops.map(d=>{
-    const hrsOp=d.hrsOp||globalHrsOp;
-    totalHrs+=hrsOp;
-    const cx=complexBadge(d);
-    return`<tr>
-      <td style="font-weight:600">${esc(d.c)}</td>
-      <td>${cx||'—'}</td>
-      <td style="max-width:200px"><div style="display:flex;flex-wrap:wrap;gap:3px">${d.mo.map(m=>`<span class="mt" style="font-size:10px">${esc(m)}</span>`).join('')}</div></td>
-      <td style="text-align:center">${d.hrsOp?`<span style="color:#1B4FD8;font-weight:700">${d.hrsOp}h</span>`:`${globalHrsOp}h`}</td>
-    </tr>`;
-  });
-  const capTb=document.getElementById('cap-tbody');
-  if(capTb)capTb.innerHTML=rows.join('')||'<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin clientes operativos</td></tr>';
-  const kpis=[
-    ['👥 Clientes Op.',ops.length,'operativos activos','#1B4FD8'],
-    ['⏱ Hrs Actuales',totalHrs+'h/mes','carga total soporte','#0F7E4F'],
-    ['📈 Escenario',sc.label,'+'+sc.nuevos+' nuevos/mes','#B45309'],
-    ['⚡ Hrs Proyect.',(totalHrs+sc.nuevos*globalHrsDep)+'h','con nuevos despliegues','#5B21B6'],
-  ];
-  const capKpis=document.getElementById('cap-kpis');
-  if(capKpis)capKpis.innerHTML=kpis.map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
-  // Scenario buttons
-  ['mod','ag','est'].forEach(s=>{
-    const b=document.getElementById('sc-'+s);
-    if(b)b.style.fontWeight=curScenario===s?'700':'400';
-    if(b)b.style.borderColor=curScenario===s?'var(--blue)':'var(--border)';
-  });
+  try{
+    const ops=(deps||[]).filter(d=>d && d.es===EL);
+    const scenarios={
+      mod:{key:'mod',label:'Moderado',nuevos:3},
+      agr:{key:'agr',label:'Agresivo',nuevos:8},
+      est:{key:'est',label:'Estabilización',nuevos:0}
+    };
+    const sc=scenarios[curScenario]||scenarios.mod;
+    const operators=Math.max(1, parseInt(document.getElementById('cap-ops')?.value)||3);
+    const hrsDay=Math.max(1, parseFloat(document.getElementById('cap-hd')?.value)||8);
+    const daysMonth=Math.max(1, parseFloat(document.getElementById('cap-dm')?.value)||22);
+    const hrsActive=Math.max(1, parseFloat(document.getElementById('cap-hca')?.value)||8);
+    const hrsNew=Math.max(1, parseFloat(document.getElementById('cap-hcn')?.value)||24);
+    const availableHours=Math.round(operators*hrsDay*daysMonth);
+
+    const monthNames=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const now=new Date();
+    const labels=[];
+    const activeSeries=[];
+    const newSeries=[];
+    const consumedSeries=[];
+    const availableSeries=[];
+    const usageSeries=[];
+    const detailRows=[];
+
+    let currentActive=ops.length;
+    for(let i=0;i<6;i++){
+      const dt=new Date(now.getFullYear(), now.getMonth()+i, 1);
+      const lbl=monthNames[dt.getMonth()]+' '+String(dt.getFullYear()).slice(-2);
+      const nuevos=sc.nuevos;
+      const consumed=Math.round((currentActive*hrsActive)+(nuevos*hrsNew));
+      const usage=availableHours?Math.round((consumed/availableHours)*100):0;
+      const gap=availableHours-(currentActive*hrsActive);
+      const possible=Math.max(0, Math.floor(gap/hrsNew));
+      const status=usage>=100?'Saturado':usage>=85?'Crítico':usage>=70?'En riesgo':'Saludable';
+      const statusColor=usage>=100?'#BE123C':usage>=85?'#C2410C':usage>=70?'#B45309':'#0F7E4F';
+
+      labels.push(lbl);
+      activeSeries.push(currentActive);
+      newSeries.push(nuevos);
+      consumedSeries.push(consumed);
+      availableSeries.push(availableHours);
+      usageSeries.push(Math.min(usage, 180));
+      detailRows.push({lbl,active:currentActive,nuevos,consumed,available:availableHours,usage,status,statusColor,possible});
+      currentActive += nuevos;
+    }
+
+    const currentConsumed=Math.round(ops.reduce((sum,d)=>sum + (parseFloat(d.hrsOp)||hrsActive), 0));
+    const currentUsage=availableHours?Math.round((currentConsumed/availableHours)*100):0;
+    const maxActiveByTeam=Math.max(0, Math.floor(availableHours/hrsActive));
+    const extraDeploymentsNow=Math.max(0, Math.floor((availableHours-currentConsumed)/hrsNew));
+    let monthsToSaturation='No aplica';
+    if(sc.nuevos>0){
+      const pending=Math.max(0, maxActiveByTeam-ops.length);
+      const mts=Math.ceil(pending/sc.nuevos);
+      monthsToSaturation=!isFinite(mts)?'—':mts===0?'Este mes':mts+' mes(es)';
+    }
+
+    const kpis=[
+      ['👥 Clientes Op.',ops.length,'operativos activos','#1B4FD8'],
+      ['⏱ Capacidad mensual',availableHours+'h/mes',operators+' operador(es) × '+hrsDay+'h × '+daysMonth+' días','#0F7E4F'],
+      ['📦 Consumo actual',currentConsumed+'h/mes',currentUsage+'% de uso actual','#B45309'],
+      ['📈 Escenario',sc.label,'+'+sc.nuevos+' nuevos/mes','#5B21B6'],
+    ];
+    const capKpis=document.getElementById('cap-kpis');
+    if(capKpis)capKpis.innerHTML=kpis.map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
+
+    const capStat=document.getElementById('cap-stat');
+    if(capStat)capStat.textContent=currentUsage+'% uso actual';
+
+    const capTb=document.getElementById('cap-tbody');
+    if(capTb){
+      capTb.innerHTML=detailRows.length?detailRows.map(r=>`<tr>
+        <td><strong>${r.lbl}</strong></td>
+        <td style="text-align:center">${r.active}</td>
+        <td style="text-align:center">${r.nuevos}</td>
+        <td style="text-align:center;font-weight:700;color:${r.consumed>r.available?'#BE123C':'#1B4FD8'}">${r.consumed}h</td>
+        <td style="text-align:center">${r.available}h</td>
+        <td style="text-align:center">${r.usage}%</td>
+        <td><span class="tag" style="font-size:11px;background:${r.statusColor}15;color:${r.statusColor};border-color:${r.statusColor}55">${r.status}</span></td>
+        <td style="text-align:center">${r.possible}</td>
+      </tr>`).join(''):`<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--subtle)">Sin datos para calcular la capacidad.</td></tr>`;
+    }
+
+    const capClientsTb=document.getElementById('cap-clients-tbody');
+    if(capClientsTb){
+      capClientsTb.innerHTML=ops.length?ops.map(d=>{
+        const cxItem=(cats.complexity||[]).find(c=>String(c.id)===String(d.cx) || c.name===d.cxName || c.name===d.cx) || null;
+        const peso=Number(cxItem?.peso||1);
+        const baseHours=parseFloat(d.hrsOp)||Math.round(hrsActive*peso);
+        const source=d.hrsOp?'Manual':'Global × complejidad';
+        return `<tr>
+          <td style="font-weight:600">${esc(d.c||'—')}</td>
+          <td><span class="tag tag-green" style="font-size:11px">${esc(d.es||EL)}</span></td>
+          <td>${cxItem?esc(cxItem.name):'<span style="color:var(--subtle)">Sin definir</span>'}</td>
+          <td style="text-align:center">${peso.toFixed(1)}</td>
+          <td style="text-align:center;font-weight:700;color:#1B4FD8">${baseHours}h</td>
+          <td style="font-size:11.5px;color:var(--muted)">${source}</td>
+        </tr>`;
+      }).join(''):`<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--subtle)">Sin clientes operativos.</td></tr>`;
+    }
+
+    ['mod','agr','est'].forEach(s=>{
+      const b=document.getElementById('sc-'+s);
+      if(b){
+        b.classList.toggle('active', curScenario===s);
+        b.style.fontWeight=curScenario===s?'700':'500';
+        b.style.borderColor=curScenario===s?'var(--blue)':'var(--border)';
+      }
+    });
+
+    const satWrap=document.getElementById('cap-saturation');
+    if(satWrap){
+      satWrap.innerHTML=`
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+          <div class="mini-stat"><div class="mini-stat-l">Máx. clientes activos</div><div class="mini-stat-v">${maxActiveByTeam}</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">Nuevos posibles hoy</div><div class="mini-stat-v">${extraDeploymentsNow}</div></div>
+          <div class="mini-stat"><div class="mini-stat-l">Saturación estimada</div><div class="mini-stat-v">${monthsToSaturation}</div></div>
+        </div>
+        <div style="height:190px;position:relative"><canvas id="cap-saturation-chart"></canvas></div>
+      `;
+    }
+
+    destroyCapCharts();
+
+    const projectionCanvas=document.getElementById('cap-chart');
+    if(projectionCanvas){
+      if(typeof Chart==='undefined'){
+        const wrap=projectionCanvas.parentElement;
+        if(wrap)wrap.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--subtle);font-size:13px">No se pudo cargar Chart.js</div>';
+      }else{
+        capCharts.projection=new Chart(projectionCanvas.getContext('2d'),{
+          type:'bar',
+          data:{labels,datasets:[
+            {label:'Hrs disponibles', data:availableSeries, type:'line', borderColor:'#0F7E4F', backgroundColor:'#0F7E4F22', tension:0.3, fill:false, pointRadius:3, borderWidth:3},
+            {label:'Hrs consumidas', data:consumedSeries, backgroundColor:'#1B4FD8BB', borderColor:'#1B4FD8', borderWidth:1, borderRadius:6, maxBarThickness:34},
+            {label:'Nuevos clientes', data:newSeries, type:'line', borderColor:'#B45309', backgroundColor:'#B4530922', tension:0.25, fill:false, yAxisID:'y1', pointRadius:3, borderDash:[5,4]}
+          ]},
+          options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'h'}},y1:{beginAtZero:true,position:'right',grid:{drawOnChartArea:false},ticks:{precision:0}},x:{grid:{display:false}}}}
+        });
+      }
+    }
+
+    const satCanvas=document.getElementById('cap-saturation-chart');
+    if(satCanvas && typeof Chart!=='undefined'){
+      capCharts.saturation=new Chart(satCanvas.getContext('2d'),{
+        type:'doughnut',
+        data:{labels:['Uso actual','Disponible'],datasets:[{data:[Math.min(currentConsumed,availableHours), Math.max(availableHours-currentConsumed,0)],backgroundColor:['#1B4FD8','#E5E7EB'],borderColor:['#1B4FD8','#E5E7EB'],borderWidth:1}]},
+        options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{position:'bottom'}}},
+        plugins:[{
+          id:'cap-center-text',
+          afterDraw(chart){
+            const {ctx}=chart;
+            const meta=chart.getDatasetMeta(0);
+            if(!meta || !meta.data || !meta.data[0]) return;
+            const x=meta.data[0].x, y=meta.data[0].y;
+            ctx.save();
+            ctx.textAlign='center';
+            ctx.fillStyle='#111827';
+            ctx.font='700 22px DM Sans';
+            ctx.fillText(currentUsage+'%', x, y-2);
+            ctx.fillStyle='#6B7280';
+            ctx.font='12px DM Sans';
+            ctx.fillText('uso actual', x, y+16);
+            ctx.restore();
+          }
+        }]
+      });
+    }
+  }catch(err){
+    console.error('[Capacidad] Error renderizando módulo', err);
+    const capKpis=document.getElementById('cap-kpis');
+    if(capKpis)capKpis.innerHTML='<div class="kpi"><div class="kpi-lbl">⚠️ Error</div><div class="kpi-val" style="color:#BE123C">No se pudo cargar</div><div class="kpi-note">Revisa la consola para más detalle</div></div>';
+    const capTb=document.getElementById('cap-tbody');
+    if(capTb)capTb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:#BE123C">No se pudo renderizar la capacidad operativa.</td></tr>';
+  }
 }
 
 // ═══ CONTRATOS ═══════════════════════════════════════
@@ -4021,6 +4279,28 @@ function loadSupabase(){
     tryNext();
   });
 }
+function enterDemo(){
+  try{
+    _currentUser={email:'demo@clipp.com',id:'demo-user',user_metadata:{name:'Demo'}};
+    sessionStorage.setItem('clipp_authed','1');
+    sessionStorage.setItem('clipp_demo','1');
+    var err=document.getElementById('li-err'); if(err) err.textContent='';
+    var status=document.getElementById('li-status'); if(status) status.textContent='Modo demo activo';
+    document.getElementById('login-overlay').classList.add('hidden');
+    bootAppSafe();
+  }catch(e){
+    console.error('Demo login error',e);
+    var err=document.getElementById('li-err'); if(err) err.textContent='No se pudo iniciar modo demo: '+e.message;
+  }
+}
+function bootAppSafe(){
+  try{ bootApp(); }
+  catch(e){
+    console.error('bootApp error',e);
+    var err=document.getElementById('li-err'); if(err) err.textContent='Error al cargar la app: '+e.message;
+    document.getElementById('login-overlay').classList.remove('hidden');
+  }
+}
 function doLogin(){
   const email=document.getElementById('li-email').value.trim();
   const pass=document.getElementById('li-pass').value;
@@ -4028,9 +4308,10 @@ function doLogin(){
   const err=document.getElementById('li-err');
   if(!email||!pass){err.textContent='Ingresa email y contraseña';return;}
   btn.disabled=true;btn.textContent='Ingresando...';err.textContent='';
-  if(email==='demo@clipp.com'){
-    document.getElementById('login-overlay').classList.add('hidden');
-    bootApp();return;
+  if(email==='demo@clipp.com' || (email==='demo' && pass==='demo')){
+    enterDemo();
+    btn.disabled=false;btn.textContent='Ingresar';
+    return;
   }
   loadSupabase().then(function(){
     try{
@@ -4044,7 +4325,7 @@ function doLogin(){
         _currentUser=res.data.user;
         sessionStorage.setItem('clipp_authed','1');
         document.getElementById('login-overlay').classList.add('hidden');
-        bootApp();
+        bootAppSafe();
       }).catch(function(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';});
     }catch(e){err.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Ingresar';}
   }).catch(function(){err.textContent='Sin conexión. Usa "🚀 Modo demo".';btn.disabled=false;btn.textContent='Ingresar';});
@@ -4545,7 +4826,7 @@ function subscribeRealtime(){
 }
 function bootApp(){
   // DATA RESET: force reload when version changes
-  var DATA_VERSION='v4.2_clean';
+  var DATA_VERSION='v5.0_demo_fix';
   var _needDepsClear=localStorage.getItem('data_version')!==DATA_VERSION;
   if(_needDepsClear){
     // Reset only deps and contracts — keep clients (oc27) and cats (ct27)
@@ -4640,6 +4921,11 @@ function bootApp(){
   }
 }
 
+// ═══ AUTO-DEMO VIA QUERYSTRING ════════════════════════
+if(location.search.includes('demo=1')){
+  setTimeout(function(){ enterDemo(); }, 0);
+}
+
 // ═══ AUTO-CHECK SESSION ═══════════════════════════════
 (function(){
   var passEl=document.getElementById('li-pass');
@@ -4651,7 +4937,7 @@ function bootApp(){
         if(res.data&&res.data.session){
           supabase=sb;_currentUser=res.data.session.user;
           document.getElementById('login-overlay').classList.add('hidden');
-          bootApp();
+          bootAppSafe();
         }
       });
     }catch(e){}
