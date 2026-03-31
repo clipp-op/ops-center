@@ -3138,7 +3138,6 @@ function reloadCatsFromSupabase(){
     if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
     if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
     if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
     if(!cats.tp)cats.tp=[];
     renderCats();
     setSyncStatus('✓ Catálogos actualizados','#0F7E4F');
@@ -3175,7 +3174,6 @@ function renderCats(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
   if(!cats.tp)cats.tp=[];
   // Open the first section by default if none open
   const sections=document.querySelectorAll('.cat-section');
@@ -3608,7 +3606,6 @@ function initColResize(e){
 
 function renderLaunchers(){
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
   const el=document.getElementById('ln-tbody');if(!el)return;
   const lns=cats.launchers||[];
   el.innerHTML=lns.length?lns.map((l,i)=>`<tr>
@@ -4069,7 +4066,6 @@ function subscribeRealtime(){
       else if(k==='trash'){trash=v;localStorage.setItem('trash_v1',JSON.stringify(v));}
       // Re-migrate cats if realtime update has older cats version
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
       if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
       if(!cats.tp)cats.tp=[];
       if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
@@ -4123,7 +4119,6 @@ function bootApp(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
   if(!cats.tp)cats.tp=[];
 
   // Load roles
@@ -4149,7 +4144,6 @@ function bootApp(){
       }
       // Re-migrate cats in case Supabase had older version without new keys
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-  setTimeout(function(){try{renderCats();}catch(e){}},50);
       if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
       if(!cats.tp)cats.tp=[];
       if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
@@ -4200,6 +4194,210 @@ function bootApp(){
     }catch(e){}
   }).catch(function(){});
 })();
+
+
+
+// ═══ HOTFIX V3: Catálogos y Capacidad ═══════════════
+function renderSimpleLineChart(containerId, labels, series){
+  const el=document.getElementById(containerId); if(!el) return;
+  const W=760,H=260,PL=46,PR=16,PT=18,PB=34;
+  const gW=W-PL-PR,gH=H-PT-PB;
+  const vals=series.flatMap(s=>s.data||[]).map(v=>Number(v)||0);
+  const maxVal=Math.max(1,...vals);
+  const px=i=>PL + (labels.length<=1?0:(i*(gW/(labels.length-1))));
+  const py=v=>PT + gH - ((Number(v)||0)/maxVal)*gH;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">`;
+  for(let i=0;i<=4;i++){
+    const y=PT+(gH/4)*i;
+    const val=Math.round(maxVal-(maxVal/4)*i);
+    svg += `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
+    svg += `<text x="${PL-8}" y="${y+4}" text-anchor="end" font-size="10" fill="#637087">${val}</text>`;
+  }
+  labels.forEach((lb,i)=>{
+    const x=px(i);
+    svg += `<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+gH}" stroke="#F1F5F9" stroke-width="1"/>`;
+    svg += `<text x="${x}" y="${H-10}" text-anchor="middle" font-size="10" fill="#637087">${lb}</text>`;
+  });
+  series.forEach(s=>{
+    const pts=(s.data||[]).map((v,i)=>[px(i),py(v)]);
+    if(!pts.length) return;
+    svg += `<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${s.color||'#1B4FD8'}" stroke-width="2.5"/>`;
+    pts.forEach((p,i)=>{
+      svg += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${s.color||'#1B4FD8'}"/>`;
+      svg += `<title>${labels[i]}: ${s.data[i]}</title>`;
+    });
+  });
+  svg += `</svg>`;
+  const legend = `<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">${series.map(s=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151"><span style="width:10px;height:10px;border-radius:99px;background:${s.color||'#1B4FD8'};display:inline-block"></span>${s.label}</div>`).join('')}</div>`;
+  el.outerHTML = `<div id="${containerId}-svg-wrap">${legend}${svg}</div>`;
+}
+
+function renderCatalogosForzado(){
+  const view=document.getElementById('view-catalogos');
+  if(!view) return;
+  const sections=view.querySelectorAll('.cat-section');
+  sections.forEach((sec,idx)=>{
+    sec.style.display='block';
+    sec.style.visibility='visible';
+    sec.style.opacity='1';
+    sec.classList.add('open');
+    const hdr=sec.querySelector('.cat-section-hdr');
+    const body=sec.querySelector('.cat-section-body');
+    if(hdr){
+      hdr.style.display='flex';
+      hdr.style.visibility='visible';
+      hdr.style.opacity='1';
+      hdr.onclick=function(){
+        sec.classList.toggle('open');
+        if(body) body.style.display = sec.classList.contains('open') ? 'block' : 'none';
+      };
+    }
+    if(body){
+      body.style.display='block';
+      body.style.visibility='visible';
+      body.style.opacity='1';
+    }
+  });
+}
+
+function renderCats(){
+  if(!cats || typeof cats!=='object') cats={};
+  if(!cats.ap||!cats.ap.length) cats.ap=BASE_AP.map(x=>({...x}));
+  if(!cats.tp) cats.tp=[];
+  if(!cats.md||!cats.md.length) cats.md=BASE_MD.map(x=>({...x}));
+  if(!cats.catmod||!cats.catmod.length) cats.catmod=BASE_CATMOD.map(x=>({...x}));
+  if(!cats.modal||!cats.modal.length) cats.modal=BASE_MODAL.map(x=>({...x}));
+  if(!cats.launchers||!cats.launchers.length) cats.launchers=BASE_LAUNCHERS.map(x=>({...x}));
+  if(!cats.complexity||!cats.complexity.length) cats.complexity=BASE_COMPLEXITY.map(x=>({...x}));
+  if(!cats.phases||!cats.phases.length) cats.phases=BASE_PHASES.map(x=>({...x}));
+  if(!cats.implTimes||!cats.implTimes.length) cats.implTimes=BASE_IMPL_TIMES.map(x=>({...x}));
+  if(!cats.billingTypes||!cats.billingTypes.length) cats.billingTypes=BASE_BILLING_TYPES.map(x=>({...x}));
+  if(!cats.risk||!cats.risk.length) cats.risk=BASE_RISK.map(x=>({...x}));
+
+  try{ renderCatalogosForzado(); }catch(e){ console.warn('renderCatalogosForzado',e); }
+  const fns=[renderMds,renderCatMods,renderAps,renderTps,renderModDeps,renderLaunchers,renderCxs,renderPhases,renderImplTimes,renderBTs,renderRisks];
+  fns.forEach(fn=>{ try{ if(typeof fn==='function') fn(); }catch(e){ console.warn('catalog fn error', fn&&fn.name, e); } });
+  try{ sv(); }catch(e){}
+  try{ renderCatalogosForzado(); }catch(e){}
+}
+
+function renderCapacidad(){
+  const opsCount=parseInt(document.getElementById('cap-ops')?.value)||3;
+  const hrsDia=parseFloat(document.getElementById('cap-hd')?.value)||8;
+  const diasMes=parseInt(document.getElementById('cap-dm')?.value)||22;
+  const hrsActivo=parseFloat(document.getElementById('cap-hca')?.value)||8;
+  const hrsNuevo=parseFloat(document.getElementById('cap-hcn')?.value)||24;
+  const totalDisponibles=opsCount*hrsDia*diasMes;
+  const operativos=deps.filter(d=>d.es===EL);
+  const enDespliegue=deps.filter(d=>d.es!==EL);
+  const escenarioMap={mod:{label:'Moderado',nuevos:3},agr:{label:'Agresivo',nuevos:8},ag:{label:'Agresivo',nuevos:8},est:{label:'Estabilización',nuevos:0}};
+  const sc=escenarioMap[curScenario]||escenarioMap.mod;
+  if(curScenario==='ag') curScenario='agr';
+
+  const baseConsumido=operativos.reduce((sum,d)=>sum+(parseFloat(d.hrsOp)||hrsActivo),0);
+  const capacidadMaxClientes=Math.floor(totalDisponibles/Math.max(1,hrsActivo));
+  const margenHoras=Math.max(0,totalDisponibles-baseConsumido);
+  const nuevosPosibles=Math.max(0,Math.floor(margenHoras/Math.max(1,hrsNuevo)));
+  const usoActual=Math.round((baseConsumido/Math.max(1,totalDisponibles))*100);
+
+  const capKpis=document.getElementById('cap-kpis');
+  if(capKpis){
+    const kpis=[
+      ['👥 Clientes Operativos',operativos.length,'activos','#1B4FD8'],
+      ['⏱ Horas Consumidas',`${baseConsumido}h`,`de ${totalDisponibles}h disponibles`,'#0F7E4F'],
+      ['📊 Uso Actual',`${usoActual}%`,usoActual>=85?'riesgo alto':usoActual>=65?'alerta':'saludable','#B45309'],
+      ['🚀 Escenario',`${sc.label}`,`+${sc.nuevos} nuevos/mes`,'#5B21B6']
+    ];
+    capKpis.innerHTML=kpis.map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
+  }
+
+  const stat=document.getElementById('cap-stat');
+  if(stat) stat.textContent=`${operativos.length} operativos · ${enDespliegue.length} en despliegue`;
+
+  ['mod','agr','est'].forEach(s=>{
+    const b=document.getElementById('sc-'+s);
+    if(b) b.classList.toggle('active', curScenario===s);
+  });
+
+  const sat=document.getElementById('cap-saturation');
+  if(sat){
+    const color=usoActual>=85?'#DC2626':usoActual>=65?'#B45309':'#0F7E4F';
+    sat.innerHTML=`
+      <div style="display:grid;gap:12px">
+        <div style="font-size:32px;font-weight:800;color:${color}">${usoActual}%</div>
+        <div style="font-size:13px;color:var(--muted)">Uso actual del equipo</div>
+        <div style="height:14px;background:#E5E7EB;border-radius:999px;overflow:hidden">
+          <div style="width:${Math.min(100,usoActual)}%;height:100%;background:${color}"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+          <div><strong>${capacidadMaxClientes}</strong><br><span style="color:var(--muted)">máx. clientes activos</span></div>
+          <div><strong>${nuevosPosibles}</strong><br><span style="color:var(--muted)">nuevos despliegues posibles</span></div>
+        </div>
+      </div>`;
+  }
+
+  const months=['M1','M2','M3','M4','M5','M6'];
+  let activos=operativos.length;
+  const rows=[];
+  const consSerie=[];
+  const dispSerie=[];
+  months.forEach((m,idx)=>{
+    const nuevos=sc.nuevos;
+    const consumidas=(activos*hrsActivo)+(nuevos*hrsNuevo);
+    const uso=Math.round((consumidas/Math.max(1,totalDisponibles))*100);
+    const posibles=Math.max(0,Math.floor(Math.max(0,totalDisponibles-(activos*hrsActivo))/Math.max(1,hrsNuevo)));
+    const estado=uso>=85?['🔴 Riesgo','#DC2626']:uso>=65?['🟠 Alerta','#B45309']:['🟢 Saludable','#0F7E4F'];
+    rows.push(`<tr>
+      <td>${m}</td>
+      <td style="text-align:center">${activos}</td>
+      <td style="text-align:center">${nuevos}</td>
+      <td style="text-align:center">${consumidas}h</td>
+      <td style="text-align:center">${totalDisponibles}h</td>
+      <td style="text-align:center;font-weight:700;color:${estado[1]}">${uso}%</td>
+      <td><span style="background:${estado[1]}15;color:${estado[1]};padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700">${estado[0]}</span></td>
+      <td style="text-align:center">${posibles}</td>
+    </tr>`);
+    consSerie.push(consumidas);
+    dispSerie.push(totalDisponibles);
+    activos += nuevos;
+  });
+  const tb=document.getElementById('cap-tbody');
+  if(tb) tb.innerHTML=rows.join('');
+
+  const clientsTb=document.getElementById('cap-clients-tbody');
+  if(clientsTb){
+    clientsTb.innerHTML=operativos.length ? operativos.map(d=>{
+      const cx=(cats.complexity||[]).find(c=> (d.cx&&c.name===d.cx) || (c.mods && String(c.mods).split(',').some(m=>Array.isArray(d.mo)&&d.mo.includes(m.trim()))));
+      const peso=Number(cx?.peso)||1;
+      const hrs = parseFloat(d.hrsOp)||Math.round(hrsActivo*peso);
+      return `<tr>
+        <td style="font-weight:600">${esc(d.c||'')}</td>
+        <td>${esc(d.es||'')}</td>
+        <td>${esc(cx?.name||d.cx||'Base')}</td>
+        <td style="text-align:center">${peso}</td>
+        <td style="text-align:center;font-weight:700">${hrs}h</td>
+        <td style="text-align:center;color:var(--muted)">${d.hrsOp?'Manual':'Global × peso'}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--subtle)">Sin clientes operativos</td></tr>';
+  }
+
+  const canvas=document.getElementById('cap-chart');
+  if(canvas){
+    canvas.outerHTML=`<div id="cap-chart-svg"></div>`;
+  }
+  renderSimpleLineChart('cap-chart-svg', months, [
+    {label:'Horas disponibles', data:dispSerie, color:'#1B4FD8'},
+    {label:'Horas consumidas', data:consSerie, color:'#B45309'}
+  ]);
+}
+
+function setScenario(sc){ curScenario=sc; renderCapacidad(); }
+
+window.addEventListener('load', function(){
+  try{ renderCats(); }catch(e){ console.warn('load renderCats', e); }
+  try{ if(curV==='catalogos') renderCats(); }catch(e){}
+  try{ renderCapacidad(); }catch(e){ console.warn('load renderCapacidad', e); }
+});
 
 </script>
 </body>
