@@ -190,6 +190,14 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .cat-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .cat-panel{display:none}.cat-panel.active{display:block}
   .cat-panel.cat-panel-visible{display:block}
+.cat-section{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.cat-section-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:14px;font-weight:700;background:var(--bg)}
+.cat-section-hdr:hover{background:var(--bg2)}
+.cat-section-body{display:none;padding:14px 16px 16px;background:var(--bg)}
+.cat-section.open .cat-section-body{display:block}
+.cat-section-arrow{transition:transform .2s ease;color:var(--muted)}
+.cat-section.open .cat-section-arrow{transform:rotate(180deg)}
+.cat-error{margin-bottom:14px;padding:12px 14px;border-radius:10px;background:#FFF7ED;border:1px solid #FED7AA;color:#9A3412;font-size:12.5px;line-height:1.5}
 .cat-table{width:100%;border-collapse:collapse}
 .cat-table thead th{padding:9px 13px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--bg2);border-bottom:2px solid var(--border)}
 .cat-table td{padding:9px 13px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
@@ -199,19 +207,6 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .cat-add-row .fr{margin:0;flex:1}
 .cat-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;background:var(--bg)}
 .cat-input:focus{border-color:var(--blue)}
-.cat-section{display:block !important;visibility:visible !important;opacity:1 !important;position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:visible;box-shadow:var(--sh)}
-.cat-section-hdr{display:flex !important;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:14px;font-weight:700;background:var(--bg);border-bottom:1px solid var(--border);color:var(--text) !important;min-height:52px}
-.cat-section-hdr:hover{background:var(--bg2)}
-.cat-section-arrow{transition:transform .2s ease;color:var(--muted);font-size:16px}
-.cat-section-body{display:block !important;padding:14px 16px 16px;background:var(--bg)}
-.cat-section.open .cat-section-body{display:block !important}
-.cat-section.open .cat-section-hdr{border-bottom-color:var(--border)}
-.cat-section.open .cat-section-arrow{transform:rotate(180deg)}
-#view-catalogos .cat-section{max-width:none;width:100%}
-#view-catalogos .cat-table,#view-catalogos .tbl-wrap,#view-catalogos .cat-add-row{display:block;visibility:visible;opacity:1}
-#view-catalogos .cat-add-row{display:flex;flex-wrap:wrap}
-#view-catalogos .cat-section-body .btn{display:inline-flex}
-
 .sync-note{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;margin-top:4px}
 .view{display:none}.view.active{display:block;padding:20px 24px}
 /* ──INFO TOOLTIP ── */
@@ -292,24 +287,6 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .tag-red{background:var(--red-l);color:var(--red)}
 .tag-violet{background:var(--violet-l);color:var(--violet)}
 .divider-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;border-bottom:2px solid var(--border);padding-bottom:6px;margin:18px 0 12px}
-/* HOTFIX V4 — tablas de despliegues */
-#tbl-d,#tbl-o{table-layout:fixed}
-#tbl-d td,#tbl-o td{overflow:hidden}
-.dep-cell{display:block;width:100%;max-width:100%;overflow:hidden}
-.dep-cell .ei,.dep-cell select.ei{width:100%;min-width:0;max-width:100%}
-.dep-actions{display:flex;align-items:center;gap:4px;white-space:nowrap}
-.dep-phase{display:flex;align-items:center;gap:6px;min-width:0}
-.dep-phase .phase-wrap{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.dep-link{display:flex;align-items:center;gap:4px;min-width:0}
-.dep-link .ei{width:100%}
-.dep-date{display:flex;align-items:center}
-.dep-date .ei{min-width:0!important}
-.dep-mods{min-width:0;max-width:100%;overflow:hidden}
-.dep-mods .cl-mods-ro{max-width:100%;overflow:hidden}
-.dep-note{min-width:0}
-.dep-empty{padding:40px 16px;text-align:center;color:var(--muted)}
-.dep-empty .emoji{font-size:32px;margin-bottom:8px}
-
 </style>
 </head>
 <body>
@@ -921,7 +898,8 @@ input[type=date].ei{cursor:pointer;min-width:110px}
         </div></div>
 
       </div>
-    
+    </div>
+
     <!-- ══ CATÁLOGOS ══ -->
     <div id="view-catalogos" class="view">
       <div class="sec-hdr">
@@ -933,7 +911,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       <!-- Each section is always visible, collapsible -->
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>⚙️ Módulos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -951,7 +929,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🏷 Categorías de Módulos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -972,7 +950,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🖥 Aplicativos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -994,7 +972,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🏷 Tipos de Cliente</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1016,7 +994,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🚀 Modalidades de Despliegue</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1034,7 +1012,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>👤 Launchers</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1052,7 +1030,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🎯 Complejidad</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1080,7 +1058,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>📍 Fases de Implementación</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1098,7 +1076,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>⏱ Tiempos de Implementación</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1120,7 +1098,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>💰 Tipos de Cobro</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1140,7 +1118,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🚦 Estados de Riesgo</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1751,22 +1729,6 @@ let cobCharts={trend:null,pie:null};
 // ═══ UTILS ═══════════════════════════════════════════
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function isD(s){return/^\d{4}-\d{2}-\d{2}$/.test(s||'');}
-function normalizeDateInput(v){
-  if(!v) return '';
-  if(v instanceof Date && !isNaN(v)) return v.toISOString().slice(0,10);
-  let s=String(v).trim();
-  if(!s) return '';
-  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
-  const lat = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-  if(lat) return `${lat[3]}-${lat[2]}-${lat[1]}`;
-  const jsDate = new Date(s);
-  if(!isNaN(jsDate)) return jsDate.toISOString().slice(0,10);
-  return '';
-}
-function safeArr(v){ return Array.isArray(v) ? v : []; }
-function numOrBlank(v){ return v===0 || v ? v : ''; }
 function fmtD(s){if(!isD(s))return s||'—';const[y,m,d]=s.split('-');return`${d}/${m}/${y}`;}
 function setSyncStatus(msg,color){const el=document.getElementById('sync-status');if(el){el.textContent=msg;el.style.color=color||'var(--muted)';}}
 function showSync(ok,msg){setSyncStatus((ok?'✓ ':'✗ ')+msg,ok?'#0F7E4F':'#DC2626');setTimeout(()=>setSyncStatus(''),3000);}
@@ -2167,41 +2129,34 @@ function togDep(){
 
 // ═══ DEP ROW ═════════════════════════════════════════
 function depRow(d){
-  const _modals=(cats.modal&&cats.modal.length)?cats.modal:BASE_MODAL;
+  const _modals=cats.modal&&cats.modal.length?cats.modal:BASE_MODAL;
   const modAps=_modals.map(m=>`<option ${d.tp===(m.icon+' '+m.name)||d.tp===m.name?'selected':''}>${m.icon||''} ${m.name}</option>`).join('');
   const esOpts=ESTADOS.map(e=>`<option ${d.es===e?'selected':''}>${e}</option>`).join('');
   const _lns=LAUNCHERS().length?LAUNCHERS():BASE_LAUNCHERS.map(l=>l.name);
   const lnOpts=_lns.map(l=>`<option ${d.ln===l?'selected':''}>${l}</option>`).join('');
-  const moList=safeArr(d.mo);
-  const moHtml=moList.length
-    ? moList.map(m=>`<span class="mt">${esc(m)}</span>`).join('')
-    : '<span style="color:var(--subtle);font-size:11px">—</span>';
-
-  const fi=normalizeDateInput(d.fi);
-  const fd=normalizeDateInput(d.fd);
-  const fe=normalizeDateInput(d.fe);
-
-  return `<tr>
+  const cl=cls.find(c=>c.id===d.cid)||null;
+  const moHtml=d.mo.length?d.mo.map(m=>`<span class="mt">${esc(m)}</span>`).join(''):'<span style="color:var(--subtle);font-size:11px">—</span>';
+  return`<tr>
     <td style="color:var(--subtle);font-family:'DM Mono',monospace;font-size:11px">${String(d.id).padStart(2,'0')}</td>
-    <td style="font-weight:600">${esc(d.c||'')}</td>
-    <td>${esc(d.pa||'')}</td>
-    <td>${esc(d.ci||'')}</td>
-    <td><div class="dep-cell"><select class="ei" onchange="uD(${d.id},'tp',this.value)">${modAps}</select></div></td>
-    <td><div class="dep-cell"><select class="ei" onchange="uDEs(${d.id},this.value)">${esOpts}</select></div></td>
-    <td><div class="dep-phase"><span class="phase-wrap">${phaseBadge(d)||'—'}</span><span class="dep-actions"><button class="icon-btn" onclick="advanceFase(${d.id})" title="Avanzar">▶</button><button class="icon-btn" onclick="backFase(${d.id})" title="Retroceder">◀</button></span></div></td>
-    <td>${complexBadge(d)||'—'}</td>
-    <td><div class="dep-mods"><div class="cl-mods-ro" onclick="openMO(${d.id},'dep')" style="cursor:pointer" title="Clic para editar módulos">${moHtml}</div></div></td>
-    <td><div class="dep-cell"><select class="ei" onchange="uD(${d.id},'ln',this.value)">${lnOpts}</select></div></td>
-    <td><div class="dep-date"><input type="date" class="ei" value="${fi}" onchange="uD(${d.id},'fi',this.value)"></div></td>
-    <td><div class="dep-date"><input type="date" class="ei" value="${fd}" onchange="uD(${d.id},'fd',this.value)"></div></td>
-    <td><div class="dep-date"><input type="date" class="ei" value="${fe}" onchange="uD(${d.id},'fe',this.value)"></div></td>
-    <td>${diasBadge({...d,fi,fd,fe})}</td>
-    <td><div class="dep-cell"><input class="ei" value="${esc(d.pe||'')}" placeholder="Pendientes..." onchange="uD(${d.id},'pe',this.value)"></div></td>
-    <td><div class="dep-cell"><input type="number" class="ei" value="${numOrBlank(d.hrsOp)}" placeholder="—" onchange="uD(${d.id},'hrsOp',this.value)"></div></td>
-    <td><div class="dep-cell"><input type="number" class="ei" value="${numOrBlank(d.hrsNew)}" placeholder="—" onchange="uD(${d.id},'hrsNew',this.value)"></div></td>
-    <td><div class="dep-note"><div class="dep-cell"><input class="ei" value="${esc(d.no||'')}" placeholder="Notas..." onchange="uD(${d.id},'no',this.value)"></div></div></td>
-    <td><div class="dep-link">${d.lk?`<a href="${esc(d.lk)}" target="_blank" class="icon-btn" title="Abrir">🔗</a>`:''}<input class="ei" value="${esc(d.lk||'')}" placeholder="URL" onchange="uD(${d.id},'lk',this.value)"></div></td>
-    <td><div class="dep-actions"><button class="icon-btn del" onclick="confDel('dep',${d.id},'${esc(d.c||'')}')">🗑</button></div></td>
+    <td style="font-weight:600;min-width:120px">${esc(d.c)}</td>
+    <td style="font-size:12px">${esc(d.pa||'')}</td>
+    <td style="font-size:12px">${esc(d.ci||'')}</td>
+    <td><select class="ei" onchange="uD(${d.id},'tp',this.value)">${modAps}</select></td>
+    <td><select class="ei" onchange="uDEs(${d.id},this.value)">${esOpts}</select></td>
+    <td style="white-space:nowrap">${phaseBadge(d)}<button class="icon-btn" onclick="advanceFase(${d.id})" title="Avanzar">▶</button><button class="icon-btn" onclick="backFase(${d.id})" title="Retroceder">◀</button></td>
+    <td>${complexBadge(d)}</td>
+    <td><div class="cl-mods-ro" onclick="openMO(${d.id},'dep')" style="cursor:pointer;min-width:120px" title="Clic para editar módulos">${moHtml||'<span style=\"color:var(--subtle);font-size:11px\">+ módulos</span>'}</div></td>
+    <td><select class="ei" onchange="uD(${d.id},'ln',this.value)">${lnOpts}</select></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fi||''}" onchange="uD(${d.id},'fi',this.value)"></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fd||''}" onchange="uD(${d.id},'fd',this.value)"></td>
+    <td><input type="date" class="ei" style="min-width:115px" value="${d.fe||''}" onchange="uD(${d.id},'fe',this.value)"></td>
+    <td>${diasBadge(d)}</td>
+    <td><input class="ei" style="min-width:140px" value="${esc(d.pe||'')}" placeholder="Pendientes..." onchange="uD(${d.id},'pe',this.value)"></td>
+    <td><input type="number" class="ei" style="width:60px" value="${d.hrsOp||''}" placeholder="—" onchange="uD(${d.id},'hrsOp',this.value)"></td>
+    <td><input type="number" class="ei" style="width:60px" value="${d.hrsNew||''}" placeholder="—" onchange="uD(${d.id},'hrsNew',this.value)"></td>
+    <td><input class="ei" style="min-width:140px" value="${esc(d.no||'')}" placeholder="Notas..." onchange="uD(${d.id},'no',this.value)"></td>
+    <td>${d.lk?`<a href="${esc(d.lk)}" target="_blank" class="icon-btn" title="Abrir">🔗</a>`:''}<input class="ei" style="width:80px" value="${esc(d.lk||'')}" placeholder="URL" onchange="uD(${d.id},'lk',this.value)"></td>
+    <td style="white-space:nowrap"><button class="icon-btn del" onclick="confDel('dep',${d.id},'${esc(d.c)}')">🗑</button></td>
   </tr>`;
 }
 function uD(id,f,v){const d=deps.find(x=>x.id===id);if(!d)return;d[f]=v;sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
@@ -2225,36 +2180,24 @@ function backFase(id){
 
 // ═══ RENDER DEPS / OPS / INACT ═══════════════════════
 function renderDeps(){
+  // If deps is empty but Supabase connected, might be stale — try a quick fetch
   depTH('th-d');
-  const s=(document.getElementById('sd')?.value||'').toLowerCase().trim();
-  const fState=document.getElementById('fsd')?.value||'';
-  const fModal=document.getElementById('ftd')?.value||'';
-  const fLauncher=document.getElementById('fld')?.value||'';
-
-  const filtered=deps.filter(d=>{
-    if(d.es===EL) return false;
-    const cliente=(d.c||'').toLowerCase();
-    const ciudad=(d.ci||'').toLowerCase();
-    if(s && !cliente.includes(s) && !ciudad.includes(s)) return false;
-    if(fState && d.es!==fState) return false;
-    if(fModal){
-      const norm=(v)=>String(v||'').replace(/[^\w\sáéíóúÁÉÍÓÚüÜñÑ-]/g,'').trim().toLowerCase();
-      if(norm(d.tp)!==norm(fModal)) return false;
-    }
-    if(fLauncher && d.ln!==fLauncher) return false;
+  const s=(document.getElementById('sd')?.value||'').toLowerCase();
+  const fL=document.getElementById('fld')?.value||'';
+  const from=document.getElementById('fdd')?.value||'',to=document.getElementById('ftd')?.value||'';
+  const f=deps.filter(d=>{
+    if(d.es===EL)return false;
+    if(s&&!d.c.toLowerCase().includes(s)&&!(d.ci||'').toLowerCase().includes(s))return false;
+    if(fL&&d.ln!==fL)return false;if(from&&d.fi&&d.fi<from)return false;if(to&&d.fi&&d.fi>to)return false;
     return true;
   });
-
-  const totalActivos=deps.filter(d=>d.es!==EL).length;
-  const cd=document.getElementById('cd');
-  if(cd) cd.textContent=`${filtered.length} de ${totalActivos}`;
-
+  const cd=document.getElementById('cd');if(cd)cd.textContent=`${f.length} de ${deps.filter(d=>d.es!==EL).length}`;
   const tb=document.getElementById('dtb');
-  if(!tb) return;
-
-  tb.innerHTML = filtered.length
-    ? filtered.map(depRow).join('')
-    : `<tr><td colspan="20"><div class="dep-empty"><div class="emoji">🚀</div><div style="font-weight:700;margin-bottom:4px">Sin despliegues activos</div><div style="font-size:12px">Ajusta filtros o crea un nuevo despliegue.</div></div></td></tr>`;
+  if(tb)tb.innerHTML=f.length?f.map(depRow).join(''):`<tr><td colspan="20" style="text-align:center;padding:40px;color:var(--muted)">
+    <div style="font-size:32px;margin-bottom:8px">🚀</div>
+    <div style="font-weight:600;margin-bottom:4px">Sin despliegues activos</div>
+    <div style="font-size:12px">Crea uno con el botón <strong>+ Nuevo</strong> arriba a la derecha</div>
+  </td></tr>`;
 }
 function renderOps(){
   depTH('th-o');
@@ -2268,8 +2211,7 @@ function renderOps(){
     return true;
   });
   const co=document.getElementById('co');if(co)co.textContent=`${f.length} de ${deps.filter(d=>d.es===EL).length}`;
-  const tb=document.getElementById('otb');
-  if(tb)tb.innerHTML=f.length ? f.map(depRow).join('') : `<tr><td colspan="20"><div class="dep-empty"><div class="emoji">✅</div><div style="font-weight:700;margin-bottom:4px">Sin clientes operativos</div><div style="font-size:12px">Aún no hay despliegues finalizados para este filtro.</div></div></td></tr>`;
+  const tb=document.getElementById('otb');if(tb)tb.innerHTML=f.map(depRow).join('');
 }
 function renderInact(){
   const f=cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido');
@@ -3131,49 +3073,43 @@ function togChk(key,item,checked){
 }
 
 // ═══ CATALOGS ════════════════════════════════════════
+function showCatalogError(msg, err){
+  console.error('[Catálogos]', msg, err||'');
+  const view=document.getElementById('view-catalogos');
+  if(!view) return;
+  let box=document.getElementById('cat-error-box');
+  if(!box){
+    box=document.createElement('div');
+    box.id='cat-error-box';
+    box.className='cat-error';
+    view.insertBefore(box, view.children[1] || null);
+  }
+  box.innerHTML='⚠️ '+msg;
+}
+function clearCatalogError(){
+  const box=document.getElementById('cat-error-box');
+  if(box) box.remove();
+}
 function setCatTab(t){
   curCatTab=t;
-
-  document.querySelectorAll('.cat-tab').forEach(el=>el.classList.remove('active'));
-  const tabEl=document.querySelector('.cat-tab[onclick*="setCatTab(\''+t+'\'"]');
-  if(tabEl)tabEl.classList.add('active');
-
-  const allPanels=['modulos','categorias','modalidades','fases','implTimes','complejidad','billingTypes','riesgos','aplicativos','tipos','launchers'];
-  allPanels.forEach(id=>{
-    const el=document.getElementById('cat-'+id);
-    if(el)el.style.display=(id===t)?'block':'none';
-  });
-
-  const sectionOrder={
-    modulos:0,
-    categorias:1,
-    aplicativos:2,
-    tipos:3,
-    modalidades:4,
-    launchers:5,
-    complejidad:6,
-    fases:7,
-    implTimes:8,
-    billingTypes:9,
-    riesgos:10
+  const map={
+    modulos:'⚙️ Módulos', categorias:'🏷 Categorías de Módulos', aplicativos:'🖥 Aplicativos',
+    tipos:'🏷 Tipos de Cliente', modalidades:'🚀 Modalidades de Despliegue', launchers:'👤 Launchers',
+    complejidad:'🎯 Complejidad', fases:'📍 Fases de Implementación', implTimes:'⏱ Tiempos de Implementación',
+    billingTypes:'💰 Tipos de Cobro', riesgos:'🚦 Estados de Riesgo'
   };
-  const sections=document.querySelectorAll('#view-catalogos .cat-section');
-  if(sections.length && Object.prototype.hasOwnProperty.call(sectionOrder,t)){
-    sections.forEach((section,idx)=>section.classList.toggle('open', idx===sectionOrder[t]));
-  }
-
-  const renders={
-    modulos:renderMds, categorias:renderCatMods, modalidades:renderModDeps,
-    fases:renderPhases, implTimes:renderImplTimes, complejidad:renderCxs,
-    billingTypes:renderBTs, riesgos:renderRisks, aplicativos:renderAps,
-    tipos:renderTps, launchers:renderLaunchers
-  };
-  if(renders[t])try{renders[t]();}catch(e){console.error('CatTab error:',t,e);}
+  const targetLabel=map[t];
+  const sections=[...document.querySelectorAll('#view-catalogos .cat-section')];
+  if(!sections.length){ showCatalogError('No se encontró la estructura HTML de Catálogos.'); return; }
+  sections.forEach(sec=>sec.classList.remove('open'));
+  const target=sections.find(sec=>sec.querySelector('.cat-section-hdr span')?.textContent?.trim()===targetLabel);
+  (target||sections[0]).classList.add('open');
+  (target||sections[0]).scrollIntoView({behavior:'smooth',block:'start'});
+  try{ renderCats(); }catch(e){ showCatalogError('No se pudo renderizar la sección seleccionada.', e); }
 }
 
 function reloadCatsFromSupabase(){
-  renderCats();
-  if(!supabase){return;}
+  if(!supabase){renderCats();return;}
   setSyncStatus('↺ Cargando catálogos...','#1B4FD8');
   supabase.from('ops_data').select('key,value').eq('key','cats').then(function(res){
     if(res.data&&res.data[0]&&res.data[0].value){
@@ -3181,43 +3117,17 @@ function reloadCatsFromSupabase(){
       Object.keys(rc).forEach(k=>{if(Array.isArray(rc[k])&&rc[k].length>0)cats[k]=rc[k];});
       localStorage.setItem('ct27',JSON.stringify(cats));
     }
-    // ensure base data
-    if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
-    if(!cats.md||!cats.md.length)cats.md=BASE_MD.map(x=>Object.assign({},x));
-    if(!cats.modal||!cats.modal.length)cats.modal=BASE_MODAL.map(x=>Object.assign({},x));
-    if(!cats.risk||!cats.risk.length)cats.risk=BASE_RISK.map(x=>Object.assign({},x));
-    if(!cats.implTimes||!cats.implTimes.length)cats.implTimes=BASE_IMPL_TIMES.map(x=>Object.assign({},x));
-    if(!cats.phases||!cats.phases.length)cats.phases=BASE_PHASES.map(x=>Object.assign({},x));
-    if(!cats.catmod||!cats.catmod.length)cats.catmod=BASE_CATMOD.map(x=>Object.assign({},x));
-    if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
-    if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
-    if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
-    if(!cats.tp)cats.tp=[];
     renderCats();
     setSyncStatus('✓ Catálogos actualizados','#0F7E4F');
     setTimeout(()=>setSyncStatus(''),2000);
-  }).catch(function(){renderCats();setSyncStatus('','');});
-}
-
-
-function forceCatalogLayout(){
-  const wrap=document.getElementById('view-catalogos');
-  if(!wrap)return;
-  wrap.querySelectorAll('.cat-section').forEach((section,idx)=>{
-    section.style.display='block';
-    section.style.visibility='visible';
-    section.style.opacity='1';
-    section.classList.add('open');
-    const hdr=section.querySelector('.cat-section-hdr');
-    const body=section.querySelector('.cat-section-body');
-    if(hdr){hdr.style.display='flex';hdr.style.visibility='visible';hdr.style.color='var(--text)';}
-    if(body){body.style.display='block';body.style.visibility='visible';}
-  });
+  }).catch(function(err){ console.error('Supabase cats error', err); renderCats(); setSyncStatus('',''); });
 }
 
 function renderCats(){
-  forceCatalogLayout();
-  // Ensure base data
+  clearCatalogError();
+  const view=document.getElementById('view-catalogos');
+  if(!view){ showCatalogError('La vista view-catalogos no existe en el HTML.'); return; }
+  cats = cats || {};
   if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
   if(!cats.md||!cats.md.length)cats.md=BASE_MD.map(x=>Object.assign({},x));
   if(!cats.modal||!cats.modal.length)cats.modal=BASE_MODAL.map(x=>Object.assign({},x));
@@ -3229,23 +3139,13 @@ function renderCats(){
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
   if(!cats.tp)cats.tp=[];
-  // Open the first section by default if none open
-  const sections=document.querySelectorAll('.cat-section');
-  const hasOpen=Array.from(sections).some(s=>s.classList.contains('open'));
-  if(!hasOpen&&sections.length>0)sections[0].classList.add('open');
-  // Render all tbodies
-  try{renderMds();}catch(e){}
-  try{renderCatMods();}catch(e){}
-  try{renderAps();}catch(e){}
-  try{renderTps();}catch(e){}
-  try{renderModDeps();}catch(e){}
-  try{renderLaunchers();}catch(e){}
-  try{renderCxs();}catch(e){}
-  try{renderPhases();}catch(e){}
-  try{renderImplTimes();}catch(e){}
-  try{renderBTs();}catch(e){}
-  try{renderRisks();}catch(e){}
-  forceCatalogLayout();
+  const sections=[...document.querySelectorAll('#view-catalogos .cat-section')];
+  if(!sections.length){ showCatalogError('No hay secciones renderizables dentro de Catálogos.'); return; }
+  if(!sections.some(s=>s.classList.contains('open'))) sections[0].classList.add('open');
+  const renderers=[['Módulos',renderMds],['Categorías',renderCatMods],['Aplicativos',renderAps],['Tipos de Cliente',renderTps],['Modalidades',renderModDeps],['Launchers',renderLaunchers],['Complejidad',renderCxs],['Fases',renderPhases],['Tiempos de Implementación',renderImplTimes],['Tipos de Cobro',renderBTs],['Estados de Riesgo',renderRisks]];
+  const failed=[];
+  renderers.forEach(([name,fn])=>{ try{fn();}catch(err){failed.push(name);console.error('Render catálogo falló:',name,err);} });
+  if(failed.length) showCatalogError('Se cargó Catálogos, pero fallaron estas secciones: '+failed.join(', ')+'. Revisa la consola para el detalle.');
 }
 function renderMds(){
   const el=document.getElementById('md-tbody');if(!el)return;
@@ -3298,74 +3198,43 @@ function savePhase(){
 function renderImplTimes(){
   if(!cats.implTimes||!cats.implTimes.length)cats.implTimes=BASE_IMPL_TIMES.map(x=>Object.assign({},x));
   const el=document.getElementById('it-tbody');if(!el)return;
-  el.innerHTML=(cats.implTimes||[]).length
-    ? (cats.implTimes||[]).map(t=>`<tr><td><strong>${esc(t.name)}</strong></td><td>${t.weeks||0} sem</td><td style="color:var(--muted)">${esc(t.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('implTimes',${t.id})">✏️</button><button class="icon-btn del" onclick="delCat('implTimes',${t.id},'${esc(t.name)}')">🗑</button></td></tr>`).join('')
-    : `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin tiempos</td></tr>`;
+  el.innerHTML=(cats.implTimes||[]).map(t=>`<tr><td><strong>${esc(t.name)}</strong></td><td>${t.weeks||0} sem</td><td style="color:var(--muted)">${esc(t.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('implTimes',${t.id})">✏️</button><button class="icon-btn del" onclick="delCat('implTimes',${t.id},'${esc(t.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin tiempos</td></tr>`;
 }
 function saveImplTime(){
   const n=document.getElementById('it-name').value.trim();if(!n)return;
-  cats.implTimes.push({
-    id:Date.now(),
-    name:n,
-    weeks:parseInt(document.getElementById('it-weeks').value)||2,
-    color:document.getElementById('it-color').value||'#0F7E4F',
-    desc:document.getElementById('it-desc').value.trim()||''
-  });
+  cats.implTimes.push({id:Date.now(),name:n,weeks:parseInt(document.getElementById('it-weeks').value)||2,color:document.getElementById('it-color')?.value||'#0F7E4F',desc:document.getElementById('it-desc')?.value.trim()||''});
   sv();renderImplTimes();['it-name','it-weeks','it-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderCxs(){
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   const el=document.getElementById('cx-tbody');if(!el)return;
-  el.innerHTML=(cats.complexity||[]).length
-    ? (cats.complexity||[]).map(c=>{
-        const modsText=Array.isArray(c.mods)?c.mods.join(', '):String(c.mods||'');
-        return `<tr>
-          <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
-          <td>${c.peso||1}</td>
-          <td>${c.prioridad||1}</td>
-          <td style="font-size:12px;color:var(--muted)">${esc(modsText)}</td>
-          <td><button class="icon-btn edit" onclick="editCatItem('complexity',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('complexity',${c.id},'${esc(c.name)}')">🗑</button></td>
-        </tr>`;
-      }).join('')
-    : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>`;
+  const modsSel=document.getElementById('cx-mods');
+  if(modsSel){ modsSel.innerHTML=(cats.md||[]).map(m=>`<option value="${esc(m.name)}">${esc(m.name)}</option>`).join(''); }
+  el.innerHTML=(cats.complexity||[]).map(c=>`<tr>
+    <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
+    <td>${c.peso||1}</td>
+    <td>${c.prioridad||1}</td>
+    <td style="font-size:12px;color:var(--muted)">${Array.isArray(c.mods)?c.mods.map(esc).join(', '):esc(c.mods||'')}</td>
+    <td><button class="icon-btn edit" onclick="editCatItem('complexity',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('complexity',${c.id},'${esc(c.name)}')">🗑</button></td>
+  </tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>`;
 }
 function saveCx(){
   const n=document.getElementById('cx-name').value.trim();if(!n)return;
-  const modsSelect=document.getElementById('cx-mods');
-  const mods=Array.from(modsSelect.selectedOptions).map(o=>o.value);
-  const color=document.getElementById('cx-color').value||'#1d4ed8';
-  cats.complexity.push({
-    id:Date.now(),
-    name:n,
-    mods,
-    peso:parseFloat(document.getElementById('cx-peso').value)||1,
-    icon:document.getElementById('cx-icon').value.trim()||'⚡',
-    bg:'#dbeafe',
-    color,
-    border:'#93c5fd',
-    prioridad:parseInt(document.getElementById('cx-prio').value)||1
-  });
+  const modsSel=document.getElementById('cx-mods');
+  const mods=modsSel?Array.from(modsSel.selectedOptions).map(o=>o.value):[];
+  cats.complexity.push({id:Date.now(),name:n,mods,peso:parseFloat(document.getElementById('cx-peso').value)||1,icon:document.getElementById('cx-icon').value.trim()||'⚡',bg:'#dbeafe',color:document.getElementById('cx-color')?.value||'#1d4ed8',border:'#93c5fd',prioridad:parseInt(document.getElementById('cx-prio').value)||cats.complexity.length+1});
   sv();renderCxs();['cx-name','cx-peso','cx-icon','cx-prio'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  Array.from(modsSelect.options).forEach(o=>o.selected=false);
+  if(modsSel) Array.from(modsSel.options).forEach(o=>o.selected=false);
 }
 function renderBTs(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   const el=document.getElementById('bt-tbody');if(!el)return;
-  el.innerHTML=(cats.billingTypes||[]).length
-    ? (cats.billingTypes||[]).map(bt=>`<tr><td>${bt.icon||''} <strong>${esc(bt.name)}</strong></td><td style="color:var(--muted)">${esc(bt.tipo||'')}</td><td style="color:var(--muted)">${esc(bt.unidad||'')}</td><td style="color:var(--muted)">${esc(bt.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button><button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button></td></tr>`).join('')
-    : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin tipos</td></tr>`;
+  el.innerHTML=(cats.billingTypes||[]).map(bt=>`<tr><td>${bt.icon||''} <strong>${esc(bt.name)}</strong></td><td style="color:var(--muted)">${esc(bt.tipo||'')}</td><td style="color:var(--muted)">${esc(bt.unidad||'')}</td><td style="color:var(--muted)">${esc(bt.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button><button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin tipos</td></tr>`;
 }
 function saveBillingType(){
   const n=document.getElementById('bt-name').value.trim();if(!n)return;
   const tipo=document.getElementById('bt-tipo').value.trim()||n.toLowerCase().replace(/\s+/g,'_');
-  cats.billingTypes.push({
-    id:Date.now(),
-    name:n,
-    tipo,
-    icon:document.getElementById('bt-icon').value.trim()||'💰',
-    unidad:document.getElementById('bt-unit').value.trim()||'unid',
-    desc:document.getElementById('bt-desc').value.trim()||''
-  });
+  cats.billingTypes.push({id:Date.now(),name:n,tipo,icon:document.getElementById('bt-icon').value.trim()||'💰',unidad:document.getElementById('bt-unit')?.value.trim()||'unid',desc:document.getElementById('bt-desc')?.value.trim()||''});
   sv();renderBTs();['bt-name','bt-tipo','bt-icon','bt-unit','bt-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderRisks(){
@@ -3844,6 +3713,8 @@ function applyRoleToUI(){
 
 // ── RENDER ─────────────────────────────────────────────────────────────────
 function renderUsuarios(){
+  if(!Array.isArray(roles)) roles=[];
+  if(!Array.isArray(usuarios)) usuarios=[];
   if(!roles.length) roles=BASE_ROLES.map(r=>Object.assign({},r,{perms:{...r.perms}}));
 
   // Roles grid
@@ -4136,7 +4007,7 @@ function subscribeRealtime(){
 }
 function bootApp(){
   // DATA RESET: force reload when version changes
-  var DATA_VERSION='v4.3_catalogos_fix';
+  var DATA_VERSION='v4.2_clean';
   var _needDepsClear=localStorage.getItem('data_version')!==DATA_VERSION;
   if(_needDepsClear){
     // Reset only deps and contracts — keep clients (oc27) and cats (ct27)
@@ -4248,235 +4119,6 @@ function bootApp(){
     }catch(e){}
   }).catch(function(){});
 })();
-
-
-
-// ═══ HOTFIX V3: Catálogos y Capacidad ═══════════════
-function renderSimpleLineChart(containerId, labels, series){
-  const el=document.getElementById(containerId); if(!el) return;
-  const W=760,H=260,PL=46,PR=16,PT=18,PB=34;
-  const gW=W-PL-PR,gH=H-PT-PB;
-  const vals=series.flatMap(s=>s.data||[]).map(v=>Number(v)||0);
-  const maxVal=Math.max(1,...vals);
-  const px=i=>PL + (labels.length<=1?0:(i*(gW/(labels.length-1))));
-  const py=v=>PT + gH - ((Number(v)||0)/maxVal)*gH;
-  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">`;
-  for(let i=0;i<=4;i++){
-    const y=PT+(gH/4)*i;
-    const val=Math.round(maxVal-(maxVal/4)*i);
-    svg += `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
-    svg += `<text x="${PL-8}" y="${y+4}" text-anchor="end" font-size="10" fill="#637087">${val}</text>`;
-  }
-  labels.forEach((lb,i)=>{
-    const x=px(i);
-    svg += `<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+gH}" stroke="#F1F5F9" stroke-width="1"/>`;
-    svg += `<text x="${x}" y="${H-10}" text-anchor="middle" font-size="10" fill="#637087">${lb}</text>`;
-  });
-  series.forEach(s=>{
-    const pts=(s.data||[]).map((v,i)=>[px(i),py(v)]);
-    if(!pts.length) return;
-    svg += `<path d="M${pts.map(p=>p.join(',')).join(' L')}" fill="none" stroke="${s.color||'#1B4FD8'}" stroke-width="2.5"/>`;
-    pts.forEach((p,i)=>{
-      svg += `<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${s.color||'#1B4FD8'}"/>`;
-      svg += `<title>${labels[i]}: ${s.data[i]}</title>`;
-    });
-  });
-  svg += `</svg>`;
-  const legend = `<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px">${series.map(s=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151"><span style="width:10px;height:10px;border-radius:99px;background:${s.color||'#1B4FD8'};display:inline-block"></span>${s.label}</div>`).join('')}</div>`;
-  el.outerHTML = `<div id="${containerId}-svg-wrap">${legend}${svg}</div>`;
-}
-
-function renderCatalogosForzado(){
-  const view=document.getElementById('view-catalogos');
-  if(!view) return;
-  const sections=view.querySelectorAll('.cat-section');
-  sections.forEach((sec,idx)=>{
-    sec.style.display='block';
-    sec.style.visibility='visible';
-    sec.style.opacity='1';
-    sec.classList.add('open');
-    const hdr=sec.querySelector('.cat-section-hdr');
-    const body=sec.querySelector('.cat-section-body');
-    if(hdr){
-      hdr.style.display='flex';
-      hdr.style.visibility='visible';
-      hdr.style.opacity='1';
-      hdr.onclick=function(){
-        sec.classList.toggle('open');
-        if(body) body.style.display = sec.classList.contains('open') ? 'block' : 'none';
-      };
-    }
-    if(body){
-      body.style.display='block';
-      body.style.visibility='visible';
-      body.style.opacity='1';
-    }
-  });
-}
-
-function renderCats(){
-  if(!cats || typeof cats!=='object') cats={};
-  if(!cats.ap||!cats.ap.length) cats.ap=BASE_AP.map(x=>({...x}));
-  if(!cats.tp) cats.tp=[];
-  if(!cats.md||!cats.md.length) cats.md=BASE_MD.map(x=>({...x}));
-  if(!cats.catmod||!cats.catmod.length) cats.catmod=BASE_CATMOD.map(x=>({...x}));
-  if(!cats.modal||!cats.modal.length) cats.modal=BASE_MODAL.map(x=>({...x}));
-  if(!cats.launchers||!cats.launchers.length) cats.launchers=BASE_LAUNCHERS.map(x=>({...x}));
-  if(!cats.complexity||!cats.complexity.length) cats.complexity=BASE_COMPLEXITY.map(x=>({...x}));
-  if(!cats.phases||!cats.phases.length) cats.phases=BASE_PHASES.map(x=>({...x}));
-  if(!cats.implTimes||!cats.implTimes.length) cats.implTimes=BASE_IMPL_TIMES.map(x=>({...x}));
-  if(!cats.billingTypes||!cats.billingTypes.length) cats.billingTypes=BASE_BILLING_TYPES.map(x=>({...x}));
-  if(!cats.risk||!cats.risk.length) cats.risk=BASE_RISK.map(x=>({...x}));
-
-  try{ renderCatalogosForzado(); }catch(e){ console.warn('renderCatalogosForzado',e); }
-  const fns=[renderMds,renderCatMods,renderAps,renderTps,renderModDeps,renderLaunchers,renderCxs,renderPhases,renderImplTimes,renderBTs,renderRisks];
-  fns.forEach(fn=>{ try{ if(typeof fn==='function') fn(); }catch(e){ console.warn('catalog fn error', fn&&fn.name, e); } });
-  try{ sv(); }catch(e){}
-  try{ renderCatalogosForzado(); }catch(e){}
-}
-
-function renderCapacidad(){
-  const opsCount=parseInt(document.getElementById('cap-ops')?.value)||3;
-  const hrsDia=parseFloat(document.getElementById('cap-hd')?.value)||8;
-  const diasMes=parseInt(document.getElementById('cap-dm')?.value)||22;
-  const hrsActivo=parseFloat(document.getElementById('cap-hca')?.value)||8;
-  const hrsNuevo=parseFloat(document.getElementById('cap-hcn')?.value)||24;
-  const totalDisponibles=opsCount*hrsDia*diasMes;
-
-  const operativos=deps.filter(d=>d.es===EL);
-  const desplieguesActivos=deps.filter(d=>d.es!==EL);
-
-  const escenarioMap={
-    mod:{label:'Moderado',nuevos:3},
-    agr:{label:'Agresivo',nuevos:8},
-    ag:{label:'Agresivo',nuevos:8},
-    est:{label:'Estabilización',nuevos:0}
-  };
-  if(curScenario==='ag') curScenario='agr';
-  const sc=escenarioMap[curScenario]||escenarioMap.mod;
-
-  const baseConsumido=operativos.reduce((sum,d)=>sum+(parseFloat(d.hrsOp)||hrsActivo),0);
-  const usoActual=Math.round((baseConsumido/Math.max(totalDisponibles,1))*100);
-  const capacidadMaxClientes=Math.floor(totalDisponibles/Math.max(hrsActivo,1));
-  const margenHoras=Math.max(0,totalDisponibles-baseConsumido);
-  const nuevosPosiblesHoy=Math.floor(margenHoras/Math.max(hrsNuevo,1));
-
-  const stat=document.getElementById('cap-stat');
-  if(stat) stat.textContent=`${operativos.length} operativos · ${desplieguesActivos.length} en despliegue`;
-
-  const capKpis=document.getElementById('cap-kpis');
-  if(capKpis){
-    const kpis=[
-      ['👥 Clientes Operativos',operativos.length,'base actual','#1B4FD8'],
-      ['⏱ Horas Consumidas',`${baseConsumido}h`,`de ${totalDisponibles}h disponibles`,'#0F7E4F'],
-      ['📊 Uso Actual',`${usoActual}%`,usoActual>=85?'riesgo alto':usoActual>=65?'alerta':'saludable','#B45309'],
-      ['🚀 Nuevos Posibles',nuevosPosiblesHoy,`escenario ${sc.label.toLowerCase()}`,'#5B21B6']
-    ];
-    capKpis.innerHTML=kpis.map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
-  }
-
-  ['mod','agr','est'].forEach(s=>{
-    const b=document.getElementById('sc-'+s);
-    if(b) b.classList.toggle('active', curScenario===s);
-  });
-
-  const sat=document.getElementById('cap-saturation');
-  if(sat){
-    const color=usoActual>=85?'#DC2626':usoActual>=65?'#B45309':'#0F7E4F';
-    sat.innerHTML=`
-      <div style="display:grid;gap:12px">
-        <div style="font-size:32px;font-weight:800;color:${color}">${usoActual}%</div>
-        <div style="font-size:13px;color:var(--muted)">Uso actual del equipo</div>
-        <div style="height:14px;background:#E5E7EB;border-radius:999px;overflow:hidden">
-          <div style="width:${Math.min(100,usoActual)}%;height:100%;background:${color}"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
-          <div><strong>${capacidadMaxClientes}</strong><br><span style="color:var(--muted)">máx. clientes activos</span></div>
-          <div><strong>${nuevosPosiblesHoy}</strong><br><span style="color:var(--muted)">nuevos despliegues posibles hoy</span></div>
-        </div>
-      </div>`;
-  }
-
-  const monthLabels=[];
-  const rows=[];
-  const consSerie=[];
-  const dispSerie=[];
-  const today=new Date();
-  let activos=operativos.length;
-
-  for(let i=0;i<6;i++){
-    const dt=new Date(today.getFullYear(), today.getMonth()+i, 1);
-    const monthLabel=dt.toLocaleDateString('es-EC',{month:'short',year:'2-digit'}).replace('.','');
-    const nuevos=i===0 ? 0 : sc.nuevos;
-    const consumidas=(activos*hrsActivo)+(nuevos*hrsNuevo);
-    const uso=Math.round((consumidas/Math.max(totalDisponibles,1))*100);
-    const posibles=Math.max(0,Math.floor(Math.max(0,totalDisponibles-(activos*hrsActivo))/Math.max(hrsNuevo,1)));
-    const estado=uso>=85?['🔴 Riesgo','#DC2626']:uso>=65?['🟠 Alerta','#B45309']:['🟢 Saludable','#0F7E4F'];
-
-    monthLabels.push(monthLabel);
-    consSerie.push(consumidas);
-    dispSerie.push(totalDisponibles);
-
-    rows.push(`<tr>
-      <td>${monthLabel}</td>
-      <td style="text-align:center">${activos}</td>
-      <td style="text-align:center">${nuevos}</td>
-      <td style="text-align:center">${consumidas}h</td>
-      <td style="text-align:center">${totalDisponibles}h</td>
-      <td style="text-align:center;font-weight:700;color:${estado[1]}">${uso}%</td>
-      <td><span style="background:${estado[1]}15;color:${estado[1]};padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700">${estado[0]}</span></td>
-      <td style="text-align:center">${posibles}</td>
-    </tr>`);
-    activos += nuevos;
-  }
-
-  const tb=document.getElementById('cap-tbody');
-  if(tb) tb.innerHTML=rows.join('');
-
-  const clientsTb=document.getElementById('cap-clients-tbody');
-  if(clientsTb){
-    clientsTb.innerHTML = operativos.length ? operativos.map(d=>{
-      const cx=(cats.complexity||[]).find(c=>c.name===d.cx);
-      const peso=Number(cx?.peso)||1;
-      const hrs=parseFloat(d.hrsOp)||Math.round(hrsActivo*peso);
-      return `<tr>
-        <td style="font-weight:600">${esc(d.c||'')}</td>
-        <td>${esc(d.ln||'—')}</td>
-        <td>${esc(cx?.name||d.cx||'Base')}</td>
-        <td style="text-align:center">${peso}</td>
-        <td style="text-align:center;font-weight:700">${hrs}h</td>
-        <td style="text-align:center;color:var(--muted)">${d.hrsOp?'Manual':'Global × peso'}</td>
-      </tr>`;
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--subtle)">Sin clientes operativos</td></tr>';
-  }
-
-  let chartHost=document.getElementById('cap-chart-svg');
-  const canvas=document.getElementById('cap-chart');
-  if(canvas){
-    const wrapper=canvas.parentElement;
-    if(wrapper){
-      wrapper.innerHTML='<div id="cap-chart-svg"></div>';
-      chartHost=document.getElementById('cap-chart-svg');
-    }
-  }
-  if(chartHost){
-    renderSimpleLineChart('cap-chart-svg', monthLabels, [
-      {label:'Horas disponibles', data:dispSerie, color:'#1B4FD8'},
-      {label:'Horas consumidas', data:consSerie, color:'#B45309'}
-    ]);
-  }
-}
-
-function setScenario(sc){
-  curScenario = sc==='ag' ? 'agr' : sc;
-  renderCapacidad();
-}
-
-window.addEventListener('load', function(){
-  try{ renderCats(); }catch(e){ console.warn('load renderCats', e); }
-  try{ if(curV==='catalogos') renderCats(); }catch(e){}
-  try{ renderCapacidad(); }catch(e){ console.warn('load renderCapacidad', e); }
-});
 
 </script>
 </body>
