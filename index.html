@@ -199,6 +199,19 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .cat-add-row .fr{margin:0;flex:1}
 .cat-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:5px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;background:var(--bg)}
 .cat-input:focus{border-color:var(--blue)}
+.cat-section{display:block !important;visibility:visible !important;opacity:1 !important;position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:visible;box-shadow:var(--sh)}
+.cat-section-hdr{display:flex !important;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:14px;font-weight:700;background:var(--bg);border-bottom:1px solid var(--border);color:var(--text) !important;min-height:52px}
+.cat-section-hdr:hover{background:var(--bg2)}
+.cat-section-arrow{transition:transform .2s ease;color:var(--muted);font-size:16px}
+.cat-section-body{display:block !important;padding:14px 16px 16px;background:var(--bg)}
+.cat-section.open .cat-section-body{display:block !important}
+.cat-section.open .cat-section-hdr{border-bottom-color:var(--border)}
+.cat-section.open .cat-section-arrow{transform:rotate(180deg)}
+#view-catalogos .cat-section{max-width:none;width:100%}
+#view-catalogos .cat-table,#view-catalogos .tbl-wrap,#view-catalogos .cat-add-row{display:block;visibility:visible;opacity:1}
+#view-catalogos .cat-add-row{display:flex;flex-wrap:wrap}
+#view-catalogos .cat-section-body .btn{display:inline-flex}
+
 .sync-note{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;margin-top:4px}
 .view{display:none}.view.active{display:block;padding:20px 24px}
 /* ──INFO TOOLTIP ── */
@@ -902,7 +915,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       <!-- Each section is always visible, collapsible -->
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>⚙️ Módulos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -920,7 +933,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🏷 Categorías de Módulos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -941,7 +954,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🖥 Aplicativos</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -963,7 +976,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🏷 Tipos de Cliente</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -985,7 +998,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🚀 Modalidades de Despliegue</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1003,7 +1016,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>👤 Launchers</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1021,7 +1034,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🎯 Complejidad</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1049,7 +1062,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>📍 Fases de Implementación</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1067,7 +1080,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>⏱ Tiempos de Implementación</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1089,7 +1102,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>💰 Tipos de Cobro</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -1109,7 +1122,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
 
       <div class="cat-section">
-        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open');this.parentElement.querySelector('.cat-section-body').style.display='block'">
           <span>🚦 Estados de Riesgo</span><span class="cat-section-arrow">▾</span>
         </div>
         <div class="cat-section-body">
@@ -3066,18 +3079,35 @@ function togChk(key,item,checked){
 // ═══ CATALOGS ════════════════════════════════════════
 function setCatTab(t){
   curCatTab=t;
-  // Activate tab button
+
   document.querySelectorAll('.cat-tab').forEach(el=>el.classList.remove('active'));
   const tabEl=document.querySelector('.cat-tab[onclick*="setCatTab(\''+t+'\'"]');
   if(tabEl)tabEl.classList.add('active');
-  // Show only the selected panel — direct style manipulation, no class tricks
-  const allPanels=['modulos','categorias','modalidades','fases','implTimes',
-    'complejidad','billingTypes','riesgos','aplicativos','tipos','launchers'];
+
+  const allPanels=['modulos','categorias','modalidades','fases','implTimes','complejidad','billingTypes','riesgos','aplicativos','tipos','launchers'];
   allPanels.forEach(id=>{
     const el=document.getElementById('cat-'+id);
     if(el)el.style.display=(id===t)?'block':'none';
   });
-  // Render content into the visible panel
+
+  const sectionOrder={
+    modulos:0,
+    categorias:1,
+    aplicativos:2,
+    tipos:3,
+    modalidades:4,
+    launchers:5,
+    complejidad:6,
+    fases:7,
+    implTimes:8,
+    billingTypes:9,
+    riesgos:10
+  };
+  const sections=document.querySelectorAll('#view-catalogos .cat-section');
+  if(sections.length && Object.prototype.hasOwnProperty.call(sectionOrder,t)){
+    sections.forEach((section,idx)=>section.classList.toggle('open', idx===sectionOrder[t]));
+  }
+
   const renders={
     modulos:renderMds, categorias:renderCatMods, modalidades:renderModDeps,
     fases:renderPhases, implTimes:renderImplTimes, complejidad:renderCxs,
@@ -3088,7 +3118,8 @@ function setCatTab(t){
 }
 
 function reloadCatsFromSupabase(){
-  if(!supabase){renderCats();return;}
+  renderCats();
+  if(!supabase){return;}
   setSyncStatus('↺ Cargando catálogos...','#1B4FD8');
   supabase.from('ops_data').select('key,value').eq('key','cats').then(function(res){
     if(res.data&&res.data[0]&&res.data[0].value){
@@ -3107,6 +3138,7 @@ function reloadCatsFromSupabase(){
     if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
     if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
     if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
     if(!cats.tp)cats.tp=[];
     renderCats();
     setSyncStatus('✓ Catálogos actualizados','#0F7E4F');
@@ -3114,7 +3146,24 @@ function reloadCatsFromSupabase(){
   }).catch(function(){renderCats();setSyncStatus('','');});
 }
 
+
+function forceCatalogLayout(){
+  const wrap=document.getElementById('view-catalogos');
+  if(!wrap)return;
+  wrap.querySelectorAll('.cat-section').forEach((section,idx)=>{
+    section.style.display='block';
+    section.style.visibility='visible';
+    section.style.opacity='1';
+    section.classList.add('open');
+    const hdr=section.querySelector('.cat-section-hdr');
+    const body=section.querySelector('.cat-section-body');
+    if(hdr){hdr.style.display='flex';hdr.style.visibility='visible';hdr.style.color='var(--text)';}
+    if(body){body.style.display='block';body.style.visibility='visible';}
+  });
+}
+
 function renderCats(){
+  forceCatalogLayout();
   // Ensure base data
   if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
   if(!cats.md||!cats.md.length)cats.md=BASE_MD.map(x=>Object.assign({},x));
@@ -3126,6 +3175,7 @@ function renderCats(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
   if(!cats.tp)cats.tp=[];
   // Open the first section by default if none open
   const sections=document.querySelectorAll('.cat-section');
@@ -3143,6 +3193,7 @@ function renderCats(){
   try{renderImplTimes();}catch(e){}
   try{renderBTs();}catch(e){}
   try{renderRisks();}catch(e){}
+  forceCatalogLayout();
 }
 function renderMds(){
   const el=document.getElementById('md-tbody');if(!el)return;
@@ -3195,39 +3246,75 @@ function savePhase(){
 function renderImplTimes(){
   if(!cats.implTimes||!cats.implTimes.length)cats.implTimes=BASE_IMPL_TIMES.map(x=>Object.assign({},x));
   const el=document.getElementById('it-tbody');if(!el)return;
-  el.innerHTML=(cats.implTimes||[]).map(t=>`<tr><td>${esc(t.name)}</td><td><strong>${t.weeks} sem</strong></td><td><button class="icon-btn edit" onclick="editCatItem('implTimes',${t.id})">✏️</button><button class="icon-btn del" onclick="delCat('implTimes',${t.id},'${esc(t.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin tiempos</td></tr>`;
+  el.innerHTML=(cats.implTimes||[]).length
+    ? (cats.implTimes||[]).map(t=>`<tr><td><strong>${esc(t.name)}</strong></td><td>${t.weeks||0} sem</td><td style="color:var(--muted)">${esc(t.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('implTimes',${t.id})">✏️</button><button class="icon-btn del" onclick="delCat('implTimes',${t.id},'${esc(t.name)}')">🗑</button></td></tr>`).join('')
+    : `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin tiempos</td></tr>`;
 }
 function saveImplTime(){
   const n=document.getElementById('it-name').value.trim();if(!n)return;
-  cats.implTimes.push({id:Date.now(),name:n,weeks:parseInt(document.getElementById('it-weeks').value)||2});
-  sv();renderImplTimes();document.getElementById('it-name').value='';document.getElementById('it-weeks').value='';
+  cats.implTimes.push({
+    id:Date.now(),
+    name:n,
+    weeks:parseInt(document.getElementById('it-weeks').value)||2,
+    color:document.getElementById('it-color').value||'#0F7E4F',
+    desc:document.getElementById('it-desc').value.trim()||''
+  });
+  sv();renderImplTimes();['it-name','it-weeks','it-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderCxs(){
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   const el=document.getElementById('cx-tbody');if(!el)return;
-  el.innerHTML=(cats.complexity||[]).map(c=>`<tr>
-    <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
-    <td style="font-size:12px;color:var(--muted)">${esc(c.mods||'')}</td>
-    <td>${c.peso||1}</td>
-    <td><button class="icon-btn edit" onclick="editCatItem('complexity',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('complexity',${c.id},'${esc(c.name)}')">🗑</button></td>
-  </tr>`).join('')||`<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>`;
+  el.innerHTML=(cats.complexity||[]).length
+    ? (cats.complexity||[]).map(c=>{
+        const modsText=Array.isArray(c.mods)?c.mods.join(', '):String(c.mods||'');
+        return `<tr>
+          <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
+          <td>${c.peso||1}</td>
+          <td>${c.prioridad||1}</td>
+          <td style="font-size:12px;color:var(--muted)">${esc(modsText)}</td>
+          <td><button class="icon-btn edit" onclick="editCatItem('complexity',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('complexity',${c.id},'${esc(c.name)}')">🗑</button></td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>`;
 }
 function saveCx(){
   const n=document.getElementById('cx-name').value.trim();if(!n)return;
-  const mods=document.getElementById('cx-mods').value.trim();
-  cats.complexity.push({id:Date.now(),name:n,mods,peso:parseFloat(document.getElementById('cx-peso').value)||1,icon:document.getElementById('cx-icon').value.trim()||'⚡',bg:'#dbeafe',color:'#1d4ed8',border:'#93c5fd',prioridad:cats.complexity.length+1});
-  sv();renderCxs();['cx-name','cx-mods','cx-peso','cx-icon'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  const modsSelect=document.getElementById('cx-mods');
+  const mods=Array.from(modsSelect.selectedOptions).map(o=>o.value);
+  const color=document.getElementById('cx-color').value||'#1d4ed8';
+  cats.complexity.push({
+    id:Date.now(),
+    name:n,
+    mods,
+    peso:parseFloat(document.getElementById('cx-peso').value)||1,
+    icon:document.getElementById('cx-icon').value.trim()||'⚡',
+    bg:'#dbeafe',
+    color,
+    border:'#93c5fd',
+    prioridad:parseInt(document.getElementById('cx-prio').value)||1
+  });
+  sv();renderCxs();['cx-name','cx-peso','cx-icon','cx-prio'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  Array.from(modsSelect.options).forEach(o=>o.selected=false);
 }
 function renderBTs(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   const el=document.getElementById('bt-tbody');if(!el)return;
-  el.innerHTML=(cats.billingTypes||[]).map(bt=>`<tr><td>${bt.icon||''} <strong>${esc(bt.name)}</strong></td><td style="color:var(--muted)">${esc(bt.tipo||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button><button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--subtle)">Sin tipos</td></tr>`;
+  el.innerHTML=(cats.billingTypes||[]).length
+    ? (cats.billingTypes||[]).map(bt=>`<tr><td>${bt.icon||''} <strong>${esc(bt.name)}</strong></td><td style="color:var(--muted)">${esc(bt.tipo||'')}</td><td style="color:var(--muted)">${esc(bt.unidad||'')}</td><td style="color:var(--muted)">${esc(bt.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('billingTypes',${bt.id})">✏️</button><button class="icon-btn del" onclick="delCat('billingTypes',${bt.id},'${esc(bt.name)}')">🗑</button></td></tr>`).join('')
+    : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin tipos</td></tr>`;
 }
 function saveBillingType(){
   const n=document.getElementById('bt-name').value.trim();if(!n)return;
   const tipo=document.getElementById('bt-tipo').value.trim()||n.toLowerCase().replace(/\s+/g,'_');
-  cats.billingTypes.push({id:Date.now(),name:n,tipo,icon:document.getElementById('bt-icon').value.trim()||'💰',unidad:document.getElementById('bt-unidad')?.value.trim()||'unid'});
-  sv();renderBTs();['bt-name','bt-tipo','bt-icon'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  cats.billingTypes.push({
+    id:Date.now(),
+    name:n,
+    tipo,
+    icon:document.getElementById('bt-icon').value.trim()||'💰',
+    unidad:document.getElementById('bt-unit').value.trim()||'unid',
+    desc:document.getElementById('bt-desc').value.trim()||''
+  });
+  sv();renderBTs();['bt-name','bt-tipo','bt-icon','bt-unit','bt-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderRisks(){
   if(!cats.risk||!cats.risk.length)cats.risk=BASE_RISK.map(x=>Object.assign({},x));
@@ -3521,6 +3608,7 @@ function initColResize(e){
 
 function renderLaunchers(){
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
   const el=document.getElementById('ln-tbody');if(!el)return;
   const lns=cats.launchers||[];
   el.innerHTML=lns.length?lns.map((l,i)=>`<tr>
@@ -3981,6 +4069,7 @@ function subscribeRealtime(){
       else if(k==='trash'){trash=v;localStorage.setItem('trash_v1',JSON.stringify(v));}
       // Re-migrate cats if realtime update has older cats version
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
       if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
       if(!cats.tp)cats.tp=[];
       if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
@@ -3997,7 +4086,7 @@ function subscribeRealtime(){
 }
 function bootApp(){
   // DATA RESET: force reload when version changes
-  var DATA_VERSION='v4.2_clean';
+  var DATA_VERSION='v4.3_catalogos_fix';
   var _needDepsClear=localStorage.getItem('data_version')!==DATA_VERSION;
   if(_needDepsClear){
     // Reset only deps and contracts — keep clients (oc27) and cats (ct27)
@@ -4034,6 +4123,7 @@ function bootApp(){
   if(!cats.billingTypes||!cats.billingTypes.length)cats.billingTypes=BASE_BILLING_TYPES.map(x=>Object.assign({},x));
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
   if(!cats.tp)cats.tp=[];
 
   // Load roles
@@ -4059,6 +4149,7 @@ function bootApp(){
       }
       // Re-migrate cats in case Supabase had older version without new keys
       if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
+  setTimeout(function(){try{renderCats();}catch(e){}},50);
       if(!cats.ap||!cats.ap.length)cats.ap=BASE_AP.map(x=>Object.assign({},x));
       if(!cats.tp)cats.tp=[];
       if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
