@@ -2676,7 +2676,10 @@ function depLinkCell(link){
 }
 function depModulesRead(mods){
   if(!mods||!mods.length) return `<span class="dep-text muted">Sin módulos</span>`;
-  return `<div class="dep-modules">${mods.map(m=>`<span class="mt" title="${esc(m)}">${esc(m)}</span>`).join('')}</div>`;
+  const validMods=new Set((cats.md||[]).map(x=>x.name));
+  const filtered=(cats.md&&cats.md.length)?mods.filter(m=>validMods.has(m)):mods;
+  if(!filtered.length) return `<span class="dep-text muted">Sin módulos</span>`;
+  return `<div class="dep-modules">${filtered.map(m=>`<span class="mt" title="${esc(m)}">${esc(m)}</span>`).join('')}</div>`;
 }
 function depNotesRead(text){
   if(!text) return `<span class="dep-text muted">—</span>`;
@@ -2896,7 +2899,8 @@ function renderCls(){
   const tb=document.getElementById('ctb');if(!tb)return;
   tb.innerHTML=f.length?f.map((c,idx)=>{
     const cx=complexBadge({mo:c.mo});
-    const moHtml=(c.mo||[]).map(m=>`<span class="mt">${esc(m)}</span>`).join('');
+    const _validMods=new Set((cats.md&&cats.md.length?cats.md:BASE_MD).map(m=>m.name));
+    const moHtml=(c.mo||[]).filter(m=>_validMods.has(m)).map(m=>`<span class="mt">${esc(m)}</span>`).join('');
     return`<tr>
       <td style="color:var(--subtle);font-size:11px;font-family:'DM Mono',monospace">${String(idx+1).padStart(2,'0')}</td>
       <td style="font-weight:600;cursor:pointer;color:var(--blue)" onclick="openClSummary(${c.id})">${esc(c.nm)}</td>
