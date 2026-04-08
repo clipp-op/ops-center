@@ -27,21 +27,9 @@
 #sync-badge.err{background:#DC2626}
 
 /* ==== Despliegues Activos v10 ==== */
-#view-despliegues .tbl-wrap{
-  border:1px solid var(--border);
-  border-radius:18px;
-  background:var(--bg);
-  box-shadow:var(--sh);
-  overflow:auto;
-;max-height:70vh}
-#tbl-d{
-  width:max-content;
-  min-width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  table-layout:auto;
-}
-#tbl-o,#tbl-i,#tbl-c{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:auto;}
+#view-despliegues .tbl-wrap{border:1px solid var(--border);border-radius:10px;background:var(--bg);box-shadow:var(--sh);overflow-x:auto;overflow-y:auto;max-height:75vh;position:relative}
+#tbl-d{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+#tbl-o,#tbl-i,#tbl-c{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
 
 #tbl-d thead th{
   position:sticky;
@@ -305,13 +293,12 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;color:var(--text);backgro
 .fcnt{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap}
 .clear-link{font-size:12px;color:var(--blue);cursor:pointer;font-weight:600}
 /* TABLE */
-.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);background:var(--bg)}
+.tbl-wrap{border:1px solid var(--border);border-radius:10px;background:var(--bg);box-shadow:var(--sh);overflow-x:auto;overflow-y:auto;max-height:75vh;position:relative}
 table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
 thead th{padding:9px 10px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:var(--bg2);border-bottom:2px solid var(--border);white-space:nowrap;position:relative;user-select:none;overflow:hidden}
 .col-r{position:absolute;right:0;top:0;height:100%;width:6px;cursor:col-resize;z-index:2}
 .col-r:hover,.col-r.on{background:var(--blue);opacity:.4}
-td{padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:visible;
-  white-space:nowrap}
+td{padding:7px 12px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr:hover td{background:#FAFBFD}
 tr:last-child td{border-bottom:none}
 /* INLINE EDIT */
@@ -480,7 +467,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 .chk-item:hover{background:var(--bg2)}
 .chk-item input[type=checkbox]{accent-color:var(--blue);width:15px;height:15px;cursor:pointer;flex-shrink:0}
 .chk-item.checked{color:var(--green);text-decoration:line-through;opacity:.7}
-.cont-table{width:100%;border-collapse:collapse}
+.cont-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .cont-table thead th{padding:9px 12px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--bg2);border-bottom:2px solid var(--border)}
 .cont-table td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
 .cont-table tr:last-child td{border-bottom:none}
@@ -513,11 +500,9 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 /* Allow wrapping in specific cells */
 .cell-wrap,.cl-mods-ro,.mt,.dep-note{white-space:normal;word-break:break-word;min-width:120px}
 
-/* ── Dashboard quick filters ──────────────────────── */
-.dash-qf-btn{padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--muted);font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
-.dash-qf-btn:hover{background:var(--blue-l);color:var(--blue);border-color:var(--blue)}
-.dash-qf-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-</style>
+.cl-mods-ro,.dep-modules{white-space:normal;overflow:visible;text-overflow:clip}
+.dep-actions,td.dep-actions,.cl-act{overflow:visible;white-space:nowrap}
+.cont-table td,.cat-table td{white-space:normal;overflow:visible;text-overflow:clip}</style>
 </head>
 <body>
 
@@ -574,7 +559,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.4 · 07 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.5 · 08 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -601,22 +586,21 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       <div class="kpi-grid" id="kpi-grid"></div>
       <!-- Time KPIs -->
       <div class="kpi-grid-2" id="kpi-time"></div>
-      <div class="filter-bar" style="flex-wrap:wrap;gap:8px">
+      <div class="filter-bar">
         <label style="font-weight:700;font-size:12px">📅 Período:</label>
-        <!-- Filtros rápidos -->
         <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <button class="dash-qf-btn" id="qf-cm"  onclick="dashQF('mes-actual')">Mes actual</button>
-          <button class="dash-qf-btn" id="qf-pm"  onclick="dashQF('mes-pasado')">Mes pasado</button>
-          <button class="dash-qf-btn" id="qf-t3"  onclick="dashQF('trim-actual')">Trim. actual</button>
-          <button class="dash-qf-btn" id="qf-ya"  onclick="dashQF('ano-actual')">Año actual</button>
-          <button class="dash-qf-btn" id="qf-yp"  onclick="dashQF('ano-pasado')">Año pasado</button>
+          <button class="dash-qf-btn" id="qf-cm" onclick="dashQF('mes-actual')">Mes actual</button>
+          <button class="dash-qf-btn" id="qf-pm" onclick="dashQF('mes-pasado')">Mes pasado</button>
+          <button class="dash-qf-btn" id="qf-t3" onclick="dashQF('trim-actual')">Trim. actual</button>
+          <button class="dash-qf-btn" id="qf-ya" onclick="dashQF('ano-actual')">Año actual</button>
+          <button class="dash-qf-btn" id="qf-yp" onclick="dashQF('ano-pasado')">Año pasado</button>
           <button class="dash-qf-btn" id="qf-all" onclick="dashQF('todo')">Todo</button>
         </div>
         <label style="font-size:12px;color:var(--muted)">Desde</label>
-        <input type="date" class="fi" id="sf" onchange="renderDash()" style="width:140px">
+        <input type="date" class="fi" id="sf" onchange="renderDash()">
         <label style="font-size:12px;color:var(--muted)">Hasta</label>
-        <input type="date" class="fi" id="st" onchange="renderDash()" style="width:140px">
-        <select class="fi" id="sf-ln" onchange="renderDash()" style="min-width:150px">
+        <input type="date" class="fi" id="st" onchange="renderDash()">
+        <select class="fi" id="sf-ln" onchange="renderDash()">
           <option value="">Todos los launchers</option>
         </select>
         <span class="clear-link" onclick="clearDashF()">× Limpiar</span>
@@ -722,17 +706,17 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
       <div class="tbl-wrap">
         <table id="tbl-c"><thead><tr>
-          <th style="width:36px">#<div class="col-r"></div></th>
-          <th style="width:150px">Cliente<div class="col-r"></div></th>
-          <th style="width:100px">País<div class="col-r"></div></th>
+          <th style="width:40px">#<div class="col-r"></div></th>
+          <th style="width:160px">Cliente<div class="col-r"></div></th>
+          <th style="width:90px">País<div class="col-r"></div></th>
           <th style="width:100px">Ciudad<div class="col-r"></div></th>
           <th style="width:110px">Aplicativo<div class="col-r"></div></th>
           <th style="width:110px">Tipo<div class="col-r"></div></th>
           <th style="width:120px">Bot WA<div class="col-r"></div></th>
-          <th style="width:115px">Estado<div class="col-r"></div></th>
+          <th style="width:110px">Estado<div class="col-r"></div></th>
           <th style="width:115px">F. Confirmación<div class="col-r"></div></th>
-          <th style="min-width:200px">Módulos<div class="col-r"></div></th>
-          <th style="width:90px">Complej.<div class="col-r"></div></th>
+          <th style="width:220px">Módulos<div class="col-r"></div></th>
+          <th style="width:85px">Complej.<div class="col-r"></div></th>
           <th style="width:120px">Contacto<div class="col-r"></div></th>
           <th style="width:120px">Tel / Email<div class="col-r"></div></th>
           <th style="width:150px">WhatsApp<div class="col-r"></div></th>
@@ -745,7 +729,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <!-- ══ LÍNEA DE TIEMPO ══ -->
     <div id="view-timeline" class="view">
       <div class="sec-hdr">
-        <div><div class="sec-title">Línea de Tiempo</div><div class="sec-sub">Visión histórica y proyección por categoría · Clientes confirmados · Despliegues · Operativos</div></div>
+        <div><div class="sec-title">Línea de Tiempo <button class="info-btn" onclick="toggleInfo('tl-info',event)" title="¿Cómo funciona?">i</button></div><div class="sec-sub">Visión histórica y proyección por categoría · Clientes confirmados · Despliegues · Operativos</div></div>
       </div>
 
       <div class="deploy-subnav-wrap">
@@ -794,7 +778,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ CAPACIDAD OPERATIVA ══ -->
     <div id="view-capacidad" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">Capacidad Operativa <span class="sec-stat" id="cap-stat">—</span> <button class="info-btn" onclick="toggleInfo('cap-info')" title="¿Cómo se calculan estos datos?">i</button></div><div class="sec-sub">Horas disponibles vs consumidas · Escenarios de crecimiento</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">Capacidad Operativa <span class="sec-stat" id="cap-stat">—</span> <button class="info-btn" onclick="toggleInfo('cap-info',event)" title="¿Cómo se calculan estos datos?">i</button></div><div class="sec-sub">Horas disponibles vs consumidas · Escenarios de crecimiento</div></div></div>
 
       <div class="deploy-subnav-wrap">
         <div class="deploy-subnav" aria-label="Menú horizontal de despliegue">
@@ -834,7 +818,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
           <div class="action-card-label">Estabilización</div>
           <div class="action-card-sub">Sin nuevos</div>
         </div>
-        <div class="action-card" onclick="toggleInfo('cap-info')">
+        <div class="action-card" onclick="toggleInfo('cap-info',event)">
           <div class="action-card-icon">ℹ️</div>
           <div class="action-card-label">¿Cómo se calcula?</div>
           <div class="action-card-sub">Ver fórmulas</div>
@@ -876,7 +860,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ CONTRATOS ══ -->
     <div id="view-contratos" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">Gestión de Contratos <span class="sec-stat" id="cont-stat-hdr">0 contratos</span></div><div class="sec-sub">Modalidad de cobro · Condiciones contractuales · Definición de activos</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">Gestión de Contratos <button class="info-btn" onclick="toggleInfo('cont-info',event)" title="¿Cómo funciona?">i</button> <span class="sec-stat" id="cont-stat-hdr">0 contratos</span></div><div class="sec-sub">Modalidad de cobro · Condiciones contractuales · Definición de activos</div></div></div>
       <div class="action-grid" style="grid-template-columns:repeat(3,1fr);max-width:440px;margin-bottom:16px">
         <div class="action-card" onclick="openAddContrato()">
           <div class="action-card-icon">📋</div>
@@ -936,7 +920,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ COBRANZAS ══ -->
     <div id="view-cobranzas" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">Dashboard de Cobranzas <span class="sec-stat" id="cob-stat-hdr">—</span></div><div class="sec-sub">Solo clientes operativos · Registro mensual · Estados de pago</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">Dashboard de Cobranzas <button class="info-btn" onclick="toggleInfo('cob-info',event)" title="¿Cómo funciona?">i</button> <span class="sec-stat" id="cob-stat-hdr">—</span></div><div class="sec-sub">Solo clientes operativos · Registro mensual · Estados de pago</div></div></div>
 
       <div class="deploy-subnav-wrap">
         <div class="deploy-subnav" aria-label="Menú horizontal de despliegue">
@@ -1006,7 +990,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ ESTRATEGIA DE DESPLIEGUE ══ -->
     <div id="view-estrategia" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">Estrategia de Despliegue <button class="info-btn" onclick="toggleInfo('est-info')" title="¿Cómo funciona este módulo?">i</button></div><div class="sec-sub">Clasificación por complejidad · Fases · Checklists por módulo</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">Estrategia de Despliegue <button class="info-btn" onclick="toggleInfo('est-info',event)" title="¿Cómo funciona este módulo?">i</button></div><div class="sec-sub">Clasificación por complejidad · Fases · Checklists por módulo</div></div></div>
 
       <div class="deploy-subnav-wrap">
         <div class="deploy-subnav" aria-label="Menú horizontal de despliegue">
@@ -1079,124 +1063,123 @@ input[type=date].ei{cursor:pointer;min-width:110px}
 
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.4</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
+      <div class="sec-hdr"><div>
+        <div class="sec-title">📖 Manual de Uso — Ops Center v5.5</div>
+        <div class="sec-sub">Guía de referencia completa · Clipp Operations</div>
+      </div></div>
 
-      <!-- REFERENCE TABLE -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-h"><div class="card-title">📋 Qué dato alimenta qué reporte</div></div>
         <div class="card-b" style="padding:0"><div style="overflow-x:auto"><table class="cat-table">
-          <thead><tr><th>Si llenas este dato en...</th><th>Aparece en estos reportes</th></tr></thead>
+          <thead><tr><th>Si llenas este dato en…</th><th>Aparece en estos reportes</th></tr></thead>
           <tbody>
             <tr><td><strong>F. Confirmación</strong> del cliente</td><td>Línea de Tiempo → Confirmados por mes</td></tr>
             <tr><td><strong>F. Entrega</strong> del despliegue</td><td>Línea de Tiempo → Finalizados · Dashboard KPIs · Días de implementación</td></tr>
             <tr><td><strong>F. Inicio</strong> del despliegue</td><td>Línea de Tiempo → En Proceso · Capacidad Operativa</td></tr>
             <tr><td><strong>Estado ✅ Listo</strong> en despliegue</td><td>Mueve el cliente a Clientes Operativos automáticamente</td></tr>
-            <tr><td><strong>Horas soporte / Horas despliegue</strong></td><td>Capacidad Operativa → cálculo de carga real por cliente</td></tr>
-            <tr><td><strong>Módulos activos</strong> del cliente</td><td>Complejidad automática · Estrategia de Despliegue · Capacidad</td></tr>
-            <tr><td><strong>Contrato</strong> con componentes de cobro</td><td>Cobranzas → generación automática de facturas mensuales</td></tr>
+            <tr><td><strong>Horas soporte / Horas despliegue</strong></td><td>Capacidad Operativa → carga real por cliente</td></tr>
+            <tr><td><strong>Módulos activos</strong> del cliente</td><td>Complejidad automática · Estrategia · Capacidad</td></tr>
+            <tr><td><strong>Contrato</strong> con componentes</td><td>Cobranzas → generación automática de facturas mensuales</td></tr>
             <tr><td><strong>Launcher</strong> del despliegue</td><td>Filtros en Dashboard, Despliegues, Línea de Tiempo, Capacidad</td></tr>
+            <tr><td><strong>WhatsApp</strong> del cliente</td><td>Tabla Clientes → links directos wa.me por número</td></tr>
+            <tr><td><strong>Bot WA</strong> del cliente (Normal/Coexistencia)</td><td>Tabla Clientes · Contratos → Bots WA Activos</td></tr>
           </tbody>
         </table></div></div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-h"><div class="card-title">🔢 Cómo se calculan los datos clave</div></div>
+        <div class="card-b"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">📊 Dashboard KPIs</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7">Todos los contadores respetan el <strong>filtro de fechas</strong>.<br>• Total = deps en el período<br>• Operativos = estado ✅ Listo<br>• Tiempos = F.Entrega − F.Inicio en días<br><em>Usa los botones rápidos: Mes actual, Trimestre, Año.</em></div></div>
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">⚡ Capacidad Operativa</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7"><strong>Hrs disponibles</strong> = Operadores × Hrs/día × Días/mes<br><strong>Hrs consumidas</strong> = Σ (Hrs cliente × Peso complejidad)<br><strong>Pesos:</strong> Básico 1× · Medio 1.5× · Avanzado 2.5×<br><em>Configura en Catálogos → Complejidad.</em></div></div>
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">💰 Cobro mensual</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7">Por cada componente:<br>• <strong>Conductor/Vehículo:</strong> max(activos, mínimo) × precio<br>• <strong>Bot WA:</strong> max(bots, mínimo) × precio<br>• <strong>Fijo/Mínimo:</strong> precio fijo mensual<br>• <strong>Setup:</strong> cobro único<br><em>Tipos en Catálogos → Tipos de Cobro.</em></div></div>
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">🎯 Complejidad automática</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7">El sistema revisa los módulos del cliente vs umbrales de Catálogos → Complejidad. Asigna el nivel más alto que aplique.<br><em>Editable en Catálogos → Complejidad.</em></div></div>
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">📅 Línea de Tiempo</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7">• 🔵 Confirmados: F. Confirmación en ese mes<br>• 🟢 Finalizados: F. Entrega en ese mes (✅)<br>• 🟡 En Proceso: F.Inicio ≤ mes y sin F.Entrega<br>• 🟣 Operativos: acumulado ≤ mes<br><em>Líneas punteadas = regresión lineal.</em></div></div>
+          <div><div style="font-weight:700;font-size:12.5px;margin-bottom:6px">🚦 Estados de Riesgo</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.7">Se aplican en Cobranzas según % pagado vs facturado.<br>Configura umbrales en Catálogos → Estados de Riesgo.<br>Ej: &lt;70% → Riesgo Alto (🔴)</div></div>
+        </div></div>
+      </div>
 
-        <!-- CLIENTES -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
         <div class="card"><div class="card-h"><div class="card-title">👥 Clientes</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Registro central de todos tus clientes. <strong>Haz clic en el nombre</strong> para ver el resumen completo: contrato, cobros e historial de despliegues.</p>
+          <p>Registro central. <strong>Clic en el nombre</strong> → resumen con contrato, cobros e historial.</p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>Usa el filtro de <strong>Estado</strong> para ver activos, deshabilitados o perdidos.</li>
-            <li>El botón ✏️ abre el modal de edición — los cambios se sincronizan automáticamente a todos sus despliegues.</li>
-            <li>La <strong>complejidad</strong> se asigna automáticamente según los módulos activos (configurable en Catálogos → Complejidad).</li>
-            <li><strong>F. Confirmación:</strong> llénala para que aparezca en la Línea de Tiempo.</li>
+            <li>Filtro Estado: Activos / Todos / Deshabilitados / Perdidos.</li>
+            <li><strong>WhatsApp</strong>: genera links 📱 wa.me por número.</li>
+            <li><strong>Bot WA</strong>: Normal o Coexistencia (afecta contratos).</li>
+            <li><strong>F. Confirmación</strong>: llénala para la Línea de Tiempo.</li>
+            <li>Módulos mostrados filtrados según tu catálogo actual.</li>
           </ul>
         </div></div>
-
-        <!-- DESPLIEGUES -->
         <div class="card"><div class="card-h"><div class="card-title">🚀 Despliegues</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Seguimiento operativo de implementaciones en curso. Todas las columnas son editables directamente en la tabla.</p>
+          <p>Seguimiento operativo. <strong>Columnas editables directamente en la tabla.</strong></p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>Cambia el <strong>Estado</strong> a ✅ Listo → el cliente pasa automáticamente a <em>Clientes Operativos</em>.</li>
-            <li>Usa ▶ / ◀ para avanzar o retroceder la <strong>Fase de implementación</strong>.</li>
-            <li>Las <strong>Hrs Sop./Desp.</strong> alimentan el cálculo de Capacidad Operativa.</li>
-            <li>El <strong>Launcher</strong> se elige entre los configurados en Catálogos → Launchers.</li>
+            <li>Estado ✅ Listo → pasa a Clientes Operativos automáticamente.</li>
+            <li>▶ / ◀ para avanzar/retroceder la <strong>Fase</strong>.</li>
+            <li><strong>Hrs Sop./Desp.</strong> → alimentan Capacidad Operativa.</li>
+            <li>Arrastra el borde de columnas para ajustar anchos (se guarda).</li>
           </ul>
         </div></div>
-
-        <!-- LÍNEA DE TIEMPO -->
-        <div class="card"><div class="card-h"><div class="card-title">📅 Línea de Tiempo</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Reporte histórico y proyección mes a mes con 4 series:</p>
-          <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>🔵 <strong>Confirmados</strong> — clientes con F. Confirmación en ese mes.</li>
-            <li>🟢 <strong>Finalizados</strong> — despliegues con F. Entrega en ese mes.</li>
-            <li>🟡 <strong>En Proceso</strong> — despliegues activos durante ese mes.</li>
-            <li>🟣 <strong>Operativos</strong> — clientes acumulados con estado Listo.</li>
-          </ul>
-          <p style="margin-top:6px">Las líneas punteadas son proyección (regresión lineal sobre datos reales).</p>
-        </div></div>
-
-        <!-- COBRANZAS -->
-        <div class="card"><div class="card-h"><div class="card-title">💰 Cobranzas</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Facturación mensual. Solo se facturan clientes <strong>Operativos con contrato</strong>.</p>
-          <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>Usa <strong>⚡ Generar Cobros</strong> al inicio de cada mes.</li>
-            <li>Haz clic en ✏️ de cada cobro para ajustar activos, descuentos y extras.</li>
-            <li>Cicla el estado: ⏳ Pendiente → ✅ Pagado → 🔶 Parcial → 🔴 Atrasado.</li>
-            <li>El monto se calcula automáticamente según el <strong>contrato vigente</strong>.</li>
-          </ul>
-        </div></div>
-
-        <!-- CONTRATOS -->
         <div class="card"><div class="card-h"><div class="card-title">📋 Contratos</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Define las condiciones de cobro de cada cliente. Un contrato puede mezclar múltiples componentes:</p>
+          <p>Condiciones de cobro por cliente. Combina múltiples componentes.</p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>Por conductor / por vehículo / cobro fijo / mínimo operativo / setup / bot WA.</li>
-            <li>Los componentes se configuran en <strong>Catálogos → Tipos de Cobro</strong>.</li>
-            <li>El campo <strong>Bots WA Activos</strong> se carga automáticamente en cada cobro.</li>
+            <li>Tipos disponibles vienen de <strong>Catálogos → Tipos de Cobro</strong>.</li>
+            <li>El <strong>mínimo</strong> garantiza un piso aunque haya pocos activos.</li>
+            <li>El estimado en el modal usa los activos y mínimos del formulario.</li>
           </ul>
         </div></div>
-
-        <!-- CAPACIDAD -->
+        <div class="card"><div class="card-h"><div class="card-title">💰 Cobranzas</div></div><div class="card-b" style="font-size:12.5px">
+          <p>Facturación mensual. Solo clientes <strong>Operativos con contrato activo</strong>.</p>
+          <ul style="margin:8px 0 0 16px;line-height:1.8">
+            <li><strong>⚡ Generar Cobros</strong> al inicio de cada mes.</li>
+            <li>✏️ para ajustar activos, descuentos y extras del mes.</li>
+            <li>Estados: ⏳ Pendiente → ✅ Pagado → 🔶 Parcial → 🔴 Atrasado.</li>
+          </ul>
+        </div></div>
         <div class="card"><div class="card-h"><div class="card-title">⚡ Capacidad Operativa</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Calcula cuánta carga tiene tu equipo en tiempo real.</p>
-          <p style="margin-top:6px"><strong>Fórmula:</strong><br>
-          Hrs disponibles = Operadores × Hrs/día × Días/mes<br>
-          Hrs consumidas = Σ(cliente × peso_complejidad × hrs_asignadas)</p>
+          <p>Carga del equipo en tiempo real.</p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li>Pesos: Básico=1× · Medio=1.5× · Avanzado=2.5× (editables en Catálogos).</li>
-            <li>Las horas individuales de cada cliente se configuran en la tabla de Despliegues.</li>
+            <li>Configura operadores, hrs/día y días/mes arriba.</li>
+            <li>Horas individuales en tabla de Despliegues (Hrs Sop./Desp.).</li>
+            <li>Pesos de complejidad en <strong>Catálogos → Complejidad</strong>.</li>
           </ul>
         </div></div>
-
-        <!-- CATÁLOGOS -->
         <div class="card"><div class="card-h"><div class="card-title">🗂 Catálogos</div></div><div class="card-b" style="font-size:12.5px">
-          <p>Configura todos los valores maestros del sistema. Los cambios impactan en toda la aplicación al instante.</p>
+          <p>Valores maestros. Los cambios impactan en toda la app al instante.</p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li><strong>Módulos</strong> — los que aparecen en clientes y despliegues.</li>
-            <li><strong>Launchers</strong> — responsables de implementación. Agrégalos aquí y aparecerán en todos los dropdowns.</li>
-            <li><strong>Complejidad</strong> — niveles y módulos que los activan.</li>
-            <li><strong>Tipos de Cobro</strong> — componentes disponibles para contratos.</li>
-            <li><strong>Fases</strong> — etapas del proceso de implementación.</li>
-            <li><strong>Estados de Riesgo</strong> — umbrales para cobranzas y contratos.</li>
+            <li><strong>Módulos, Aplicativos, Tipos de Cliente</strong> → aparecen en clientes.</li>
+            <li><strong>Launchers, Modalidades, Fases</strong> → aparecen en despliegues.</li>
+            <li><strong>Complejidad</strong> → niveles y módulos disparadores.</li>
+            <li><strong>Tipos de Cobro</strong> → componentes para contratos.</li>
+            <li><strong>Estados de Riesgo, T. Implementación</strong> → cobranzas y capacidad.</li>
           </ul>
         </div></div>
-
-        <!-- USUARIOS Y ROLES -->
         <div class="card"><div class="card-h"><div class="card-title">👤 Usuarios y Roles</div></div><div class="card-b" style="font-size:12.5px">
           <p>Controla quién puede ver y editar cada módulo.</p>
           <ul style="margin:8px 0 0 16px;line-height:1.8">
-            <li><strong>Roles</strong>: define niveles de acceso (Sin acceso / Solo lectura / Editar / Control total) por módulo.</li>
-            <li><strong>Usuarios</strong>: asocia cada email de Supabase a un rol. El sistema aplica los permisos automáticamente al entrar.</li>
-            <li>Roles base: Administrador · Gerente · Operador · Solo Lectura · Comercial.</li>
-            <li>El rol activo se muestra en la barra superior junto al botón Salir.</li>
+            <li>🚫 Sin acceso · 👁 Solo lectura · ✏️ Editar · ⚡ Control total.</li>
+            <li>Asocia email de Supabase a un rol. Permisos aplicados automáticamente.</li>
+            <li>Roles: Administrador · Gerente · Operador · Solo Lectura · Comercial.</li>
           </ul>
         </div></div>
-
+        <div class="card"><div class="card-h"><div class="card-title">💾 Backup y Restaurar</div></div><div class="card-b" style="font-size:12.5px">
+          <p>Exporta e importa todos tus datos en JSON.</p>
+          <ul style="margin:8px 0 0 16px;line-height:1.8">
+            <li><strong>Backup</strong> → JSON con todos los datos.</li>
+            <li><strong>Restaurar</strong> → sube un backup anterior.</li>
+            <li><strong>CSV</strong> → exporta el módulo actual a Excel.</li>
+            <li>Sync automático con Supabase en tiempo real.</li>
+          </ul>
+        </div></div>
       </div>
     </div>
 
-    <!-- ══ CATÁLOGOS ══ -->
-    <div id="view-catalogos" class="view">
+    id="view-catalogos" class="view">
       <div class="sec-hdr">
         <div><div class="sec-title">🗂 Gestión de Catálogos</div>
         <div class="sec-sub">Configura valores maestros del sistema · los cambios se reflejan en toda la app</div></div>
@@ -1527,16 +1510,6 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       <div class="fr"><label class="fl">Tel / Email</label><input class="fld" id="cm-ph" placeholder="+593..."></div>
     </div>
     <div class="fr2">
-      <div class="fr"><label class="fl">📱 WhatsApp (separar varios con coma)</label><input class="fld" id="cm-wh" placeholder="+593987654321, +593912345678"></div>
-      <div class="fr"><label class="fl">🤖 Bot de WhatsApp</label>
-        <select class="fld" id="cm-bot">
-          <option value="">Sin Bot WA</option>
-          <option value="normal">🤖 Normal</option>
-          <option value="coexistencia">🔄 Coexistencia</option>
-        </select>
-      </div>
-    </div>
-    <div class="fr2">
       <div class="fr"><label class="fl">📅 Fecha Confirmación del Cliente</label><input type="date" class="fld" id="cm-fconf" title="Cuándo se concretó que trabaja con nosotros"></div>
       <div class="fr"><label class="fl">Notas</label><input class="fld" id="cm-no" placeholder="Observaciones..."></div>
     </div>
@@ -1734,11 +1707,8 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
       <div class="fr" style="margin:0;min-width:90px"><label class="fl" style="font-size:10.5px">Nombre (etiq.)</label>
         <input class="fld" id="comp-nombre" placeholder="Ej: Conductor" style="font-size:12.5px"></div>
-      <div class="fr" style="margin:0;min-width:80px" id="comp-precio-wrap">
-        <label class="fl" style="font-size:10.5px">Precio ($)</label>
-        <input type="number" class="fld" id="comp-precio" value="15" min="0" style="font-size:12.5px" oninput="updateContratoPreview()">
-        <span id="comp-unidad-lbl" style="font-size:10px;color:var(--muted);display:block;margin-top:2px"></span>
-      </div>
+      <div class="fr" style="margin:0;min-width:80px" id="comp-precio-wrap"><label class="fl" style="font-size:10.5px">Precio ($)</label>
+        <input type="number" class="fld" id="comp-precio" value="15" min="0" style="font-size:12.5px" oninput="updateContratoPreview()"></div>
       <div class="fr" style="margin:0;min-width:75px" id="comp-min-wrap"><label class="fl" style="font-size:10.5px">Mínimo</label>
         <input type="number" class="fld" id="comp-minimo" value="0" min="0" style="font-size:12.5px" oninput="updateContratoPreview()"></div>
       <div class="fr" style="margin:0;min-width:70px" id="comp-cant-wrap"><label class="fl" style="font-size:10.5px">Cantidad</label>
@@ -2174,7 +2144,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.4'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.5'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2192,7 +2162,7 @@ function setV(v){
   }
   popAllSelects();
   const actions={
-    dashboard:function(){var sf=document.getElementById('sf');if(sf&&!sf.value)dashQF('mes-actual');else renderDash();},
+    dashboard:renderDash,
     despliegues:()=>{renderDeps();renderDash();},
     operativos:()=>{renderOps();},
     inactivos:renderInact,
@@ -2299,86 +2269,44 @@ function phaseBadge(dep){
 // ═══ BILLING ENGINE ══════════════════════════════════
 function calcFactura(contrato, mes, activosOverride){
   if(!contrato)return{total:0,neto:0,descMonto:0,desglose:[]};
-  const actCond = activosOverride?.conductores ?? contrato.conductoresActivos ?? 0;
-  const actVeh  = activosOverride?.vehiculos   ?? contrato.vehiculosActivos   ?? 0;
-  const actBot  = activosOverride?.bots        ?? contrato.botsActivos        ?? 0;
-  const comps   = contrato.componentes || [];
-  let total = 0, desglose = [];
-
-  if(comps.length > 0){
+  const actCond=activosOverride?.conductores??contrato.conductoresActivos??0;
+  const actVeh=activosOverride?.vehiculos??contrato.vehiculosActivos??0;
+  const actBot=activosOverride?.bots??contrato.botsActivos??0;
+  const comps=contrato.componentes||[];
+  let total=0,desglose=[];
+  if(comps.length>0){
     comps.forEach(comp=>{
-      let monto = 0, detalle = '';
-      const tipo = comp.tipo || '';
-
-      if(tipo === 'conductor'){
-        const usar = Math.max(actCond, comp.minimo || 0);
-        monto = usar * comp.precio;
-        detalle = `${usar} conductores × $${comp.precio}`;
-
-      } else if(tipo === 'vehiculo'){
-        const usar = Math.max(actVeh, comp.minimo || 0);
-        monto = usar * comp.precio;
-        detalle = `${usar} vehículos × $${comp.precio}`;
-
-      } else if(tipo === 'bot_wa'){
-        const usar = Math.max(actBot, comp.minimo || 0, comp.cantidad || 1);
-        monto = usar * comp.precio;
-        detalle = `${usar} bots × $${comp.precio}`;
-
-      } else if(tipo === 'fijo' || tipo === 'minimo'){
-        monto = comp.precio;
-        detalle = `${comp.nombre || 'Cobro fijo'}: $${comp.precio}`;
-
-      } else if(tipo === 'setup'){
-        // Pago único — incluir en el cálculo total (cobra una vez)
-        const cant = comp.cantidad || 1;
-        monto = cant * comp.precio;
-        detalle = `Setup × ${cant}: $${monto} (único)`;
-
-      } else if(tipo === 'deposito'){
-        const cant = comp.cantidad || 1;
-        monto = cant * comp.precio;
-        detalle = `Depósito × ${cant}: $${monto} (reembolsable)`;
-
-      } else if(tipo === 'modulo'){
-        const cant = comp.cantidad || 1;
-        monto = cant * comp.precio;
-        detalle = `${comp.nombre || 'Módulo'} × ${cant}: $${monto}`;
-
-      } else {
-        // Tipo personalizado del catálogo del usuario
-        const cant = comp.cantidad || 1;
-        const usar = comp.minimo ? Math.max(cant, comp.minimo) : cant;
-        monto = usar * comp.precio;
-        detalle = `${comp.nombre || tipo} × ${usar}: $${monto}`;
+      let monto=0,detalle='';
+      if(comp.tipo==='conductor'){
+        const usar=Math.max(actCond,comp.minimo||0);
+        monto=usar*comp.precio;detalle=`${usar} cond × $${comp.precio}`;
+      }else if(comp.tipo==='vehiculo'){
+        const usar=Math.max(actVeh,comp.minimo||0);
+        monto=usar*comp.precio;detalle=`${usar} veh × $${comp.precio}`;
+      }else if(comp.tipo==='bot_wa'){
+        const usar=actBot>0?actBot:(contrato.botsActivos||comp.cantidad||1);
+        monto=usar*comp.precio;detalle=`${usar} bot × $${comp.precio}`;
+      }else if(comp.tipo==='fijo'||comp.tipo==='minimo'){
+        monto=comp.precio;detalle=`Cobro fijo`;
+      }else if(comp.tipo==='setup'){
+        // Only charge setup once (first month) - skip for recurring calculation
+        monto=0;detalle='Setup (único)';
+      }else{
+        const cant=comp.cantidad||1;monto=cant*comp.precio;detalle=`${cant} × $${comp.precio}`;
       }
-
-      total += monto;
-      desglose.push({nombre: comp.nombre || tipo, tipo, monto, detalle});
+      total+=monto;
+      desglose.push({nombre:comp.nombre||comp.tipo,monto,detalle});
     });
-
-  } else {
-    // Legacy billing (contratos sin componentes)
-    const mod = contrato.modalidad || 'conductor';
-    const px = contrato.precio || 0;
-    const mv = contrato.minV || 0;
-    const mc = contrato.minC || 0;
-    if(mod === 'conductor'){
-      const usar = Math.max(actCond, mc);
-      total = usar * px;
-      desglose.push({nombre:'Por conductor', monto:total, detalle:`${usar} × $${px}`});
-    } else if(mod === 'vehiculo'){
-      const usar = Math.max(actVeh, mv);
-      total = usar * px;
-      desglose.push({nombre:'Por vehículo', monto:total, detalle:`${usar} × $${px}`});
-    } else {
-      const usar = Math.max(actCond + actVeh, mc + mv);
-      total = usar * px;
-      desglose.push({nombre:'Mixto', monto:total, detalle:`${usar} × $${px}`});
-    }
+  }else{
+    // Legacy billing
+    const mod=contrato.modalidad||'conductor';
+    const px=contrato.precio||0,mv=contrato.minV||0,mc=contrato.minC||0;
+    if(mod==='conductor'){const usar=Math.max(actCond,mc);total=usar*px;desglose.push({nombre:'Por conductor',monto:total,detalle:`${usar} × $${px}`});}
+    else if(mod==='vehiculo'){const usar=Math.max(actVeh,mv);total=usar*px;desglose.push({nombre:'Por vehículo',monto:total,detalle:`${usar} × $${px}`});}
+    else{const usar=Math.max(actCond+actVeh,mc+mv);total=usar*px;desglose.push({nombre:'Mixto',monto:total,detalle:`${usar} × $${px}`});}
   }
-
-  return{total, neto:total, descPct:0, descMonto:0, desglose};
+  const descPct=0,descMonto=0;
+  return{total,neto:total,descPct,descMonto,desglose};
 }
 
 // ═══ AUTO-ATRASADO & ALERTS ═══════════════════════════
@@ -2432,153 +2360,59 @@ function barB(id,data){
   const mx=Math.max(...data.map(d=>d[1]),1);
   el.innerHTML=data.map(([l,v],i)=>`<div class="bar-item"><div class="bar-lbl">${esc(l)}</div><div class="bar-track"><div class="bar-fill" style="width:${v/mx*100}%;background:${C6[i%6]}"></div></div><div class="bar-cnt">${v}</div></div>`).join('');
 }
-
-// ── Dashboard quick filters ──────────────────────────
 function dashQF(preset){
-  const now=new Date();
-  const pad=n=>String(n).padStart(2,'0');
-  const ymd=(y,m,d)=>`${y}-${pad(m)}-${pad(d)}`;
+  var now=new Date();var pad=function(n){return String(n).padStart(2,'0');};var ymd=function(y,m,d){return y+'-'+pad(m)+'-'+pad(d);};
   var from='',to='';
-  if(preset==='mes-actual'){
-    from=ymd(now.getFullYear(),now.getMonth()+1,1);
-    to=ymd(now.getFullYear(),now.getMonth()+1,new Date(now.getFullYear(),now.getMonth()+1,0).getDate());
-  } else if(preset==='mes-pasado'){
-    var pm=new Date(now.getFullYear(),now.getMonth()-1,1);
-    from=ymd(pm.getFullYear(),pm.getMonth()+1,1);
-    to=ymd(pm.getFullYear(),pm.getMonth()+1,new Date(pm.getFullYear(),pm.getMonth()+1,0).getDate());
-  } else if(preset==='trim-actual'){
-    var q=Math.floor(now.getMonth()/3);
-    from=ymd(now.getFullYear(),q*3+1,1);
-    var lm=q*3+3;
-    to=ymd(now.getFullYear(),lm,new Date(now.getFullYear(),lm,0).getDate());
-  } else if(preset==='ano-actual'){
-    from=ymd(now.getFullYear(),1,1);
-    to=ymd(now.getFullYear(),12,31);
-  } else if(preset==='ano-pasado'){
-    from=ymd(now.getFullYear()-1,1,1);
-    to=ymd(now.getFullYear()-1,12,31);
-  } else if(preset==='todo'){
-    from=''; to='';
-  }
-  var sfEl=document.getElementById('sf');
-  var stEl=document.getElementById('st');
-  if(sfEl)sfEl.value=from;
-  if(stEl)stEl.value=to;
-  // Mark active button
+  if(preset==='mes-actual'){from=ymd(now.getFullYear(),now.getMonth()+1,1);to=ymd(now.getFullYear(),now.getMonth()+1,new Date(now.getFullYear(),now.getMonth()+1,0).getDate());}
+  else if(preset==='mes-pasado'){var pm=new Date(now.getFullYear(),now.getMonth()-1,1);from=ymd(pm.getFullYear(),pm.getMonth()+1,1);to=ymd(pm.getFullYear(),pm.getMonth()+1,new Date(pm.getFullYear(),pm.getMonth()+1,0).getDate());}
+  else if(preset==='trim-actual'){var q=Math.floor(now.getMonth()/3);from=ymd(now.getFullYear(),q*3+1,1);var lm=q*3+3;to=ymd(now.getFullYear(),lm,new Date(now.getFullYear(),lm,0).getDate());}
+  else if(preset==='ano-actual'){from=ymd(now.getFullYear(),1,1);to=ymd(now.getFullYear(),12,31);}
+  else if(preset==='ano-pasado'){from=ymd(now.getFullYear()-1,1,1);to=ymd(now.getFullYear()-1,12,31);}
+  var sfEl=document.getElementById('sf');var stEl=document.getElementById('st');
+  if(sfEl)sfEl.value=from;if(stEl)stEl.value=to;
   document.querySelectorAll('.dash-qf-btn').forEach(function(b){b.classList.remove('active');});
   var map={'mes-actual':'qf-cm','mes-pasado':'qf-pm','trim-actual':'qf-t3','ano-actual':'qf-ya','ano-pasado':'qf-yp','todo':'qf-all'};
-  var btn=document.getElementById(map[preset]);
-  if(btn)btn.classList.add('active');
+  var btn=document.getElementById(map[preset]);if(btn)btn.classList.add('active');
   renderDash();
 }
 function renderDash(){
   popAllSelects();
-  // Marcar botón activo si las fechas coinciden con un preset
-  _dashMarkActiveBtn();
-  const from=document.getElementById('sf')?.value||'';
-  const to=document.getElementById('st')?.value||'';
-  const fLn=document.getElementById('sf-ln')?.value||'';
-
-  // TODOS los deps filtrados por launcher Y por fechas (usando fi o fe)
-  const filtered=deps.filter(d=>{
-    if(fLn&&d.ln!==fLn)return false;
-    // Incluir si tiene alguna fecha dentro del rango
-    const dates=[d.fi,d.fe,d.fd].filter(Boolean);
-    if(!from&&!to)return true; // sin filtro de fecha
-    // Incluir dep si su fecha de inicio O entrega cae en el rango
-    const inRange=dates.some(dt=>{
-      if(from&&dt<from)return false;
-      if(to&&dt>to)return false;
-      return true;
-    });
-    return inRange;
-  });
-
-  const t=filtered.length;
-  const li=filtered.filter(d=>d.es===EL).length;
-  const pr=filtered.filter(d=>d.es==='🔧 En proceso').length;
-  const ini=filtered.filter(d=>d.es==='🆕 Por iniciar').length;
-  const cap=filtered.filter(d=>d.es==='🆕 Capacitación').length;
-
+  const from=document.getElementById('sf')?.value,to=document.getElementById('st')?.value,fLn=document.getElementById('sf-ln')?.value||'';
+  const allF=deps.filter(d=>!fLn||d.ln===fLn);
+  const t=allF.length,li=allF.filter(d=>d.es===EL).length,pr=allF.filter(d=>d.es==='🔧 En proceso').length;
+  const ini=allF.filter(d=>d.es==='🆕 Por iniciar').length,cap=allF.filter(d=>d.es==='🆕 Capacitación').length;
   const kpiEl=document.getElementById('kpi-grid');
   if(kpiEl)kpiEl.innerHTML=[
-    ['Total Despliegues',t,from||to?'En el período seleccionado':'Todos los registros','#1B4FD8'],
+    ['Total Despliegues',t,'Todos los registros','#1B4FD8'],
     ['Operativos',li,`${t?Math.round(li/t*100):0}% completados`,'#0F7E4F'],
     ['En Proceso',pr,'Implementación activa','#2563EB'],
     ['Por Iniciar',ini,'Pendiente de arranque','#B45309'],
     ['Capacitación',cap,'En training','#5B21B6']
   ].map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
-
-  // Tiempos — solo deps con fi y fe en rango
-  const completed=filtered.filter(d=>isD(d.fi)&&isD(d.fe));
-  const timesData=completed.map(d=>Math.round((new Date(d.fe+'T12:00:00')-new Date(d.fi+'T12:00:00'))/(1000*60*60*24)));
+  const completed=deps.filter(d=>isD(d.fi)&&isD(d.fe));
+  const timesData=completed.filter(d=>{
+    if(from&&d.fe<from)return false;if(to&&d.fe>to)return false;if(fLn&&d.ln!==fLn)return false;return true;
+  }).map(d=>Math.round((new Date(d.fe+'T12:00:00')-new Date(d.fi+'T12:00:00'))/(1000*60*60*24)));
   const avg=timesData.length?Math.round(timesData.reduce((a,b)=>a+b,0)/timesData.length):0;
-  const mn=timesData.length?Math.min(...timesData):0;
-  const mx=timesData.length?Math.max(...timesData):0;
+  const mn=timesData.length?Math.min(...timesData):0,mx2=timesData.length?Math.max(...timesData):0;
   const kpiT=document.getElementById('kpi-time');
-  if(kpiT)kpiT.innerHTML=[
-    ['⚡ Más rápida',mn+'d','Entrega más veloz','#0F7E4F'],
-    ['⌚ Promedio',avg+'d','Promedio entregas','#1B4FD8'],
-    ['🐢 Más lenta',mx+'d','Entrega más larga','#B45309']
-  ].map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
-
-  // Gráfico por mes — agrupado por fe
+  if(kpiT)kpiT.innerHTML=[['⚡ Más rápida',mn+'d','Entrega más veloz','#0F7E4F'],['⌚ Promedio',avg+'d','Promedio entregas','#1B4FD8'],['🐢 Más lenta',mx2+'d','Entrega más larga','#B45309']].map(([l,v,n,c])=>`<div class="kpi" style="--ac:${c}"><div class="kpi-lbl">${l}</div><div class="kpi-val" style="color:${c}">${v}</div><div class="kpi-note">${n}</div></div>`).join('');
+  const ranged=allF.filter(d=>isD(d.fe)&&(!from||d.fe>=from)&&(!to||d.fe<=to));
+  const mE=Object.entries(ranged.reduce((a,d)=>{const k=d.fe.slice(0,7);a[k]=(a[k]||0)+1;return a;},{})).sort();
   const mN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const withFe=filtered.filter(d=>isD(d.fe));
-  const mE=Object.entries(withFe.reduce((a,d)=>{const k=d.fe.slice(0,7);a[k]=(a[k]||0)+1;return a;},{})).sort();
   const mxM=Math.max(...mE.map(e=>e[1]),1);
   const chMonth=document.getElementById('ch-month');
-  if(chMonth)chMonth.innerHTML=mE.length
-    ?mE.map(([ym,v])=>{const[y,m]=ym.split('-');return`<div class="bar-item"><div class="bar-lbl">${mN[+m-1]||m} ${y}</div><div class="bar-track"><div class="bar-fill" style="width:${v/mxM*100}%;background:#0F7E4F"></div></div><div class="bar-cnt">${v}</div></div>`;}).join('')
-    :'<p style="color:var(--subtle);font-size:12px;padding:8px 0">Sin entregas en el período</p>';
-
-  const cntEl=document.getElementById('dash-cnt');
-  if(cntEl)cntEl.textContent=from||to?`${filtered.length} registros en período`:'';
-
-  // Barras — filtradas por período
+  if(chMonth)chMonth.innerHTML=mE.length?mE.map(([ym,v])=>{const[y,m]=ym.split('-');return`<div class="bar-item"><div class="bar-lbl">${mN[+m-1]||m} ${y}</div><div class="bar-track"><div class="bar-fill" style="width:${v/mxM*100}%;background:#0F7E4F"></div></div><div class="bar-cnt">${v}</div></div>`;}).join(''):'<p style="color:var(--subtle);font-size:12px;padding:8px 0">Sin entregas en el período</p>';
+  const cntEl=document.getElementById('dash-cnt');if(cntEl)cntEl.textContent=ranged.length?`${ranged.length} entregas en período`:'';
   barB('ch-status',[['✅ Operativos',li],['🔧 En Proceso',pr],['🆕 Por Iniciar',ini],['📚 Capacitación',cap]]);
-  const bL={};filtered.forEach(d=>{bL[d.ln]=(bL[d.ln]||0)+1;});barB('ch-launcher',Object.entries(bL).sort((a,b)=>b[1]-a[1]));
-  const bC={};filtered.forEach(d=>{bC[d.pa||'?']=(bC[d.pa||'?']||0)+1;});barB('ch-country',Object.entries(bC).sort((a,b)=>b[1]-a[1]));
-  const bCi={};filtered.forEach(d=>{const k=(d.ci||'Sin ciudad').trim();bCi[k]=(bCi[k]||0)+1;});barB('ch-city',Object.entries(bCi).sort((a,b)=>b[1]-a[1]));
-  const bTp={};filtered.forEach(d=>{const k=(d.tp||'Sin tipo').replace(/[🆕🔄⚙️]/g,'').trim();bTp[k]=(bTp[k]||0)+1;});barB('ch-type',Object.entries(bTp).sort((a,b)=>b[1]-a[1]));
+  const bL={};allF.forEach(d=>{bL[d.ln]=(bL[d.ln]||0)+1;});barB('ch-launcher',Object.entries(bL).sort((a,b)=>b[1]-a[1]));
+  const bC={};allF.forEach(d=>{bC[d.pa||'?']=(bC[d.pa||'?']||0)+1;});barB('ch-country',Object.entries(bC).sort((a,b)=>b[1]-a[1]));
+  const bCi={};allF.forEach(d=>{const k=(d.ci||'Sin ciudad').trim();bCi[k]=(bCi[k]||0)+1;});barB('ch-city',Object.entries(bCi).sort((a,b)=>b[1]-a[1]));
+  const bTp={};allF.forEach(d=>{const k=(d.tp||'Sin tipo').replace(/[🆕🔄⚙️]/g,'').trim();bTp[k]=(bTp[k]||0)+1;});barB('ch-type',Object.entries(bTp).sort((a,b)=>b[1]-a[1]));
   updBadges();
   renderDashAlerts();
 }
-
-// Marca el botón activo según las fechas actuales
-function _dashMarkActiveBtn(){
-  var sf=document.getElementById('sf')?.value||'';
-  var st=document.getElementById('st')?.value||'';
-  var now=new Date();
-  var pad=function(n){return String(n).padStart(2,'0');};
-  var ymd=function(y,m,d){return y+'-'+pad(m)+'-'+pad(d);};
-  var presets={
-    'qf-cm': [ymd(now.getFullYear(),now.getMonth()+1,1), ymd(now.getFullYear(),now.getMonth()+1,new Date(now.getFullYear(),now.getMonth()+1,0).getDate())],
-    'qf-pm': (function(){var p=new Date(now.getFullYear(),now.getMonth()-1,1);return[ymd(p.getFullYear(),p.getMonth()+1,1),ymd(p.getFullYear(),p.getMonth()+1,new Date(p.getFullYear(),p.getMonth()+1,0).getDate())];}()),
-    'qf-ya': [ymd(now.getFullYear(),1,1), ymd(now.getFullYear(),12,31)],
-    'qf-yp': [ymd(now.getFullYear()-1,1,1), ymd(now.getFullYear()-1,12,31)],
-    'qf-all':['','']
-  };
-  document.querySelectorAll('.dash-qf-btn').forEach(function(b){b.classList.remove('active');});
-  Object.entries(presets).forEach(function(e){
-    if(e[1][0]===sf&&e[1][1]===st){
-      var btn=document.getElementById(e[0]);if(btn)btn.classList.add('active');
-    }
-  });
-}
-
-function clearDashF(){
-  var sf=document.getElementById('sf');
-  var st=document.getElementById('st');
-  var ln=document.getElementById('sf-ln');
-  if(sf)sf.value='';
-  if(st)st.value='';
-  if(ln)ln.value='';
-  document.querySelectorAll('.dash-qf-btn').forEach(function(b){b.classList.remove('active');});
-  var allBtn=document.getElementById('qf-all');
-  if(allBtn)allBtn.classList.add('active');
-  renderDash();
-}
+function clearDashF(){['sf','st','sf-ln'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});renderDash();}
 
 // ═══ DEP TABLE HEADER ════════════════════════════════
 
@@ -2844,8 +2678,8 @@ function depLinkCell(link){
 }
 function depModulesRead(mods){
   if(!mods||!mods.length) return `<span class="dep-text muted">Sin módulos</span>`;
-  const validMods=new Set((cats.md||[]).map(x=>x.name));
-  const filtered=(cats.md&&cats.md.length)?mods.filter(m=>validMods.has(m)):mods;
+  const validMods=new Set((cats.md&&cats.md.length?cats.md:BASE_MD).map(x=>x.name));
+  const filtered=mods.filter(m=>validMods.has(m));
   if(!filtered.length) return `<span class="dep-text muted">Sin módulos</span>`;
   return `<div class="dep-modules">${filtered.map(m=>`<span class="mt" title="${esc(m)}">${esc(m)}</span>`).join('')}</div>`;
 }
@@ -3045,10 +2879,7 @@ function popClSelects(){
 }
 function waLinks(wh){
   if(!wh||!wh.length)return '';
-  return wh.map(function(n){
-    var clean=n.replace(/[^0-9]/g,'');
-    return '<a href="https://wa.me/'+clean+'" target="_blank" style="color:#25D366;text-decoration:none;white-space:nowrap;font-size:12px" title="WhatsApp: '+esc(n)+'">📱 '+esc(n)+'</a>';
-  }).join(' ');
+  return wh.map(function(n){var clean=n.replace(/[^0-9]/g,'');return '<a href="https://wa.me/'+clean+'" target="_blank" style="color:#25D366;text-decoration:none;white-space:nowrap;font-size:12px">📱 '+esc(n)+'</a>';}).join(' ');
 }
 function renderCls(){
   const s=(document.getElementById('sc')?.value||'').toLowerCase();
@@ -3070,21 +2901,22 @@ function renderCls(){
     const _validMods=new Set((cats.md&&cats.md.length?cats.md:BASE_MD).map(m=>m.name));
     const moHtml=(c.mo||[]).filter(m=>_validMods.has(m)).map(m=>`<span class="mt">${esc(m)}</span>`).join('');
     return`<tr>
-      <td style="color:var(--subtle);font-size:11px;font-family:'DM Mono',monospace">${String(idx+1).padStart(2,'0')}</td>
-      <td style="font-weight:600;cursor:pointer;color:var(--blue)" onclick="openClSummary(${c.id})">${esc(c.nm)}</td>
-      <td>${esc(c.pa||'')}</td><td>${esc(c.ci||'')}</td>
-      <td>${esc(c.ap||'')}</td>
-      <td>${c.tp?`<span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:12px;font-size:11.5px">${esc(c.tp)}</span>`:''}</td>
-      <td>${c.bot==='normal'?'<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:12px;font-size:11px">🤖 Normal</span>':c.bot==='coexistencia'?'<span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:12px;font-size:11px">🔄 Coexistencia</span>':''}</td>
+      <td class="cl-num">${String(idx+1).padStart(2,'0')}</td>
+      <td class="cl-name" onclick="openClSummary(${c.id})" title="${esc(c.nm)}">${esc(c.nm)}</td>
+      <td class="cl-txt">${esc(c.pa||'—')}</td>
+      <td class="cl-txt">${esc(c.ci||'—')}</td>
+      <td class="cl-txt">${esc(c.ap||'—')}</td>
+      <td>${c.tp?`<span class="cl-tag">${esc(c.tp)}</span>`:''}</td>
+      <td>${c.bot==='normal'?'<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:12px;font-size:11px">🤖 Normal</span>':c.bot==='coexistencia'?'<span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:12px;font-size:11px">🔄 Coex.</span>':''}</td>
       <td>${esChip(c.es)}</td>
-      <td style="font-size:12px">${fmtD(c.fconf)}</td>
+      <td class="cl-date">${fmtD(c.fconf)}</td>
       <td><div class="cl-mods-ro">${moHtml||'—'}</div></td>
       <td>${cx}</td>
-      <td style="font-size:12px">${esc(c.co||'')}</td>
-      <td style="font-size:12px">${esc(c.ph||'')}</td>
+      <td class="cl-txt" title="${esc(c.co||'')}">${esc(c.co||'—')}</td>
+      <td class="cl-txt">${esc(c.ph||'—')}</td>
       <td>${waLinks(c.wh)}</td>
-      <td style="font-size:11.5px;color:var(--muted);max-width:120px">${esc((c.no||'').slice(0,40))}</td>
-      <td style="white-space:nowrap">
+      <td class="cl-note" title="${esc(c.no||'')}">${esc((c.no||'').slice(0,60))}</td>
+      <td class="cl-act">
         <button class="icon-btn edit" onclick="editCl(${c.id})">✏️</button>
         <button class="icon-btn del" onclick="confDel('cl',${c.id},'${esc(c.nm)}')">🗑</button>
       </td>
@@ -3112,10 +2944,9 @@ function togCM(m,el){clMods.has(m)?clMods.delete(m):clMods.add(m);el.classList.t
 function openAddCl(){
   editClId=null;dOpen=false;
   document.getElementById('clm-t').textContent='Nuevo Cliente';
-  ['cm-nm','cm-pa','cm-ci','cm-co','cm-ph','cm-wh','cm-no','cm-fconf'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['cm-nm','cm-pa','cm-ci','cm-co','cm-ph','cm-no','cm-fconf'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   popClModal();mkCMods([]);
   document.getElementById('cm-es').value='activo';
-  var _b=document.getElementById('cm-bot');if(_b)_b.value='';
   document.getElementById('cl-modal').classList.add('open');
 }
 function editCl(id){
@@ -3247,8 +3078,7 @@ function openAddDep(){
   if(cliSel)cliSel.innerHTML='<option value="">— Seleccionar cliente —</option>'+cls.filter(c=>c.es==='activo').map(c=>`<option value="${c.id}">${esc(c.nm)} — ${esc(c.ci||c.pa||'')}</option>`).join('');
   ['dm-pa','dm-ci','dm-fi','dm-fid','dm-fe','dm-p','dm-n','dm-hrsop','dm-hrsnew'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   const tpSel=document.getElementById('dm-tp');
-  const _mods=cats.modal&&cats.modal.length?cats.modal:BASE_MODAL;
-  if(tpSel)tpSel.innerHTML=_mods.map(m=>`<option value="${esc(m.name)}">${m.icon||''} ${esc(m.name)}</option>`).join('');
+  if(tpSel)tpSel.innerHTML=(cats.modal||[]).map(m=>`<option value="${esc(m.name)}">${m.icon||''} ${esc(m.name)}</option>`).join('');
   popLauncherSelects();
   document.getElementById('dep-modal').classList.add('open');
 }
@@ -3318,13 +3148,25 @@ function closeMP(e){
   }
 }
 function closeInfoPop(){const p=document.getElementById('info-pop');if(p)p.style.display='none';}
-function toggleInfo(id){
+function toggleInfo(id, evt){
   const pop=document.getElementById('info-pop');
   const body=document.getElementById('info-pop-body');
   if(!pop||!body)return;
-  const info={};
-  (cats.md||[]).forEach(m=>{if(m.name===id)body.innerHTML=`<strong>${esc(m.name)}</strong><br><span style="color:var(--muted);font-size:12px">${esc(m.desc||'Sin descripción')}</span>`;});
-  pop.style.display='block';
+  const INFO={
+    'cap-info':`<strong>⚡ Capacidad Operativa</strong><br><br><strong>Fórmula:</strong><br>Hrs disponibles = Operadores × Hrs/día × Días/mes<br>Hrs consumidas = Σ (Hrs cliente × Peso complejidad)<br><br><strong>Pesos:</strong><br>• Básico → 1×<br>• Medio → 1.5×<br>• Avanzado → 2.5×<br><em>(editables en Catálogos → Complejidad)</em>`,
+    'est-info':`<strong>🎯 Estrategia de Despliegue</strong><br><br>Clasifica por: complejidad automática (módulos del cliente), fase actual y checklists pendientes.<br><br><strong>Complejidad:</strong> el sistema revisa los módulos del cliente contra los umbrales de Catálogos → Complejidad. Asigna el nivel más alto que aplique.`,
+    'dash-info':`<strong>📊 Dashboard KPIs</strong><br><br>Todos los contadores respetan el filtro de fechas.<br><br>• Total = deps en el período<br>• Operativos = estado ✅ Listo<br>• En Proceso = estado 🔧<br>• Tiempos = F.Entrega − F.Inicio en días<br><br>Usa los botones rápidos: Mes actual, Trimestre, Año actual.`,
+    'cont-info':`<strong>📋 Cálculo de Cobro</strong><br><br>• Por Conductor: max(activos, mínimo) × precio<br>• Por Vehículo: max(activos, mínimo) × precio<br>• Bot WA: max(bots, mínimo) × precio<br>• Cobro Fijo: precio fijo mensual<br>• Setup: pago único<br><br>El estimado usa el mayor entre activos actuales y mínimo configurado.`,
+    'cob-info':`<strong>💰 Cálculo de Factura</strong><br><br>Monto = Σ componentes del contrato con activos del mes<br><br>Estados: ⏳ Pendiente → ✅ Pagado → 🔶 Parcial → 🔴 Atrasado<br><br>Estados de Riesgo (Catálogos): umbral % de pago vs facturado. Ej: &lt;70% → Riesgo Alto.`,
+    'tl-info':`<strong>📅 Línea de Tiempo — Series</strong><br><br>• 🔵 Confirmados: F. Confirmación del cliente en ese mes<br>• 🟢 Finalizados: F. Entrega del dep en ese mes (✅)<br>• 🟡 En Proceso: F.Inicio ≤ mes y sin F.Entrega (o F.Entrega ≥ mes)<br>• 🟣 Operativos: acumulado con F.Entrega ≤ mes<br><br>Líneas punteadas = proyección por regresión lineal.`,
+    'usr-info':`<strong>👤 Usuarios y Roles</strong><br><br>Niveles: 🚫 Sin acceso · 👁 Solo lectura · ✏️ Editar · ⚡ Control total<br><br>Los usuarios se asocian por email de Supabase. El sistema aplica el rol al iniciar sesión.`
+  };
+  const mdInfo=(cats.md||[]).find(m=>m.name===id);
+  if(mdInfo){body.innerHTML=`<strong>${esc(mdInfo.name)}</strong><br><span style="color:#93C5FD;font-size:12px">${esc(mdInfo.cat||'')}</span><br><br>${esc(mdInfo.desc||'Sin descripción')}`;}
+  else if(INFO[id]){body.innerHTML=INFO[id];}
+  else{body.innerHTML=`<strong>${esc(id)}</strong><br><span style="color:var(--muted);font-size:12px">Sin información</span>`;}
+  if(evt){const t=evt.target||evt;const r=t.getBoundingClientRect?t.getBoundingClientRect():{top:100,left:200};pop.style.top=Math.min(r.bottom+6,window.innerHeight-280)+'px';pop.style.left=Math.min(r.left,window.innerWidth-340)+'px';}
+  pop.classList.add('open');pop.style.display='block';
 }
 function setM(name,checked){
   if(!mTgt)return;
@@ -3744,10 +3586,7 @@ function renderContratos(){
     const comps=c.componentes||[];
     const botComp=comps.find(comp=>comp.tipo==='bot_wa');
     const compBadges=comps.length?comps.map(comp=>`<span class="tag" style="font-size:10.5px">${esc(comp.nombre||comp.tipo)}: $${comp.precio}${comp.minimo?' (mín '+comp.minimo+')':''}</span>`).join(' '):'<span style="color:var(--subtle);font-size:11px">Legacy</span>';
-    // Calcular con mínimos para mostrar estimado base (no 0)
-    const _caEst=c.conductoresActivos||Math.max(0,...(c.componentes||[]).map(x=>x.minimo||0),c.minC||0);
-    const _vaEst=c.vehiculosActivos||c.minV||0;
-    const prev=calcFactura(c,'',{conductores:_caEst,vehiculos:_vaEst,bots:c.botsActivos||0});
+    const prev=calcFactura(c,'',{});
     const estBadge=`<span style="background:#ECFDF5;color:#0F7E4F;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700">✅ ${esc(c.es||'activo')}</span>`;
     const botInfo=botComp?`${botComp.cantidad||1} × $${botComp.precio}`:'—';
     return`<tr>
@@ -3772,107 +3611,44 @@ function initContModal(){
 }
 function updateCompFields(){
   const tipo=document.getElementById('comp-tipo')?.value||'';
-  const minWrap  = document.getElementById('comp-min-wrap');
-  const cantWrap = document.getElementById('comp-cant-wrap');
-  const pxWrap   = document.getElementById('comp-precio-wrap');
-  const unidadLbl= document.getElementById('comp-unidad-lbl');
-
-  // Tipos que usan mínimo (número de unidades mínimas garantizadas)
-  const tieneMin  = ['conductor','vehiculo','bot_wa','minimo'].includes(tipo);
-  // Tipos que usan cantidad explícita
-  const tieneCant = ['bot_wa','modulo','setup','deposito'].includes(tipo);
-  // Tipos sin precio variable (fijo siempre)
-  const sinPrecio = [];
-
-  if(minWrap)  minWrap.style.display  = tieneMin  ? '' : 'none';
-  if(cantWrap) cantWrap.style.display = tieneCant ? '' : 'none';
-
+  const minWrap=document.getElementById('comp-min-wrap');
+  const cantWrap=document.getElementById('comp-cant-wrap');
+  if(minWrap)minWrap.style.display=['conductor','vehiculo','bot_wa','minimo'].includes(tipo)?'':'none';
+  if(cantWrap)cantWrap.style.display=['bot_wa','modulo'].includes(tipo)?'':'none';
   const bt=(cats.billingTypes||BASE_BILLING_TYPES).find(t=>t.tipo===tipo);
-
-  // Auto-rellenar nombre si está vacío
   const nEl=document.getElementById('comp-nombre');
-  if(nEl && !nEl.value && bt) nEl.value = bt.name;
-
-  // Mostrar unidad debajo del precio
-  if(unidadLbl) unidadLbl.textContent = bt ? bt.unidad||'' : '';
-
-  // Reset minimo a 0 si no aplica
-  if(!tieneMin){ const mEl=document.getElementById('comp-minimo'); if(mEl) mEl.value=0; }
-  if(!tieneCant){ const cEl=document.getElementById('comp-cant'); if(cEl) cEl.value=1; }
+  if(nEl&&!nEl.value&&bt)nEl.value=bt.name;
 }
 function addContComp(){
-  const tipo    = document.getElementById('comp-tipo')?.value || '';
-  const allBT   = cats.billingTypes && cats.billingTypes.length ? cats.billingTypes : BASE_BILLING_TYPES;
-  const bt      = allBT.find(t=>t.tipo===tipo) || {};
-  const nombre  = document.getElementById('comp-nombre')?.value.trim() || bt.name || tipo;
-  const precio  = parseFloat(document.getElementById('comp-precio')?.value) || 0;
-  const tieneMin  = ['conductor','vehiculo','bot_wa','minimo'].includes(tipo);
-  const tieneCant = ['bot_wa','modulo','setup','deposito'].includes(tipo);
-  const minimo  = tieneMin  ? (parseInt(document.getElementById('comp-minimo')?.value) || 0) : 0;
-  const cantidad= tieneCant ? (parseInt(document.getElementById('comp-cant')?.value)   || 1) : 1;
-  if(!tipo){ alert('Selecciona un tipo de cobro'); return; }
-  _contComps.push({tipo, nombre, precio, minimo, cantidad});
-  // Reset campos
-  const nEl=document.getElementById('comp-nombre'); if(nEl) nEl.value='';
-  const pEl=document.getElementById('comp-precio'); if(pEl) pEl.value=15;
-  const mEl=document.getElementById('comp-minimo'); if(mEl) mEl.value=0;
-  const cEl=document.getElementById('comp-cant');   if(cEl) cEl.value=1;
-  renderContComps();
-  updateContratoPreview();
+  const tipo=document.getElementById('comp-tipo')?.value||'';
+  const nombre=document.getElementById('comp-nombre')?.value.trim()||tipo;
+  const precio=parseFloat(document.getElementById('comp-precio')?.value)||0;
+  const minimo=parseInt(document.getElementById('comp-minimo')?.value)||0;
+  const cantidad=parseInt(document.getElementById('comp-cant')?.value)||1;
+  _contComps.push({tipo,nombre,precio,minimo,cantidad});
+  document.getElementById('comp-nombre').value='';
+  document.getElementById('comp-precio').value=15;
+  document.getElementById('comp-minimo').value=0;
+  document.getElementById('comp-cant').value=1;
+  renderContComps();updateContratoPreview();
 }
 function removeContComp(idx){_contComps.splice(idx,1);renderContComps();updateContratoPreview();}
 function renderContComps(){
-  const el=document.getElementById('cont-comps'); if(!el)return;
-  if(!_contComps.length){
-    el.innerHTML='<div style="padding:10px;text-align:center;color:var(--subtle);font-size:12px;border:1.5px dashed var(--border);border-radius:8px">Agrega al menos un tipo de cobro</div>';
-    return;
-  }
-  const allBT = cats.billingTypes && cats.billingTypes.length ? cats.billingTypes : BASE_BILLING_TYPES;
-  el.innerHTML=`<div style="overflow-x:auto"><table class="cont-table"><thead><tr>
-    <th>Tipo</th><th>Etiqueta</th><th>Precio</th><th>Mínimo</th><th>Cantidad</th><th>Fórmula</th><th style="width:40px"></th>
-  </tr></thead><tbody>${_contComps.map((comp,i)=>{
-    const bt = allBT.find(t=>t.tipo===comp.tipo) || {icon:'💰', name:comp.tipo, unidad:''};
-    const tieneMin  = ['conductor','vehiculo','bot_wa','minimo'].includes(comp.tipo);
-    const tieneCant = ['bot_wa','modulo','setup','deposito'].includes(comp.tipo);
-    const minStr  = tieneMin  && comp.minimo ? comp.minimo : '—';
-    const cantStr = tieneCant && comp.cantidad > 1 ? comp.cantidad : '—';
-    // Fórmula resumen
-    let formula = '';
-    if(comp.tipo==='conductor'||comp.tipo==='vehiculo')
-      formula = `max(activos,${comp.minimo||0}) × $${comp.precio}`;
-    else if(comp.tipo==='fijo'||comp.tipo==='minimo')
-      formula = `$${comp.precio} fijo`;
-    else if(comp.tipo==='setup')
-      formula = `$${comp.precio} × ${comp.cantidad||1} (único)`;
-    else if(comp.tipo==='bot_wa')
-      formula = `max(bots,${comp.minimo||1}) × $${comp.precio}`;
-    else
-      formula = `${comp.cantidad||1} × $${comp.precio}`;
-    return`<tr>
-      <td><span class="tag tag-blue" style="font-size:11px">${bt.icon||''} ${esc(bt.name||comp.tipo)}</span></td>
-      <td style="font-size:12.5px">${esc(comp.nombre)}</td>
-      <td style="font-weight:700">$${comp.precio}<span style="font-size:10px;color:var(--muted)"> /${bt.unidad||'mes'}</span></td>
-      <td style="color:var(--muted);font-size:12px">${minStr}</td>
-      <td style="color:var(--muted);font-size:12px">${cantStr}</td>
-      <td style="color:var(--muted);font-size:11px;font-family:monospace">${formula}</td>
-      <td><button class="icon-btn del" onclick="removeContComp(${i})">✕</button></td>
-    </tr>`;
+  const el=document.getElementById('cont-comps');if(!el)return;
+  if(!_contComps.length){el.innerHTML='<div style="padding:10px;text-align:center;color:var(--subtle);font-size:12px;border:1.5px dashed var(--border);border-radius:8px">Agrega al menos un tipo de cobro</div>';return;}
+  el.innerHTML=`<div style="overflow-x:auto"><table class="cont-table"><thead><tr><th>Tipo</th><th>Etiqueta</th><th>Precio</th><th>Mínimo</th><th>Cantidad</th><th style="width:50px"></th></tr></thead><tbody>${_contComps.map((comp,i)=>{
+    const bt=(cats.billingTypes||BASE_BILLING_TYPES).find(t=>t.tipo===comp.tipo)||{icon:'💰',name:comp.tipo};
+    return`<tr><td><span class="tag tag-blue" style="font-size:11px">${bt.icon||''} ${esc(bt.name||comp.tipo)}</span></td><td>${esc(comp.nombre)}</td><td style="font-weight:600">$${comp.precio}</td><td style="color:var(--muted)">${comp.minimo||'—'}</td><td style="color:var(--muted)">${comp.cantidad>1?comp.cantidad:'—'}</td><td><button class="icon-btn del" onclick="removeContComp(${i})">✕</button></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 function updateContratoPreview(){
-  const el=document.getElementById('cont-prev-val'); if(!el)return;
-  const ca=parseInt(document.getElementById('cm-cont-ca')?.value)||0;
-  const mc=parseInt(document.getElementById('cm-cont-mc')?.value)||0;
-  const va=parseInt(document.getElementById('cm-cont-va')?.value)||0;
+  const el=document.getElementById('cont-prev-val');if(!el)return;
   if(!_contComps.length){
     const px=parseFloat(document.getElementById('cm-cont-px')?.value)||0;
-    const usar=Math.max(ca,mc);
-    el.textContent='$'+(px*usar).toLocaleString()+'/mes'+(usar===mc&&mc>0?' (mínimo)':'');
-    return;
+    const mc=parseInt(document.getElementById('cm-cont-mc')?.value)||0;
+    el.textContent='$'+(px*mc).toLocaleString()+'/mes';return;
   }
-  // Usar los activos ingresados, o el mínimo del componente si es mayor
-  const caEf=Math.max(ca, _contComps.reduce((mx,c)=>Math.max(mx,c.minimo||0),0));
-  const f=calcFactura({componentes:_contComps,botsActivos:0},{},{conductores:caEf,vehiculos:va,bots:0});
+  const f=calcFactura({componentes:_contComps,botsActivos:0},{},{conductores:10,vehiculos:8,bots:0});
   el.textContent='$'+f.total.toLocaleString()+'/mes estimado';
 }
 function openAddContrato(){
@@ -3900,45 +3676,25 @@ function editContrato(id){
   document.getElementById('cont-modal').classList.add('open');
 }
 function saveContrato(){
-  try{
-    const cliSel=document.getElementById('cm-cont-cli');
-    const clienteId=parseInt(cliSel?.value)||null;
-    const clienteNm=(cliSel?.options[cliSel.selectedIndex]?.text||'').split(' — ')[0].trim();
-    if(!clienteNm||clienteNm==='Seleccionar cliente...'){alert('Selecciona un cliente');return;}
-    const nota=document.getElementById('cm-cont-nota')?.value.trim()||'';
-    const botsCount=parseInt(document.getElementById('cm-cont-bots')?.value)||0;
-    const comps=_contComps.length>0?[..._contComps]:null;
-    const va=parseInt(document.getElementById('cm-cont-va')?.value)||0;
-    const ca=parseInt(document.getElementById('cm-cont-ca')?.value)||0;
-    const px=parseFloat(document.getElementById('cm-cont-px')?.value)||15;
-    const mc=parseInt(document.getElementById('cm-cont-mc')?.value)||0;
-    // Si usando componentes, usar el mínimo del primer componente como conductoresActivos base
-    const caEfectivo = comps ? Math.max(ca, comps.reduce((mx,c)=>Math.max(mx,c.minimo||0),0)) : Math.max(ca,mc);
-    if(editingContratoId){
-      const c=contratos.find(x=>x.id===editingContratoId);
-      if(c){
-        c.componentes=comps; c.nota=nota; c.vehiculosActivos=va;
-        c.conductoresActivos=caEfectivo; c.botsActivos=botsCount;
-        c.precio=px; c.minC=mc; c.modalidad=comps?'componentes':'conductor';
-      }
-    } else {
-      const id=Math.max(0,...contratos.map(c=>c.id||0))+1;
-      contratos.push({
-        id, clienteId, cliente:clienteNm,
-        componentes:comps, modalidad:comps?'componentes':'conductor',
-        precio:px, minV:0, minC:mc,
-        conductoresActivos:caEfectivo, vehiculosActivos:va, botsActivos:botsCount,
-        es:'activo', nota, valorFijo:0, setupFee:0, descuentos:[]
-      });
-    }
-    svCont();
-    closeM('cont-modal');
-    renderContratos();
-    updBadges();
-  } catch(err){
-    console.error('saveContrato error:', err);
-    alert('Error al guardar contrato: ' + err.message);
+  const cliSel=document.getElementById('cm-cont-cli');
+  const clienteId=parseInt(cliSel?.value)||null;
+  const clienteNm=(cliSel?.options[cliSel.selectedIndex]?.text||'').split(' — ')[0].trim();
+  if(!clienteNm||clienteNm==='Seleccionar cliente...'){alert('Selecciona un cliente');return;}
+  const nota=document.getElementById('cm-cont-nota')?.value.trim()||'';
+  const botsCount=parseInt(document.getElementById('cm-cont-bots')?.value)||0;
+  const comps=_contComps.length>0?[..._contComps]:null;
+  const va=parseInt(document.getElementById('cm-cont-va')?.value)||0;
+  const ca=parseInt(document.getElementById('cm-cont-ca')?.value)||0;
+  const px=parseFloat(document.getElementById('cm-cont-px')?.value)||15;
+  const mc=parseInt(document.getElementById('cm-cont-mc')?.value)||0;
+  if(editingContratoId){
+    const c=contratos.find(x=>x.id===editingContratoId);
+    if(c){c.componentes=comps;c.nota=nota;c.vehiculosActivos=va;c.conductoresActivos=ca;c.botsActivos=botsCount;c.precio=px;c.minC=mc;c.modalidad=comps?'componentes':'conductor';}
+  }else{
+    const id=Math.max(...contratos.map(c=>c.id),0)+1;
+    contratos.push({id,clienteId,cliente:clienteNm,componentes:comps,modalidad:comps?'componentes':'conductor',precio:px,minV:0,minC:mc,conductoresActivos:ca,vehiculosActivos:va,botsActivos:botsCount,es:'activo',nota,valorFijo:0,setupFee:0,descuentos:[]});
   }
+  svCont();closeM('cont-modal');renderContratos();updBadges();
 }
 function setupContratoPreview(){}
 
@@ -4649,39 +4405,18 @@ function doLogin(){
 // ═══ COLUMN RESIZE ══════════════════════════════════
 function initColResize(e){
   var th=e.target.closest('th');if(!th)return;
-  var startX=e.clientX,startW=th.offsetWidth;
-  e.preventDefault();
-  document.body.style.cursor='col-resize';
-  document.body.style.userSelect='none';
-  function onMove(ev){
-    var w=Math.max(40,startW+ev.clientX-startX)+'px';
-    th.style.width=w;
-    var tbl=th.closest('table');
-    if(tbl&&tbl.id){
-      try{var s=JSON.parse(localStorage.getItem('_colW')||'{}');var i=Array.from(th.parentElement.children).indexOf(th);s[tbl.id+'_'+i]=w;localStorage.setItem('_colW',JSON.stringify(s));}catch(ex){}
-    }
-  }
+  var startX=e.clientX,startW=th.offsetWidth;e.preventDefault();
+  document.body.style.cursor='col-resize';document.body.style.userSelect='none';
+  function onMove(ev){var w=Math.max(40,startW+ev.clientX-startX)+'px';th.style.width=w;var tbl=th.closest('table');if(tbl&&tbl.id){try{var s=JSON.parse(localStorage.getItem('_colW')||'{}');var i=Array.from(th.parentElement.children).indexOf(th);s[tbl.id+'_'+i]=w;localStorage.setItem('_colW',JSON.stringify(s));}catch(ex){}}}
   function onUp(){document.body.style.cursor='';document.body.style.userSelect='';document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
 }
 function applyColWidths(tblEl){
-  try{
-    if(!tblEl||!tblEl.id)return;
-    var saved=JSON.parse(localStorage.getItem('_colW')||'{}');
-    tblEl.querySelectorAll('thead th').forEach(function(th,i){
-      var k=tblEl.id+'_'+i;
-      if(saved[k])th.style.width=saved[k];
-    });
-  }catch(e){}
+  try{if(!tblEl||!tblEl.id)return;var saved=JSON.parse(localStorage.getItem('_colW')||'{}');tblEl.querySelectorAll('thead th').forEach(function(th,i){var k=tblEl.id+'_'+i;if(saved[k])th.style.width=saved[k];});}catch(e){}
 }
 function addColResizers(tblEl){
   if(!tblEl)return;
-  tblEl.querySelectorAll('thead th').forEach(function(th){
-    var r=th.querySelector('.col-r');
-    if(!r){r=document.createElement('div');r.className='col-r';th.appendChild(r);}
-    r.onmousedown=initColResize;
-  });
+  tblEl.querySelectorAll('thead th').forEach(function(th){var r=th.querySelector('.col-r');if(!r){r=document.createElement('div');r.className='col-r';th.appendChild(r);}r.onmousedown=initColResize;});
   applyColWidths(tblEl);
 }
 
