@@ -559,7 +559,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.5 · 08 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.6 · 08 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -1064,7 +1064,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
       <div class="sec-hdr"><div>
-        <div class="sec-title">📖 Manual de Uso — Ops Center v5.5</div>
+        <div class="sec-title">📖 Manual de Uso — Ops Center v5.6</div>
         <div class="sec-sub">Guía de referencia completa · Clipp Operations</div>
       </div></div>
 
@@ -1179,7 +1179,8 @@ input[type=date].ei{cursor:pointer;min-width:110px}
       </div>
     </div>
 
-    id="view-catalogos" class="view">
+    <!-- ══ CATÁLOGOS ══ -->
+    <div id="view-catalogos" class="view">
       <div class="sec-hdr">
         <div><div class="sec-title">🗂 Gestión de Catálogos</div>
         <div class="sec-sub">Configura valores maestros del sistema · los cambios se reflejan en toda la app</div></div>
@@ -2144,7 +2145,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.5'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.6'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2177,6 +2178,25 @@ function setV(v){
     usuarios:renderUsuarios
   };
   if(actions[v])actions[v]();
+}
+
+// ── Re-render la vista activa tras cualquier cambio ──────────────────────
+function renderAfterSave(){
+  updBadges();
+  switch(curV){
+    case 'despliegues':  renderDeps(); break;
+    case 'operativos':   renderOps(); break;
+    case 'inactivos':    renderInact(); break;
+    case 'clientes':     renderCls(); break;
+    case 'contratos':    renderContratos(); break;
+    case 'cobranzas':    renderCobranzas(); break;
+    case 'dashboard':    renderDash(); break;
+    case 'timeline':     renderTimeline(); break;
+    case 'capacidad':    renderCapacidad(); break;
+    case 'estrategia':   renderEstrategia(); break;
+    case 'catalogos':    renderCats(); break;
+    case 'usuarios':     renderUsuarios(); break;
+  }
 }
 function renderCurrentView(){setV(curV);}
 function openAdd(){
@@ -2492,7 +2512,7 @@ function depRowLegacy(d){
     <td style="white-space:nowrap"><button class="icon-btn del" onclick="confDel('dep',${d.id},'${esc(d.c)}')">🗑</button></td>
   </tr>`;
 }
-function uD(id,f,v){const d=deps.find(x=>x.id===id);if(!d)return;d[f]=v;sv();if(curV==='despliegues')renderDeps();else if(curV==='operativos')renderOps();}
+function uD(id,f,v){const d=deps.find(x=>x.id===id);if(!d)return;d[f]=v;sv();renderAfterSave();}
 function uDEs(id,val){
   const d=deps.find(x=>x.id===id);if(!d)return;
   const prev=d.es;d.es=val;sv();updBadges();renderDash();
@@ -3017,9 +3037,7 @@ function saveCl(){
     const ic=document.getElementById('tic');if(ic)ic.textContent='▸';
   }
   sv();closeM('cl-modal');
-  if(curV==='clientes')renderCls();else if(curV==='inactivos')renderInact();
-  else if(curV==='despliegues')renderDeps();
-  updBadges();
+  renderAfterSave();
 }
 
 // ─── CLIENT SUMMARY ────────────────────────────────────
@@ -3117,6 +3135,7 @@ function saveNewDep(){
     hrsNew:parseFloat(document.getElementById('dm-hrsnew')?.value)||null,
   });
   sv();closeM('dep-modal');
+  renderAfterSave();
   if(curV==='despliegues'||curV==='dashboard')renderDeps();
   renderOps();renderDash();updBadges();
   if(curV!=='despliegues')setV('despliegues'); // navigate to deps to show new one
@@ -3694,7 +3713,8 @@ function saveContrato(){
     const id=Math.max(...contratos.map(c=>c.id),0)+1;
     contratos.push({id,clienteId,cliente:clienteNm,componentes:comps,modalidad:comps?'componentes':'conductor',precio:px,minV:0,minC:mc,conductoresActivos:ca,vehiculosActivos:va,botsActivos:botsCount,es:'activo',nota,valorFijo:0,setupFee:0,descuentos:[]});
   }
-  svCont();closeM('cont-modal');renderContratos();updBadges();
+  svCont();closeM('cont-modal');renderContratos();
+  renderAfterSave();updBadges();
 }
 function setupContratoPreview(){}
 
@@ -3887,6 +3907,7 @@ function saveCobro(){
   cb.estado=document.getElementById('cem-estado')?.value||cb.estado;
   cb.notas=document.getElementById('cem-notas')?.value.trim()||'';
   svCobros();closeM('cobro-edit-modal');renderCobranzas();
+  renderAfterSave();
 }
 
 
@@ -4013,7 +4034,7 @@ function renderMds(){
 function saveMd(){
   const n=document.getElementById('md-name').value.trim();if(!n)return;
   cats.md.push({id:Date.now(),name:n,desc:document.getElementById('md-desc').value.trim(),cat:document.getElementById('md-cat').value});
-  sv();renderMds();document.getElementById('md-name').value='';document.getElementById('md-desc').value='';
+  sv();renderMds();renderAfterSave();document.getElementById('md-name').value='';document.getElementById('md-desc').value='';
 }
 function renderCatMods(){
   if(!cats.catmod||!cats.catmod.length)cats.catmod=BASE_CATMOD.map(x=>Object.assign({},x));
@@ -4023,7 +4044,7 @@ function renderCatMods(){
 function saveCatmod(){
   const n=document.getElementById('cm-cname').value.trim();if(!n)return;
   cats.catmod.push({id:Date.now(),name:n,icon:document.getElementById('cm-icon').value.trim(),color:document.getElementById('cm-col').value,desc:''});
-  sv();renderCatMods();
+  sv();renderCatMods();renderAfterSave();
   document.getElementById('cm-cname').value='';document.getElementById('cm-icon').value='';
 }
 function renderModDeps(){
@@ -4034,7 +4055,7 @@ function renderModDeps(){
 function saveModDep(){
   const n=document.getElementById('mo-dep-name').value.trim();if(!n)return;
   cats.modal.push({id:Date.now(),icon:document.getElementById('mo-dep-icon').value.trim(),name:n,desc:document.getElementById('mo-dep-desc').value.trim()});
-  sv();renderModDeps();['mo-dep-name','mo-dep-icon','mo-dep-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  sv();renderModDeps();renderAfterSave();['mo-dep-name','mo-dep-icon','mo-dep-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderPhases(){
   if(!cats.phases||!cats.phases.length)cats.phases=BASE_PHASES.map(x=>Object.assign({},x));
@@ -4044,7 +4065,7 @@ function renderPhases(){
 function savePhase(){
   const n=document.getElementById('ph-name').value.trim();if(!n)return;
   cats.phases.push({id:Date.now(),icon:document.getElementById('ph-icon').value.trim(),name:n,desc:document.getElementById('ph-desc').value.trim()});
-  sv();renderPhases();['ph-icon','ph-name','ph-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  sv();renderPhases();renderAfterSave();['ph-icon','ph-name','ph-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderImplTimes(){
   if(!cats.implTimes||!cats.implTimes.length)cats.implTimes=BASE_IMPL_TIMES.map(x=>Object.assign({},x));
@@ -4054,7 +4075,7 @@ function renderImplTimes(){
 function saveImplTime(){
   const n=document.getElementById('it-name').value.trim();if(!n)return;
   cats.implTimes.push({id:Date.now(),name:n,weeks:parseInt(document.getElementById('it-weeks').value)||2,color:document.getElementById('it-color')?.value||'#0F7E4F',desc:document.getElementById('it-desc')?.value.trim()||''});
-  sv();renderImplTimes();['it-name','it-weeks','it-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  sv();renderImplTimes();renderAfterSave();['it-name','it-weeks','it-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderCxs(){
   if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
@@ -4074,7 +4095,7 @@ function saveCx(){
   const modsSel=document.getElementById('cx-mods');
   const mods=modsSel?Array.from(modsSel.selectedOptions).map(o=>o.value):[];
   cats.complexity.push({id:Date.now(),name:n,mods,peso:parseFloat(document.getElementById('cx-peso').value)||1,icon:document.getElementById('cx-icon').value.trim()||'⚡',bg:'#dbeafe',color:document.getElementById('cx-color')?.value||'#1d4ed8',border:'#93c5fd',prioridad:parseInt(document.getElementById('cx-prio').value)||cats.complexity.length+1});
-  sv();renderCxs();['cx-name','cx-peso','cx-icon','cx-prio'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  sv();renderCxs();renderAfterSave();['cx-name','cx-peso','cx-icon','cx-prio'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   if(modsSel) Array.from(modsSel.options).forEach(o=>o.selected=false);
 }
 function renderBTs(){
@@ -4086,7 +4107,7 @@ function saveBillingType(){
   const n=document.getElementById('bt-name').value.trim();if(!n)return;
   const tipo=document.getElementById('bt-tipo').value.trim()||n.toLowerCase().replace(/\s+/g,'_');
   cats.billingTypes.push({id:Date.now(),name:n,tipo,icon:document.getElementById('bt-icon').value.trim()||'💰',unidad:document.getElementById('bt-unit')?.value.trim()||'unid',desc:document.getElementById('bt-desc')?.value.trim()||''});
-  sv();renderBTs();['bt-name','bt-tipo','bt-icon','bt-unit','bt-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  sv();renderBTs();renderAfterSave();['bt-name','bt-tipo','bt-icon','bt-unit','bt-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderRisks(){
   if(!cats.risk||!cats.risk.length)cats.risk=BASE_RISK.map(x=>Object.assign({},x));
@@ -4115,7 +4136,7 @@ function saveRisk(){
     border:brMap[color]||'#FDE68A',
     desc:document.getElementById('rk-desc')?.value.trim()||''
   });
-  sv();renderRisks();
+  sv();renderRisks();renderAfterSave();
   ['rk-name','rk-icon','rk-pct','rk-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderAps(){
@@ -4131,7 +4152,7 @@ function renderAps(){
 function saveAp(){
   const n=document.getElementById('ap-name').value.trim();if(!n)return;
   cats.ap.push({id:Date.now(),name:n,desc:document.getElementById('ap-desc').value.trim(),color:document.getElementById('ap-color').value||'#1B4FD8'});
-  sv();renderAps();document.getElementById('ap-name').value='';document.getElementById('ap-desc').value='';
+  sv();renderAps();renderAfterSave();document.getElementById('ap-name').value='';document.getElementById('ap-desc').value='';
 }
 function renderTps(){
   const el=document.getElementById('tp-tbody');if(!el)return;
@@ -4145,7 +4166,7 @@ function saveTp(){
   const n=document.getElementById('tp-name').value.trim();if(!n)return;
   const col=document.getElementById('tp-color')?.value||'#637087';
   cats.tp.push({id:Date.now(),name:n,desc:document.getElementById('tp-desc').value.trim(),color:col});
-  sv();renderTps();
+  sv();renderTps();renderAfterSave();
   document.getElementById('tp-name').value='';document.getElementById('tp-desc').value='';
 }
 // ─── CATALOG EDIT MODAL ────────────────────────────────────────────────────
@@ -4446,7 +4467,7 @@ function saveLauncher(){
   const n=document.getElementById('ln-name').value.trim();if(!n)return;
   if(!cats.launchers)cats.launchers=[];
   cats.launchers.push({id:Date.now(),name:n,email:document.getElementById('ln-email').value.trim(),notas:document.getElementById('ln-notas').value.trim()});
-  sv();renderLaunchers();
+  sv();renderLaunchers();renderAfterSave();
   ['ln-name','ln-email','ln-notas'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 
