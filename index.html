@@ -559,7 +559,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.6 · 08 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.7 · 09 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -1064,7 +1064,7 @@ input[type=date].ei{cursor:pointer;min-width:110px}
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
       <div class="sec-hdr"><div>
-        <div class="sec-title">📖 Manual de Uso — Ops Center v5.6</div>
+        <div class="sec-title">📖 Manual de Uso — Ops Center v5.7</div>
         <div class="sec-sub">Guía de referencia completa · Clipp Operations</div>
       </div></div>
 
@@ -2145,7 +2145,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.6'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.7'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2182,7 +2182,7 @@ function setV(v){
 
 // ── Re-render la vista activa tras cualquier cambio ──────────────────────
 function renderAfterSave(){
-  updBadges();
+  // Render primero — luego badges (para que reflejen el estado post-render)
   switch(curV){
     case 'despliegues':  renderDeps(); break;
     case 'operativos':   renderOps(); break;
@@ -2197,6 +2197,7 @@ function renderAfterSave(){
     case 'catalogos':    renderCats(); break;
     case 'usuarios':     renderUsuarios(); break;
   }
+  updBadges(); // siempre al final para reflejar el estado actualizado
 }
 function renderCurrentView(){setV(curV);}
 function openAdd(){
@@ -2518,6 +2519,7 @@ function uDEs(id,val){
   const prev=d.es;d.es=val;sv();updBadges();renderDash();
   if(prev===EL&&val!==EL){renderOps();renderDeps();}
   else if(prev!==EL&&val===EL){renderDeps();renderOps();}
+  renderAfterSave();
 }
 function advanceFase(id){
   const d=deps.find(x=>x.id===id);if(!d)return;
@@ -2668,12 +2670,13 @@ function depSaveEdit(id){
   sv();
   _editDepId=null;
   _depDraft=null;
-  updBadges();
+  // Actualizar todas las vistas afectadas y badges
+  renderDeps();
+  renderOps();
   renderDash();
   renderTimeline();
   renderCapacidad();
-  renderDeps();
-  renderOps();
+  updBadges();
 }
 function depInput(value, field, placeholder=''){
   return `<input class="dep-inline-input" value="${esc(value||'')}" placeholder="${esc(placeholder)}" oninput="depSetDraft('${field}',this.value)">`;
