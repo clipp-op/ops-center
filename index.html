@@ -517,6 +517,38 @@ thead th{border-bottom:2px solid var(--border)!important;border-right:1px solid 
 /* ── Sort headers ────────────────────────────────── */
 .sort-arrow{display:inline-block;transition:opacity .15s}
 thead th{cursor:default}
+
+/* ── Phase checklist popup ─────────────────────── */
+.phase-task-row{display:flex;align-items:flex-start;gap:8px;padding:5px 4px;border-radius:6px;margin-bottom:2px;cursor:default}
+.phase-task-row:hover{background:#F1F5F9}
+#dep-phase-popup::-webkit-scrollbar{width:4px}
+#dep-phase-popup::-webkit-scrollbar-thumb{background:#E4E9F0;border-radius:2px}
+
+/* ── Edición inline en Operativos ─────────────────── */
+#tbl-o tr.dep-editing td { background:#EFF6FF; box-shadow:inset 0 1px 0 #BFDBFE,inset 0 -1px 0 #BFDBFE; }
+#tbl-o tr.dep-editing td:first-child { border-left:3px solid #1B4FD8 !important; }
+/* Botón editar en primera columna de operativos */
+.dep-cell-id .icon-btn.edit { display:block; }
+
+/* ── Edición inline por clic ─────────────────────── */
+.dep-inline-cell { cursor:pointer; }
+.dep-inline-cell:hover { background:rgba(27,79,216,.06) !important; }
+.dep-inline-cell:hover span.dep-text, .dep-inline-cell:hover span.dep-date { color:var(--blue); }
+.dep-inline-input {
+  width:100%; border:1.5px solid #1B4FD8; border-radius:5px;
+  padding:3px 7px; font-size:12.5px; background:#fff;
+  outline:none; font-family:inherit;
+}
+.dep-inline-input:focus { box-shadow:0 0 0 2px rgba(27,79,216,.18); }
+/* Columna fase más ancha para las dos barras */
+.dep-col-fase { width:160px !important; }
+
+/* ── Complejidad checklist ─────────────────────── */
+.cx-mod-check-row { display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;margin-bottom:2px; }
+.cx-mod-check-row:hover { background:#F1F5F9; }
+.cx-combo-chip { display:inline-flex;align-items:center;gap:4px;background:#EFF6FF;color:#1B4FD8;padding:3px 10px;border-radius:20px;font-size:12px;margin:3px;font-weight:600; }
+.cx-combo-chip button { border:none;background:none;color:#94A3B8;cursor:pointer;font-size:12px;padding:0 2px;line-height:1; }
+.cx-combo-chip button:hover { color:#BE123C; }
 </style>
 </head>
 <body>
@@ -574,7 +606,7 @@ thead th{cursor:default}
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.13 · 09 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.16 · 13 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -1070,7 +1102,7 @@ thead th{cursor:default}
 
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.13</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.16</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
 
       <!-- REFERENCE TABLE -->
       <div class="card" style="margin-bottom:16px">
@@ -1857,13 +1889,13 @@ const BASE_IMPL_TIMES=[
 ];
 // Implementation phases
 const BASE_PHASES=[
-  {id:1,name:'Kick-off',icon:'🚀',desc:'Reunión inicial, levantamiento de requerimientos'},
-  {id:2,name:'Configuración',icon:'⚙️',desc:'Configuración de módulos y plataforma'},
-  {id:3,name:'Carga de datos',icon:'📦',desc:'Registro de conductores, vehículos, zonas'},
-  {id:4,name:'Pruebas',icon:'🧪',desc:'Testing con usuarios piloto'},
-  {id:5,name:'Capacitación',icon:'🎓',desc:'Entrenamiento a operadoras y conductores'},
-  {id:6,name:'Lanzamiento',icon:'🌟',desc:'Go-live en producción'},
-  {id:7,name:'Post-launch',icon:'📊',desc:'Seguimiento y ajustes post lanzamiento'},
+  {id:1,name:'Kick-off',icon:'🚀',desc:'Reunión inicial y definición de alcance',tasks:['Preparar contrato y condiciones','Levantar definiciones para parametrizar','Demo del sistema al cliente']},
+  {id:2,name:'Configuración',icon:'⚙️',desc:'Configuración de módulos y plataforma',tasks:['Configurar tarifario','Configurar zonas y ciudades','Crear usuarios operadores']},
+  {id:3,name:'Carga de datos',icon:'📦',desc:'Registro de conductores, vehículos, zonas',tasks:['Capacitar operadoras','Cargar base de conductores','Cargar base de vehículos']},
+  {id:4,name:'Pruebas',icon:'🧪',desc:'Testing con usuarios piloto',tasks:['Pruebas con conductores piloto','Validar flujo de llamadas','Corregir incidencias']},
+  {id:5,name:'Capacitación',icon:'🎓',desc:'Entrenamiento a operadoras y conductores',tasks:['Capacitación a operadoras (Zoom)','Capacitación conductores por grupos','Validar comprensión del sistema']},
+  {id:6,name:'Lanzamiento',icon:'🌟',desc:'Go-live en producción',tasks:['Activar en producción','Acompañamiento primer día','Confirmar estabilidad']},
+  {id:7,name:'Post-launch',icon:'📊',desc:'Seguimiento y ajustes post lanzamiento',tasks:['Revisión de métricas semana 1','Ajustes y optimizaciones','Cierre formal del despliegue']},
 ];
 // Module categories catalog
 const BASE_CATMOD=[
@@ -1887,9 +1919,15 @@ const BASE_BILLING_TYPES=[
 ];
 // Complexity levels catalog — fully configurable
 const BASE_COMPLEXITY=[
-  {id:1,icon:'🟢',name:'Básico',    color:'#0F7E4F',bg:'#ECFDF5',border:'#6EE7B7',peso:1.0,prioridad:3,mods:'Bot WA Normal,App Conductor TaxiSoS,App Conductor Clipp',desc:'Bot WA + App Conductor'},
-  {id:2,icon:'🟡',name:'Medio',     color:'#B45309',bg:'#FFFBEB',border:'#FDE68A',peso:1.5,prioridad:2,mods:'App Cliente,CallerID,Refuerzo Capacitación',desc:'Bot + App Cliente + App Conductor'},
-  {id:3,icon:'🔴',name:'Avanzado',  color:'#BE123C',bg:'#FFF1F2',border:'#FECDD3',peso:2.5,prioridad:1,mods:'CallCenter,Desborde,Counter,Bot WA Bilingüe',desc:'Bot + CallCenter + App Cliente + Conductor'},
+  {id:1,icon:'🟢',name:'Básico',    color:'#0F7E4F',bg:'#ECFDF5',border:'#6EE7B7',peso:1.0,prioridad:3,
+   combos:[['Bot WA Normal','App Conductor Clipp'],['Bot WA Normal','App Conductor TaxiSoS'],['App Conductor Clipp']],
+   mods:'Bot WA Normal,App Conductor Clipp',desc:'Bot WA + App Conductor'},
+  {id:2,icon:'🟡',name:'Medio',     color:'#B45309',bg:'#FFFBEB',border:'#FDE68A',peso:1.5,prioridad:2,
+   combos:[['App Cliente','CallerID'],['App Cliente','Refuerzo Capacitación'],['CallerID']],
+   mods:'App Cliente,CallerID',desc:'App Cliente + CallCenter ligero'},
+  {id:3,icon:'🔴',name:'Avanzado',  color:'#BE123C',bg:'#FFF1F2',border:'#FECDD3',peso:2.5,prioridad:1,
+   combos:[['CallCenter','Desborde'],['CallCenter','Counter'],['Bot WA Bilingüe','CallCenter']],
+   mods:'CallCenter,Desborde',desc:'CallCenter + módulos avanzados'},
 ];
 const BASE_MD=[
   {id:1,name:'Bot WA Normal',desc:'Bot WhatsApp estándar',cat:'Bot / Mensajería'},
@@ -2161,7 +2199,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.13'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.16'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2352,7 +2390,7 @@ function updBadges(){
 
 // ═══ COMPLEXITY ══════════════════════════════════════
 function getComplexityFromCatalog(dep){
-  if(!cats.complexity||!cats.complexity.length)return null;
+  if(!cats.complexity||!cats.complexity.length) return null;
   let mods=[];
   if(Array.isArray(dep?.mo)&&dep.mo.length) mods=dep.mo;
   else {
@@ -2361,13 +2399,21 @@ function getComplexityFromCatalog(dep){
       : cls.find(c=>String(c.nm||'').trim().toLowerCase()===String(dep?.c||'').trim().toLowerCase());
     mods=Array.isArray(ref?.mo)?ref.mo:[];
   }
-  mods=mods.map(m=>String(m||'').toLowerCase().trim()).filter(Boolean);
-  if(!mods.length)return null;
+  const modsLow=mods.map(m=>String(m||'').toLowerCase().trim()).filter(Boolean);
+  if(!modsLow.length) return null;
+  // Ordenar por prioridad (1=más alta=más exigente)
   const sorted=[...cats.complexity].sort((a,b)=>(a.prioridad||99)-(b.prioridad||99));
   for(const lvl of sorted){
-    const raw=Array.isArray(lvl.mods)?lvl.mods.join(','):String(lvl.mods||'');
-    const triggers=raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
-    if(triggers.length&&triggers.every(t=>mods.some(m=>m===t)))return lvl;
+    // Usar combos[] si existe, sino parsear mods string como combo único
+    const combos=Array.isArray(lvl.combos)&&lvl.combos.length
+      ? lvl.combos
+      : [String(lvl.mods||'').split(',').map(s=>s.trim()).filter(Boolean)];
+    // El nivel aplica si el cliente tiene TODOS los módulos de AL MENOS UN combo
+    const matches=combos.some(function(combo){
+      const comboLow=combo.map(m=>String(m||'').toLowerCase().trim()).filter(Boolean);
+      return comboLow.length>0 && comboLow.every(t=>modsLow.some(m=>m===t));
+    });
+    if(matches) return lvl;
   }
   return null;
 }
@@ -2377,20 +2423,66 @@ function complexBadge(dep){
 }
 function getComplexityWeight(dep){const lvl=getComplexityFromCatalog(dep);return lvl?(parseFloat(lvl.peso)||1.0):1.0;}
 function calcDias(dep){
-  if(!isD(dep.fi)||!isD(dep.fe))return null;
-  return Math.round((new Date(dep.fe+'T12:00:00')-new Date(dep.fi+'T12:00:00'))/(1000*60*60*24));
+  if(!isD(dep.fi)) return null;
+  // Si hay F. Entrega → días definitivos (fijo)
+  const end = isD(dep.fe) ? new Date(dep.fe+'T12:00:00') : new Date();
+  return Math.round((end - new Date(dep.fi+'T12:00:00')) / (1000*60*60*24));
 }
 function diasBadge(dep){
-  const d=calcDias(dep);if(d===null)return'—';
-  const color=d<=7?'#0F7E4F':d<=14?'#B45309':'#DC2626';
-  return`<span style="background:${color}18;color:${color};padding:2px 8px;border-radius:12px;font-size:11.5px;font-weight:700">${d}d</span>`;
+  const d=calcDias(dep); if(d===null) return '<span style="color:var(--subtle);font-size:11px">Sin fecha inicio</span>';
+  const isFinal = isD(dep.fe);
+  // Color según duración
+  const color = d<=14 ? '#0F7E4F' : d<=30 ? '#B45309' : '#DC2626';
+  const icon  = isFinal ? '✅' : '🔄';
+  const title = isFinal ? 'Duración total (definitivo)' : 'Días transcurridos (en curso)';
+  return`<span style="background:${color}18;color:${color};padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:3px" title="${title}">
+    <span style="font-size:10px">${icon}</span>${d}d
+  </span>`;
 }
 function phaseBadge(dep){
-  const ph=(cats.phases||[])[dep.fase||0];if(!ph)return'—';
-  return`<span style="background:#EFF6FF;color:#1B4FD8;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">${ph.icon||''} ${esc(ph.name)}</span>`;
-}
+  const phases = cats.phases&&cats.phases.length ? cats.phases : BASE_PHASES;
+  const ph = phases[dep.fase||0]; if(!ph) return '—';
+  // % de la fase actual
+  const tasks = ph.tasks||[];
+  const checks = (dep.phaseChecks||{})[ph.id]||[];
+  const donePh = tasks.filter(function(_,i){return(checks[i]||0)===2;}).length;
+  const phasePct = tasks.length ? Math.round(donePh/tasks.length*100) : null;
+  // % global (todas las fases)
+  var totalT=0, totalD=0;
+  phases.forEach(function(p){
+    var t=p.tasks||[]; var c=(dep.phaseChecks||{})[p.id]||[];
+    t.forEach(function(_,i){ totalT++; if((c[i]||0)===2) totalD++; });
+  });
+  const globalPct = totalT>0 ? Math.round(totalD/totalT*100) : null;
+  const barColor = phasePct===100?'#0F7E4F':phasePct>=50?'#B45309':'#1B4FD8';
+  const globalColor = globalPct===100?'#0F7E4F':globalPct>=50?'#B45309':'#1B4FD8';
 
-// ═══ BILLING ENGINE ══════════════════════════════════
+  return '<span onclick="openDepPhasePopup('+dep.id+',event)" title="Clic: ver tareas y avance" '+
+    'style="display:inline-block;background:#EFF6FF;border-radius:10px;padding:4px 10px;min-width:100px;cursor:pointer">'+
+    // Fase actual
+    '<div style="font-size:11px;font-weight:700;color:#1B4FD8;white-space:nowrap">'+(ph.icon||'')+'  '+esc(ph.name)+'</div>'+
+    // Barra fase actual
+    (tasks.length?
+      '<div style="margin-top:3px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:9.5px;color:'+barColor+';margin-bottom:2px">'+
+          '<span>Esta fase</span><span style="font-weight:700">'+phasePct+'%</span>'+
+        '</div>'+
+        '<div style="height:3px;background:#D1D5DB;border-radius:2px">'+
+          '<div style="height:3px;width:'+phasePct+'%;background:'+barColor+';border-radius:2px"></div>'+
+        '</div>'+
+      '</div>' : '')+
+    // % global
+    (globalPct!==null?
+      '<div style="margin-top:3px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:9.5px;color:'+globalColor+';margin-bottom:2px">'+
+          '<span>Global</span><span style="font-weight:700">'+globalPct+'% ('+totalD+'/'+totalT+')</span>'+
+        '</div>'+
+        '<div style="height:3px;background:#D1D5DB;border-radius:2px">'+
+          '<div style="height:3px;width:'+globalPct+'%;background:'+globalColor+';border-radius:2px"></div>'+
+        '</div>'+
+      '</div>' : '')+
+  '</span>';
+}
 function calcFactura(contrato, mes, activosOverride){
   if(!contrato)return{total:0,neto:0,descMonto:0,desglose:[]};
   const actCond=activosOverride?.conductores??contrato.conductoresActivos??0;
@@ -2727,7 +2819,16 @@ function depEnterEdit(id, mode='dep'){
     const linked=depClientMatch(_depDraft.c,_depDraft.cid);
     _depDraft.mo = Array.isArray(linked?.mo) ? [...linked.mo] : (Array.isArray(d.mo)?[...d.mo]:[]);
   }
-  mode==='ops' ? renderOps() : renderDeps();
+  if(mode==='ops') renderOps(); else renderDeps();
+  // Scroll al inicio de la tabla para mostrar los campos editables
+  setTimeout(function(){
+    const tblId = mode==='ops' ? 'tbl-o' : 'tbl-d';
+    const wrap = document.getElementById(tblId)?.closest('.tbl-wrap');
+    if(wrap) wrap.scrollLeft = 0;
+    // Scroll vertical para mostrar la fila editada
+    const editRow = document.querySelector('tr.dep-editing');
+    if(editRow) editRow.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 50);
 }
 function depCancelEdit(){
   const mode=_editDepMode||'dep';
@@ -2782,6 +2883,13 @@ function depSaveEdit(id){
   renderCapacidad();
   renderDeps();
   renderOps();
+  // Scroll al inicio para mostrar los cambios
+  setTimeout(function(){
+    ['tbl-o','tbl-d'].forEach(function(id){
+      var wrap=document.getElementById(id)?.closest('.tbl-wrap');
+      if(wrap) wrap.scrollLeft=0;
+    });
+  }, 30);
 }
 function depInput(value, field, placeholder=''){
   return `<input class="dep-inline-input" value="${esc(value||'')}" placeholder="${esc(placeholder)}" oninput="depSetDraft('${field}',this.value)">`;
@@ -2817,32 +2925,41 @@ function depNotesRead(text){
 }
 function depRowRead(d){
   const cl=cls.find(c=>c.id===d.cid)||null;
-  const clientMeta = [d.pa,d.ci].filter(Boolean).join(' · ');
+  const clientMeta=[d.pa,d.ci].filter(Boolean).join(' · ');
+  const mode=(_editDepMode||'dep');
+  // Helpers para celdas editables inline (clic simple)
+  const inlineText=(val,field,ph)=>`<td onclick="depInlineEdit(${d.id},'${field}',this)" class="dep-inline-cell" title="Clic para editar"><span class="dep-text">${esc(val||'—')}</span></td>`;
+  const inlineDate=(val,field)=>`<td onclick="depInlineDateEdit(${d.id},'${field}',this)" class="dep-inline-cell dep-inline-date" title="Clic para editar fecha"><span class="dep-date">${fmtD(val)}</span></td>`;
+  const inlineNum=(val,field)=>`<td class="dep-num dep-inline-cell" onclick="depInlineNumEdit(${d.id},'${field}',this)" title="Clic para editar">${val===''||val==null?'<span class="dep-text muted">—</span>':esc(val)}</td>`;
+  const inlineSelect=(val,field,opts)=>`<td onclick="depInlineSelectEdit(${d.id},'${field}',this,${JSON.stringify(opts)})" class="dep-inline-cell" title="Clic para editar">${val||'—'}</td>`;
+
   return `<tr>
-    <td class="dep-cell-id">${String(d.id).padStart(2,'0')}</td>
-    <td>
-      <div class="dep-client-name">${esc(d.c||'')}</div>
-      <div class="dep-client-meta">${esc(clientMeta || ((cl&&cl.ap)||'Sin ubicación'))}</div>
+    <td class="dep-cell-id" style="white-space:nowrap">
+      <div style="font-size:10px;color:var(--subtle);font-family:monospace">${String(d.id).padStart(2,'0')}</div>
+      <button class="icon-btn edit" title="Editar fila completa" onclick="depEnterEdit(${d.id},'${mode}')" style="margin-top:2px;font-size:11px">✏️</button>
     </td>
-    <td><span class="dep-text">${esc(d.pa||'—')}</span></td>
-    <td><span class="dep-text">${esc(d.ci||'—')}</span></td>
-    <td><span class="dep-text">${esc(d.tp||'—')}</span></td>
-    <td><div class="dep-status-wrap">${esChip(d.es)}</div></td>
+    <td onclick="depEnterEdit(${d.id},'${mode}')" style="cursor:pointer" title="Clic para editar">
+      <div class="dep-client-name">${esc(d.c||'')}</div>
+      <div class="dep-client-meta">${esc(clientMeta||((cl&&cl.ap)||'Sin ubicación'))}</div>
+    </td>
+    ${inlineText(d.pa,'pa','País')}
+    ${inlineText(d.ci,'ci','Ciudad')}
+    <td onclick="depInlineSelectEdit(${d.id},'tp',this,depModalOptions())" class="dep-inline-cell" title="Clic para cambiar modalidad"><span class="dep-text">${esc(d.tp||'—')}</span></td>
+    <td class="dep-inline-cell" title="Clic para cambiar estado" onclick="depInlineSelectEdit(${d.id},'es',this,ESTADOS.map(e=>({value:e,label:e})))"><div class="dep-status-wrap">${esChip(d.es)}</div></td>
     <td><div class="dep-phase-wrap">${phaseBadge(d)}</div></td>
     <td>${complexBadge(d)}</td>
     <td>${depModulesRead(d.mo)}</td>
-    <td><span class="dep-text">${esc(d.ln||'—')}</span></td>
-    <td><span class="dep-date">${fmtD(d.fi)}</span></td>
-    <td><span class="dep-date">${fmtD(d.fd)}</span></td>
-    <td><span class="dep-date">${fmtD(d.fe)}</span></td>
+    <td onclick="depInlineSelectEdit(${d.id},'ln',this,depLauncherOptions())" class="dep-inline-cell" title="Clic para cambiar launcher"><span class="dep-text">${esc(d.ln||'—')}</span></td>
+    ${inlineDate(d.fi,'fi')}
+    ${inlineDate(d.fd,'fd')}
+    ${inlineDate(d.fe,'fe')}
     <td class="dep-num">${diasBadge(d)}</td>
-    <td>${depNotesRead(d.pe)}</td>
-    <td class="dep-num">${d.hrsOp===''||d.hrsOp==null?'<span class="dep-text muted">—</span>':esc(d.hrsOp)}</td>
-    <td class="dep-num">${d.hrsNew===''||d.hrsNew==null?'<span class="dep-text muted">—</span>':esc(d.hrsNew)}</td>
-    <td>${depNotesRead(d.no)}</td>
+    <td onclick="depInlineTextareaEdit(${d.id},'pe',this)" class="dep-inline-cell" title="Clic para editar pendientes">${depNotesRead(d.pe)}</td>
+    ${inlineNum(d.hrsOp,'hrsOp')}
+    ${inlineNum(d.hrsNew,'hrsNew')}
+    <td onclick="depInlineTextareaEdit(${d.id},'no',this)" class="dep-inline-cell" title="Clic para editar notas">${depNotesRead(d.no)}</td>
     <td>${depLinkCell(d.lk)}</td>
     <td class="dep-actions">
-      <button class="icon-btn edit" title="Editar fila" onclick="depEnterEdit(${d.id},'dep')">✏️</button>
       <button class="icon-btn del" title="Eliminar" onclick="confDel('dep',${d.id},'${esc(d.c)}')">🗑</button>
     </td>
   </tr>`;
@@ -2904,11 +3021,9 @@ function depRowViewOps(d){
   return _editDepId===d.id ? depRowEditOps(d) : depRowReadOps(d);
 }
 function depRowReadOps(d){
+  // depRowRead ya tiene todo el inline — solo cambiar modo 'dep' → 'ops'
   const row = depRowRead(d);
-  return row.replace(
-    `onclick="depEnterEdit(${d.id})"`,
-    `onclick="depEnterEdit(${d.id},'ops')"`
-  );
+  return row.split(",'dep')").join(",'ops')");
 }
 
 // ═══ RENDER DEPS / OPS / INACT ═══════════════════════
@@ -4165,13 +4280,45 @@ function saveModDep(){
   sv();renderModDeps();['mo-dep-name','mo-dep-icon','mo-dep-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderPhases(){
-  if(!cats.phases||!cats.phases.length)cats.phases=BASE_PHASES.map(x=>Object.assign({},x));
-  const el=document.getElementById('ph-tbody');if(!el)return;
-  el.innerHTML=(cats.phases||[]).map((p,i)=>`<tr><td>${i+1}</td><td>${p.icon||''}</td><td><strong>${esc(p.name)}</strong></td><td style="color:var(--muted)">${esc(p.desc||'')}</td><td><button class="icon-btn edit" onclick="editCatItem('phases',${p.id})">✏️</button><button class="icon-btn del" onclick="delCat('phases',${p.id},'${esc(p.name)}')">🗑</button></td></tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin fases</td></tr>`;
+  if(!cats.phases||!cats.phases.length) cats.phases=BASE_PHASES.map(x=>Object.assign({},x));
+  const el=document.getElementById('ph-tbody'); if(!el) return;
+  const phases=cats.phases;
+  el.innerHTML=phases.map(function(p,i){
+    const tasks=p.tasks||[];
+    const done=tasks.length;
+    const isFirst=i===0, isLast=i===phases.length-1;
+    const pid=p.id;
+    const pname=esc(p.name);
+    const pdesc=p.desc?esc(p.desc):'<em style="opacity:.5">+ descripción</em>';
+    const taskBadge=done
+      ? '<span style="background:#EFF6FF;color:#1B4FD8;padding:1px 8px;border-radius:10px;font-size:11px;cursor:pointer" onclick="openPhaseTasksEditor('+pid+')">'+done+' tarea'+(done>1?'s':'')+'</span>'
+      : '<span style="color:var(--subtle);font-size:11px;cursor:pointer" onclick="openPhaseTasksEditor('+pid+')">+ agregar tareas</span>';
+    return '<tr>'+
+      '<td style="width:60px;text-align:center;white-space:nowrap">'+
+        '<span style="color:var(--muted);font-size:11px;font-family:monospace;display:block">'+(i+1)+'</span>'+
+        '<span style="display:inline-flex;gap:2px;margin-top:2px">'+
+          '<button class="icon-btn" onclick="phaseMove('+pid+',-1)" '+(isFirst?'disabled style="opacity:.3"':'')+' title="Subir">↑</button>'+
+          '<button class="icon-btn" onclick="phaseMove('+pid+',1)" '+(isLast?'disabled style="opacity:.3"':'')+' title="Bajar">↓</button>'+
+        '</span>'+
+      '</td>'+
+      '<td style="width:50px;text-align:center">'+
+        '<span style="font-size:18px;cursor:pointer" onclick="phaseEditIcon('+pid+',this)" title="Clic para editar ícono">'+esc(p.icon||'📍')+'</span>'+
+      '</td>'+
+      '<td>'+
+        '<div style="font-weight:700;font-size:13px;cursor:pointer" onclick="phaseEditField('+pid+',\"name\",this)" title="Clic para editar">'+pname+'</div>'+
+        '<div style="color:var(--muted);font-size:11.5px;margin-top:2px;cursor:pointer" onclick="phaseEditField('+pid+',\"desc\",this)" title="Clic para editar">'+pdesc+'</div>'+
+      '</td>'+
+      '<td>'+taskBadge+'</td>'+
+      '<td style="white-space:nowrap;text-align:center">'+
+        '<button class="icon-btn" onclick="openPhaseTasksEditor('+pid+')" title="Gestionar tareas" style="color:#1B4FD8">📋</button>'+
+        '<button class="icon-btn del" onclick="phaseDelete('+pid+',\"'+pname+'\")" title="Eliminar fase">🗑</button>'+
+      '</td>'+
+    '</tr>';
+  }).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin fases. Crea la primera abajo.</td></tr>';
 }
 function savePhase(){
   const n=document.getElementById('ph-name').value.trim();if(!n)return;
-  cats.phases.push({id:Date.now(),icon:document.getElementById('ph-icon').value.trim(),name:n,desc:document.getElementById('ph-desc').value.trim()});
+  cats.phases.push({id:Date.now(),icon:document.getElementById('ph-icon').value.trim(),name:n,desc:document.getElementById('ph-desc').value.trim(),tasks:[]});
   sv();renderPhases();['ph-icon','ph-name','ph-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderImplTimes(){
@@ -4185,17 +4332,32 @@ function saveImplTime(){
   sv();renderImplTimes();['it-name','it-weeks','it-desc'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
 }
 function renderCxs(){
-  if(!cats.complexity||!cats.complexity.length)cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
-  const el=document.getElementById('cx-tbody');if(!el)return;
-  const modsSel=document.getElementById('cx-mods');
-  if(modsSel){ modsSel.innerHTML=(cats.md||[]).map(m=>`<option value="${esc(m.name)}">${esc(m.name)}</option>`).join(''); }
-  el.innerHTML=(cats.complexity||[]).map(c=>`<tr>
-    <td><span style="background:${c.bg||'#dbeafe'};color:${c.color||'#1d4ed8'};padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700">${c.icon||''} ${esc(c.name)}</span></td>
-    <td>${c.peso||1}</td>
-    <td>${c.prioridad||1}</td>
-    <td style="font-size:12px;color:var(--muted)">${Array.isArray(c.mods)?c.mods.map(esc).join(', '):esc(c.mods||'')}</td>
-    <td><button class="icon-btn edit" onclick="editCatItem('complexity',${c.id})">✏️</button><button class="icon-btn del" onclick="delCat('complexity',${c.id},'${esc(c.name)}')">🗑</button></td>
-  </tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>`;
+  if(!cats.complexity||!cats.complexity.length) cats.complexity=BASE_COMPLEXITY.map(x=>Object.assign({},x));
+  const el=document.getElementById('cx-tbody'); if(!el) return;
+  el.innerHTML=(cats.complexity||[]).map(function(c){
+    const combos=Array.isArray(c.combos)&&c.combos.length ? c.combos
+      : [String(c.mods||'').split(',').map(function(s){return s.trim();}).filter(Boolean)];
+    const combosHtml=combos.map(function(combo,ci){
+      const chips=combo.map(function(m){
+        return '<span style="background:'+c.bg+';color:'+c.color+';padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">'+esc(m)+'</span>';
+      }).join('<span style="color:var(--muted);font-size:11px;margin:0 2px">+</span>');
+      return '<div style="font-size:11.5px;margin-bottom:4px;display:flex;align-items:center;gap:4px">'+
+        '<span style="color:var(--muted);font-size:10px;font-weight:700;min-width:20px">C'+(ci+1)+'</span>'+chips+
+      '</div>';
+    }).join('');
+    const editFn = 'editCatItem("complexity",'+c.id+')';
+    const delFn  = 'delCat("complexity",'+c.id+',"'+esc(c.name)+'")';
+    return '<tr>'+
+      '<td><span style="background:'+(c.bg||'#dbeafe')+';color:'+(c.color||'#1d4ed8')+';padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700">'+(c.icon||'')+' '+esc(c.name)+'</span></td>'+
+      '<td style="font-size:13px;font-weight:700">'+(c.peso||1)+'×</td>'+
+      '<td style="font-size:13px">'+(c.prioridad||1)+'</td>'+
+      '<td>'+combosHtml+'</td>'+
+      '<td style="white-space:nowrap">'+
+        '<button class="icon-btn edit" onclick="'+editFn+'">✏️</button>'+
+        '<button class="icon-btn del" onclick="'+delFn+'">🗑</button>'+
+      '</td>'+
+    '</tr>';
+  }).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--subtle)">Sin niveles</td></tr>';
 }
 function saveCx(){
   const n=document.getElementById('cx-name').value.trim();if(!n)return;
@@ -4340,21 +4502,51 @@ function _catModalBody(type,item){
     row('Notas',inp('desc','Descripción del paquete')),
   ].join('');
 
-  if(type==='complexity') return [
-    `<div class="fr2">`,
-    `<div class="fr"><label class="fl">Ícono</label><input type="text" class="fld" id="cem-icon" value="${esc(v('icon'))}" placeholder="🟢"></div>`,
-    `<div class="fr"><label class="fl">Nombre</label><input type="text" class="fld" id="cem-name" value="${esc(v('name'))}" placeholder="Básico"></div>`,
-    `</div>`,
-    `<div class="fr2">`,
-    colorSel('color').replace('class="fr"',''),
-    `<div class="fr"><label class="fl">Peso de capacidad</label><input type="number" step="0.1" min="0.1" class="fld" id="cem-peso" value="${v('peso',1)}" placeholder="1.0"></div>`,
-    `</div>`,
-    `<div class="fr"><label class="fl">Prioridad (1=más alta)</label><input type="number" min="1" class="fld" id="cem-prioridad" value="${v('prioridad',3)}" placeholder="1"></div>`,
-    `<div class="fr"><label class="fl">Módulos disparadores</label><select class="fld" id="cem-mods" multiple style="height:80px">${(cats.md||[]).map(m=>`<option value="${esc(m.name)}" ${(v('mods','')).split(',').map(s=>s.trim()).includes(m.name)?'selected':''}>${esc(m.name)}</option>`).join('')}</select></div>`,
-    `<p style="font-size:11px;color:var(--muted);margin:2px 0 8px">Ctrl+clic para seleccionar varios módulos</p>`,
-    `<div class="fr"><label class="fl">Descripción</label><input type="text" class="fld" id="cem-desc" value="${esc(v('desc'))}" placeholder="Descripción del nivel"></div>`,
-  ].join('');
-
+  if(type==='complexity') {
+    // Renderizar checklist de módulos + gestor de combos
+    const allMods=(cats.md&&cats.md.length?cats.md:BASE_MD).map(m=>m.name);
+    const curCombos=Array.isArray(item.combos)&&item.combos.length ? item.combos : 
+      [String(item.mods||'').split(',').map(s=>s.trim()).filter(Boolean)];
+    // Serializar combos como JSON en campo oculto — se lee en _catModalSave
+    const combosJson=JSON.stringify(curCombos).replace(/"/g,'&quot;');
+    const modsChecks=allMods.map(function(m){
+      return '<label style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;margin-bottom:2px" '+
+        'class="cx-mod-check-row">'+
+        '<input type="checkbox" class="cx-mod-check" value="'+esc(m)+'" style="width:15px;height:15px;accent-color:#1B4FD8;cursor:pointer">'+
+        '<span style="font-size:13px">'+esc(m)+'</span>'+
+        '<button type="button" onclick="cxAddCombo(this)" '+
+          'style="margin-left:auto;background:#EFF6FF;color:#1B4FD8;border:none;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;white-space:nowrap">'+
+          '+ Solo este módulo'+
+        '</button>'+
+      '</label>';
+    }).join('');
+    return '<div class="fr2">'+
+      '<div class="fr"><label class="fl">Ícono</label><input type="text" class="fld" id="cem-icon" value="'+esc(v('icon'))+'" placeholder="🟢"></div>'+
+      '<div class="fr"><label class="fl">Nombre</label><input type="text" class="fld" id="cem-name" value="'+esc(v('name'))+'" placeholder="Básico"></div>'+
+    '</div>'+
+    '<div class="fr2">'+
+      colorSel('color').replace('class="fr"','')+
+      '<div class="fr"><label class="fl">Peso capacidad</label><input type="number" step="0.1" min="0.1" class="fld" id="cem-peso" value="'+v('peso',1)+'" placeholder="1.0"></div>'+
+    '</div>'+
+    '<div class="fr"><label class="fl">Prioridad (1=más exigente)</label><input type="number" min="1" class="fld" id="cem-prioridad" value="'+v('prioridad',3)+'"></div>'+
+    // Combos actuales
+    '<div style="margin:12px 0 4px"><label class="fl" style="font-weight:700">🔗 Combinaciones actuales <span style="font-weight:400;color:var(--muted);font-size:11px">— aplica si el cliente tiene TODOS los módulos de alguna</span></label></div>'+
+    '<div id="cx-combos-list" style="margin-bottom:10px">'+_cxRenderCombosList(curCombos)+'</div>'+
+    '<input type="hidden" id="cem-combos" value="'+combosJson+'">'+
+    // Añadir combo con checklist
+    '<div style="background:#F8FAFC;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">'+
+      '<div style="font-weight:700;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">'+
+        '☑️ Seleccionar módulos para nueva combinación'+
+      '</div>'+
+      '<div style="max-height:200px;overflow-y:auto;margin-bottom:8px">'+modsChecks+'</div>'+
+      '<button type="button" onclick="cxAddComboFromChecks()" '+
+        'style="background:#1B4FD8;color:#fff;border:none;border-radius:7px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%">'+
+        '+ Agregar como nueva combinación'+
+      '</button>'+
+    '</div>'+
+    '<div class="fr"><label class="fl">Descripción</label><input type="text" class="fld" id="cem-desc" value="'+esc(v('desc'))+'" placeholder="Descripción del nivel"></div>';
+  }
+  
   if(type==='billingTypes') return [
     `<div class="fr2">`,
     `<div class="fr"><label class="fl">Ícono</label><input type="text" class="fld" id="cem-icon" value="${esc(v('icon'))}" placeholder="💰"></div>`,
@@ -4400,14 +4592,22 @@ function _catModalSave(type,id){
   else if(type==='catmod'){item.name=g('name')||item.name;item.icon=g('icon');item.color=g('color','#1B4FD8');}
   else if(type==='md'){item.name=g('name')||item.name;item.cat=g('cat');item.desc=g('desc');}
   else if(type==='modal'){item.icon=g('icon');item.name=g('name')||item.name;item.desc=g('desc');}
-  else if(type==='phases'){item.icon=g('icon');item.name=g('name')||item.name;item.desc=g('desc');}
+  else if(type==='phases'){item.icon=g('icon');item.name=g('name')||item.name;item.desc=g('desc');/* tasks[] preserved — managed via openPhaseTasksEditor */}
   else if(type==='implTimes'){item.name=g('name')||item.name;item.semanas=parseInt(document.getElementById('cem-semanas')?.value)||item.semanas;item.color=g('color','#1B4FD8');item.desc=g('desc');}
   else if(type==='complexity'){
-    item.icon=g('icon');item.name=g('name')||item.name;item.color=g('color','#637087');
-    item.peso=gn('peso',1.0);item.prioridad=parseInt(document.getElementById('cem-prioridad')?.value)||item.prioridad;
-    const modsEl=document.getElementById('cem-mods');
-    if(modsEl) item.mods=Array.from(modsEl.selectedOptions).map(o=>o.value).join(',');
+    item.icon=g('icon'); item.name=g('name')||item.name; item.color=g('color','#637087');
+    item.peso=gn('peso',1.0); item.prioridad=parseInt(document.getElementById('cem-prioridad')?.value)||item.prioridad;
     item.desc=g('desc');
+    // Leer combos del campo oculto
+    const combosEl=document.getElementById('cem-combos');
+    if(combosEl){
+      try{
+        const combos=JSON.parse(combosEl.value.replace(/&quot;/g,'"'));
+        item.combos=combos;
+        // También actualizar mods (primer combo como legado) para compatibilidad
+        item.mods=combos[0]?combos[0].join(','):'';
+      }catch(e){}
+    }
   }
   else if(type==='billingTypes'){item.icon=g('icon');item.name=g('name')||item.name;item.tipo=g('tipo');item.unidad=g('unidad');item.desc=g('desc');}
   else if(type==='launchers'){item.name=g('name')||item.name;item.email=document.getElementById('cem-email')?.value.trim()||'';item.notas=g('notas');}
@@ -5023,6 +5223,407 @@ function subscribeRealtime(){
     }
   }).subscribe();
 }
+
+// ═══ SISTEMA DE TAREAS POR FASE ════════════════════════════════════════
+// dep.phaseChecks = { phaseId: [0|1|2, 0|1|2, ...] }
+// 0=Pendiente  1=En Proceso  2=Completado
+const TASK_STATES = [
+  {val:0, label:'Pendiente',  icon:'⬜', color:'#94A3B8', bg:'#F8FAFC', next:1},
+  {val:1, label:'En Proceso', icon:'🔄', color:'#B45309', bg:'#FEF9C3', next:2},
+  {val:2, label:'Listo',      icon:'✅', color:'#0F7E4F', bg:'#ECFDF5', next:0},
+];
+
+// Calcular % completado de un despliegue (todas sus tareas de todas las fases)
+function depPhaseProgress(dep){
+  const phases = cats.phases&&cats.phases.length ? cats.phases : BASE_PHASES;
+  let total=0, done=0;
+  phases.forEach(function(ph){
+    const tasks=ph.tasks||[];
+    const checks=(dep.phaseChecks||{})[ph.id]||[];
+    tasks.forEach(function(_,i){ total++; if((checks[i]||0)===2) done++; });
+  });
+  return total===0 ? null : Math.round(done/total*100);
+}
+
+// Calcular % de la FASE ACTUAL solamente
+function depCurPhaseProgress(dep){
+  const phases = cats.phases&&cats.phases.length ? cats.phases : BASE_PHASES;
+  const ph = phases[dep.fase||0];
+  if(!ph) return null;
+  const tasks=ph.tasks||[];
+  if(!tasks.length) return null;
+  const checks=(dep.phaseChecks||{})[ph.id]||[];
+  const done=tasks.filter(function(_,i){ return (checks[i]||0)===2; }).length;
+  return Math.round(done/tasks.length*100);
+}
+
+// Cambiar estado de una tarea
+function setDepTaskStatus(depId, phaseId, taskIdx, newStatus){
+  const d=deps.find(x=>x.id===depId); if(!d)return;
+  if(!d.phaseChecks) d.phaseChecks={};
+  if(!Array.isArray(d.phaseChecks[phaseId])) d.phaseChecks[phaseId]=[];
+  d.phaseChecks[phaseId][taskIdx]=newStatus;
+  // Auto-avance de fase cuando todas = 2 (Listo)
+  const phases=cats.phases&&cats.phases.length?cats.phases:BASE_PHASES;
+  const curPh=phases[d.fase||0];
+  if(curPh&&curPh.id===phaseId){
+    const tasks=curPh.tasks||[];
+    const checks=d.phaseChecks[phaseId]||[];
+    const allDone=tasks.length>0&&tasks.every(function(_,i){ return (checks[i]||0)===2; });
+    if(allDone&&(d.fase||0)<phases.length-1){
+      d.fase=(d.fase||0)+1;
+      var nextPh=phases[d.fase];
+      showSync(true,'🎉 Fase completada → '+(nextPh?nextPh.icon+' '+nextPh.name:''));
+      setTimeout(function(){setSyncStatus('');},3000);
+    }
+  }
+  sv();
+  renderDepPhasePopup(d); // actualizar popup
+  renderAfterSave();      // actualizar badge en tabla
+}
+
+// Abrir popup anclado al badge de fase en la fila
+function openDepPhasePopup(depId, evt){
+  var d=deps.find(x=>x.id===depId); if(!d)return;
+  var popup=document.getElementById('dep-phase-popup'); if(!popup)return;
+  // Posicionar cerca del elemento clicado
+  var target=evt&&(evt.currentTarget||evt.target);
+  if(target){
+    var r=target.getBoundingClientRect();
+    var top=Math.min(r.bottom+6, window.innerHeight-470);
+    var left=Math.max(8, Math.min(r.left, window.innerWidth-390));
+    popup.style.top=top+'px';
+    popup.style.left=left+'px';
+  }
+  popup.style.display='block';
+  renderDepPhasePopup(d);
+  // Cerrar al hacer clic fuera
+  setTimeout(function(){
+    function closeOut(e){
+      if(!popup.contains(e.target)){
+        popup.style.display='none';
+        document.removeEventListener('mousedown',closeOut);
+      }
+    }
+    document.addEventListener('mousedown',closeOut);
+  },80);
+}
+
+// Renderizar el contenido del popup
+function renderDepPhasePopup(dep){
+  var popup=document.getElementById('dep-phase-popup'); if(!popup)return;
+  var phases=cats.phases&&cats.phases.length?cats.phases:BASE_PHASES;
+  var curFase=dep.fase||0;
+  // Título
+  var cl=cls.find(c=>c.id===dep.cid)||{nm:dep.c};
+  popup.querySelector('#dpp-title').textContent=(cl.nm||dep.c||'Despliegue')+' — Fases';
+  // Progreso global
+  var pct=depPhaseProgress(dep);
+  var pctEl=popup.querySelector('#dpp-progress-pct');
+  var barEl=popup.querySelector('#dpp-progress-bar');
+  var lblEl=popup.querySelector('#dpp-progress-label');
+  if(pct===null){
+    if(pctEl)pctEl.textContent='Sin tareas';
+    if(barEl)barEl.style.width='0%';
+    if(lblEl)lblEl.textContent='Configure tareas en Catálogos → Fases';
+  } else {
+    if(pctEl)pctEl.textContent=pct+'%';
+    if(barEl){barEl.style.width=pct+'%';barEl.style.background=pct===100?'#0F7E4F':'#1B4FD8';}
+    if(lblEl)lblEl.textContent='Progreso general de implementación';
+  }
+  // Fases y tareas
+  var body=popup.querySelector('#dpp-body');
+  body.innerHTML=phases.map(function(ph,phIdx){
+    var tasks=ph.tasks||[];
+    if(!tasks.length)return''; // ocultar fases sin tareas
+    var checks=(dep.phaseChecks||{})[ph.id]||[];
+    var done=tasks.filter(function(_,i){return(checks[i]||0)===2;}).length;
+    var inProg=tasks.filter(function(_,i){return(checks[i]||0)===1;}).length;
+    var phPct=Math.round(done/tasks.length*100);
+    var isActive=phIdx===curFase;
+    var isComp=done===tasks.length&&tasks.length>0;
+    var headerBg=isActive?'#EFF6FF':isComp?'#ECFDF5':'#F8FAFC';
+    var borderColor=isActive?'#1B4FD8':isComp?'#0F7E4F':'#E4E9F0';
+    return '<div style="background:'+headerBg+';border:1px solid '+borderColor+';border-radius:10px;padding:10px 12px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:'+(tasks.length?'8px':'0')+'">'+
+        '<span style="font-size:15px">'+ph.icon+'</span>'+
+        '<span style="font-weight:700;font-size:12.5px;flex:1">'+esc(ph.name)+'</span>'+
+        (isActive?'<span style="background:#1B4FD8;color:#fff;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:700">ACTUAL</span>':'')+
+        (isComp&&!isActive?'<span style="color:#0F7E4F;font-size:11px;font-weight:700">✅ '+done+'/'+tasks.length+'</span>':'')+
+        (!isComp?'<span style="color:#64748B;font-size:11px">'+done+'/'+tasks.length+' ('+phPct+'%)</span>':'')+
+      '</div>'+
+      (tasks.length?'<div style="height:3px;background:#E4E9F0;border-radius:2px;margin-bottom:8px"><div style="height:3px;width:'+phPct+'%;background:'+(phPct===100?'#0F7E4F':isActive?'#1B4FD8':'#94A3B8')+';border-radius:2px;transition:width .3s"></div></div>':'')+
+      tasks.map(function(t,ti){
+        var st=checks[ti]||0;
+        var S=TASK_STATES[st];
+        var nextSt=(st+1)%3;
+        return '<div class="phase-task-row">'+
+          '<button onclick="setDepTaskStatus('+dep.id+','+ph.id+','+ti+','+nextSt+')" '+
+            'style="border:none;background:'+S.bg+';color:'+S.color+';padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;min-width:96px;text-align:center" '+
+            'title="Clic para cambiar estado">'+S.icon+' '+S.label+'</button>'+
+          '<span style="font-size:12.5px;line-height:1.4;'+(st===2?'text-decoration:line-through;color:#94A3B8':'')+'">'+esc(t)+'</span>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+  }).join('')||'<div style="text-align:center;padding:20px;color:#94A3B8;font-size:12px">Sin tareas configuradas.<br>Agrégalas en <strong>Catálogos → Fases</strong></div>';
+}
+
+// ─── EDITOR DE TAREAS EN CATÁLOGOS ──────────────────────────────────────
+var _ptmPhaseId=null;
+function openPhaseTasksEditor(phaseId){
+  var ph=(cats.phases||[]).find(p=>p.id===phaseId); if(!ph)return;
+  _ptmPhaseId=phaseId;
+  document.getElementById('ptm-title').textContent=(ph.icon||'📋')+' Tareas: '+ph.name;
+  document.getElementById('ptm-desc').textContent=ph.desc||'';
+  renderPhaseTasksList(ph);
+  document.getElementById('phase-tasks-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('ptm-new-task').focus();},100);
+}
+function renderPhaseTasksList(ph){
+  var tasks=ph.tasks||[];
+  var el=document.getElementById('ptm-list'); if(!el)return;
+  if(!tasks.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--subtle);font-size:12px">Sin tareas — agrega la primera abajo</div>';return;}
+  el.innerHTML=tasks.map(function(t,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--bg2);margin-bottom:6px">'+
+      '<span style="color:var(--muted);font-size:11px;font-family:monospace;min-width:20px">'+(i+1)+'.</span>'+
+      '<span style="flex:1;font-size:13px">'+esc(t)+'</span>'+
+      '<button class="icon-btn del" onclick="removePhaseTask('+i+')" style="flex-shrink:0">✕</button>'+
+    '</div>';
+  }).join('');
+}
+function addPhaseTask(){
+  var inp=document.getElementById('ptm-new-task');
+  var text=(inp&&inp.value||'').trim(); if(!text)return;
+  var ph=(cats.phases||[]).find(p=>p.id===_ptmPhaseId); if(!ph)return;
+  if(!ph.tasks)ph.tasks=[];
+  ph.tasks.push(text); inp.value='';
+  sv(); renderPhaseTasksList(ph); renderPhases();
+}
+function removePhaseTask(idx){
+  var ph=(cats.phases||[]).find(p=>p.id===_ptmPhaseId); if(!ph||!ph.tasks)return;
+  ph.tasks.splice(idx,1);
+  sv(); renderPhaseTasksList(ph); renderPhases();
+}
+
+
+// ═══ EDICIÓN INLINE POR CLIC EN COLUMNA ══════════════════════════════════
+
+// Clic en celda de texto → input inline
+function depInlineEdit(id, field, tdEl){
+  if(tdEl.querySelector('input')) return; // ya en edición
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  const cur=d[field]||'';
+  tdEl.innerHTML=`<input class="dep-inline-input" value="${esc(cur)}" placeholder="${field}"
+    onblur="depInlineSave(${id},'${field}',this.value,this.parentElement)"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}if(event.key==='Escape'){depInlineCancel(${id},'${field}',this.parentElement,'${esc(cur)}')}"
+    style="width:100%;min-width:80px">`;
+  tdEl.querySelector('input').focus();
+}
+
+// Clic en celda de fecha → input date inline
+function depInlineDateEdit(id, field, tdEl){
+  if(tdEl.querySelector('input')) return;
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  const cur=d[field]||'';
+  tdEl.innerHTML=`<input type="date" class="dep-inline-input" value="${esc(cur)}"
+    onblur="depInlineSave(${id},'${field}',this.value,this.parentElement)"
+    onkeydown="if(event.key==='Escape'){depInlineCancel(${id},'${field}',this.parentElement,'${esc(cur)}')}"
+    style="width:100%;min-width:110px">`;
+  tdEl.querySelector('input').focus();
+}
+
+// Clic en celda numérica → input number inline
+function depInlineNumEdit(id, field, tdEl){
+  if(tdEl.querySelector('input')) return;
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  const cur=d[field]??'';
+  tdEl.innerHTML=`<input type="number" class="dep-inline-input" value="${esc(String(cur))}" min="0" step="0.5"
+    onblur="depInlineSaveNum(${id},'${field}',this.value,this.parentElement)"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}if(event.key==='Escape'){depInlineCancel(${id},'${field}',this.parentElement,'${esc(String(cur))}')}"
+    style="width:70px">`;
+  tdEl.querySelector('input').select();
+}
+
+// Clic en celda de select → dropdown inline
+function depInlineSelectEdit(id, field, tdEl, opts){
+  if(tdEl.querySelector('select')) return;
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  const cur=d[field]||'';
+  const optHtml=opts.map(o=>`<option value="${esc(o.value)}"${o.value===cur?' selected':''}>${esc(o.label)}</option>`).join('');
+  tdEl.innerHTML=`<select class="dep-inline-input" onchange="depInlineSave(${id},'${field}',this.value,this.parentElement)"
+    onblur="depInlineSave(${id},'${field}',this.value,this.parentElement)"
+    onkeydown="if(event.key==='Escape'){depInlineCancel(${id},'${field}',this.parentElement,'${esc(cur)}')}"
+    style="width:100%;min-width:90px">${optHtml}</select>`;
+  const sel=tdEl.querySelector('select');
+  sel.focus();
+  // Para estado, usar uDEs para respetar lógica de migración
+  if(field==='es') sel.onchange=function(){ uDEs(id,this.value); };
+}
+
+// Clic en celda de textarea → textarea inline
+function depInlineTextareaEdit(id, field, tdEl){
+  if(tdEl.querySelector('textarea')) return;
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  const cur=d[field]||'';
+  tdEl.innerHTML=`<textarea class="dep-inline-input" rows="2"
+    onblur="depInlineSave(${id},'${field}',this.value,this.parentElement)"
+    onkeydown="if(event.key==='Escape'){depInlineCancel(${id},'${field}',this.parentElement,'${esc(cur)}')}"
+    style="width:100%;min-width:120px;resize:vertical">${esc(cur)}</textarea>`;
+  const ta=tdEl.querySelector('textarea');
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+
+// Guardar y re-renderizar
+function depInlineSave(id, field, val, tdEl){
+  uD(id, field, val.trim());
+}
+function depInlineSaveNum(id, field, val, tdEl){
+  const n=val===''?'':parseFloat(val)||0;
+  uD(id, field, n);
+}
+function depInlineCancel(id, field, tdEl, originalVal){
+  // Restaurar sin guardar
+  const d=deps.find(x=>x.id===id); if(!d) return;
+  setTimeout(function(){ renderAfterSave(); }, 0);
+}
+
+
+// ═══ GESTIÓN DE FASES ════════════════════════════════════════════════════
+
+// Mover fase arriba (-1) o abajo (+1)
+function phaseMove(phaseId, dir){
+  const phases=cats.phases;
+  const idx=phases.findIndex(p=>p.id===phaseId);
+  if(idx<0) return;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=phases.length) return;
+  // Intercambiar
+  const tmp=phases[idx];
+  phases[idx]=phases[newIdx];
+  phases[newIdx]=tmp;
+  sv(); renderPhases(); renderAfterSave();
+}
+
+// Editar nombre o descripción inline dentro de la celda
+function phaseEditField(phaseId, field, el){
+  const ph=(cats.phases||[]).find(function(p){return p.id===phaseId;}); if(!ph) return;
+  const cur=ph[field]||'';
+  const isDesc=field==='desc';
+  const inp=document.createElement('input');
+  inp.className='dep-inline-input';
+  inp.value=cur;
+  inp.placeholder=isDesc?'Descripción...':'Nombre de la fase...';
+  inp.style.cssText='width:100%;font-size:'+(isDesc?'12':'13')+'px;font-weight:'+(isDesc?'400':'700');
+  inp.addEventListener('blur', function(){
+    ph[field]=this.value.trim();
+    sv(); renderPhases(); renderAfterSave();
+  });
+  inp.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){e.preventDefault();this.blur();}
+    if(e.key==='Escape'){renderPhases();}
+  });
+  el.innerHTML='';
+  el.appendChild(inp);
+  inp.focus(); inp.select();
+}
+
+function phaseIconSave(phaseId, inp){
+  const ph=(cats.phases||[]).find(function(p){return p.id===phaseId;}); if(!ph) return;
+  ph.icon=inp.value.trim()||'📍';
+  sv(); renderPhases(); renderAfterSave();
+}
+
+function phaseDelete(phaseId, phaseName){
+  if(!confirm('¿Eliminar la fase "'+phaseName+'"?')) return;
+  cats.phases=(cats.phases||[]).filter(x=>x.id!==phaseId);
+  sv(); renderPhases(); renderAfterSave();
+}
+
+function phaseEditIcon(phaseId, el){
+  const ph=(cats.phases||[]).find(function(p){return p.id===phaseId;}); if(!ph) return;
+  const inp=document.createElement('input');
+  inp.className='dep-inline-input';
+  inp.value=ph.icon||'';
+  inp.maxLength=4;
+  inp.style.cssText='width:48px;font-size:18px;text-align:center;padding:2px 4px';
+  inp.addEventListener('blur', function(){ phaseIconSave(phaseId, this); });
+  inp.addEventListener('keydown', function(e){
+    if(e.key==='Enter'||e.key==='Escape') this.blur();
+  });
+  el.parentNode.replaceChild(inp, el);
+  inp.focus(); inp.select();
+}
+
+// ═══ COMPLEJIDAD — GESTIÓN DE COMBOS ════════════════════════════════════
+
+// Renderizar lista de combos como chips eliminables
+function _cxRenderCombosList(combos){
+  if(!combos||!combos.length) return '<div style="color:var(--subtle);font-size:12px;padding:8px">Sin combinaciones. Agrega una abajo.</div>';
+  return combos.map(function(combo, ci){
+    const chips=combo.map(function(m){
+      const delFn='cxRemoveModFromCombo('+ci+',"'+esc(m)+'")';
+      return '<span class="cx-combo-chip">'+esc(m)+'<button type="button" onclick="'+delFn+'" title="Quitar">✕</button></span>';
+    }).join('');
+    const delCombo='cxRemoveCombo('+ci+')';
+    return '<div style="display:flex;align-items:center;gap:4px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;flex-wrap:wrap">'+
+      '<span style="font-size:11px;color:var(--muted);min-width:24px;font-weight:700">C'+(ci+1)+'</span>'+
+      chips+
+      '<button type="button" onclick="'+delCombo+'" style="margin-left:auto;background:none;border:none;color:#BE123C;cursor:pointer;font-size:13px;padding:2px 6px" title="Eliminar combinación">🗑</button>'+
+    '</div>';
+  }).join('');
+}
+function _cxGetCombos(){
+  const el=document.getElementById('cem-combos'); if(!el) return [];
+  try{ return JSON.parse(el.value.replace(/&quot;/g,'"')); }catch(e){ return []; }
+}
+function _cxSetCombos(combos){
+  const el=document.getElementById('cem-combos'); if(!el) return;
+  el.value=JSON.stringify(combos).replace(/"/g,'&quot;');
+  document.getElementById('cx-combos-list').innerHTML=_cxRenderCombosList(combos);
+}
+
+// Agregar combo desde los checks marcados
+function cxAddComboFromChecks(){
+  const checks=document.querySelectorAll('.cx-mod-check:checked');
+  const selected=Array.from(checks).map(c=>c.value).filter(Boolean);
+  if(!selected.length){ alert('Selecciona al menos un módulo'); return; }
+  const combos=_cxGetCombos();
+  // Verificar si ya existe igual
+  const already=combos.some(function(c){ return c.length===selected.length && selected.every(m=>c.includes(m)); });
+  if(already){ alert('Esta combinación ya existe'); return; }
+  combos.push(selected);
+  _cxSetCombos(combos);
+  // Desmarcar todos los checks
+  document.querySelectorAll('.cx-mod-check').forEach(function(c){ c.checked=false; });
+}
+
+// Agregar combo de un solo módulo (botón inline)
+function cxAddCombo(btn){
+  const row=btn.closest('.cx-mod-check-row');
+  const modName=row.querySelector('.cx-mod-check').value;
+  const combos=_cxGetCombos();
+  const already=combos.some(function(c){ return c.length===1 && c[0]===modName; });
+  if(already){ alert('Esta combinación ya existe'); return; }
+  combos.push([modName]);
+  _cxSetCombos(combos);
+}
+
+// Eliminar un combo completo
+function cxRemoveCombo(ci){
+  const combos=_cxGetCombos();
+  combos.splice(ci,1);
+  _cxSetCombos(combos);
+}
+
+// Quitar un módulo de un combo (si queda vacío, eliminar el combo)
+function cxRemoveModFromCombo(ci, modName){
+  const combos=_cxGetCombos();
+  if(!combos[ci]) return;
+  combos[ci]=combos[ci].filter(function(m){ return m!==modName; });
+  if(!combos[ci].length) combos.splice(ci,1);
+  _cxSetCombos(combos);
+}
+
 function bootApp(){
   // DATA RESET: force reload when version changes
   var DATA_VERSION='v5.2_stable';
@@ -5124,5 +5725,48 @@ if(location.search.includes('demo=1')){
 })();
 
 </script>
+
+<!-- ══ POPUP CHECKLIST FASE ══ -->
+<div id="dep-phase-popup" style="display:none;position:fixed;z-index:4000;width:380px;max-height:460px;overflow-y:auto;background:#fff;border:1px solid #E4E9F0;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:0">
+  <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #E4E9F0;padding:12px 14px 10px;z-index:1">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-weight:700;font-size:13px" id="dpp-title">Avance por Fase</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:1px">Clic en estado para cambiar · Cierra al hacer clic fuera</div>
+      </div>
+      <button onclick="document.getElementById('dep-phase-popup').style.display='none'"
+              style="border:none;background:none;font-size:18px;cursor:pointer;color:#94A3B8;line-height:1;padding:2px 6px">✕</button>
+    </div>
+    <!-- Barra de progreso global -->
+    <div style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#64748B;margin-bottom:3px">
+        <span id="dpp-progress-label">Progreso general</span>
+        <span id="dpp-progress-pct" style="font-weight:700;color:#1B4FD8">0%</span>
+      </div>
+      <div style="height:6px;background:#EFF6FF;border-radius:3px">
+        <div id="dpp-progress-bar" style="height:6px;background:#1B4FD8;border-radius:3px;transition:width .3s;width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div id="dpp-body" style="padding:12px 14px"></div>
+</div>
+
+<!-- ══ MODAL EDITOR TAREAS DE FASE (catálogos) ══ -->
+<div class="modal-ov" id="phase-tasks-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="m-title">
+      <span id="ptm-title">📋 Tareas de Fase</span>
+      <button class="m-close" onclick="closeM('phase-tasks-modal')">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px" id="ptm-desc"></div>
+    <div id="ptm-list" style="margin-bottom:14px;max-height:300px;overflow-y:auto"></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input class="fld" id="ptm-new-task" placeholder="Nueva tarea..." style="flex:1"
+             onkeydown="if(event.key==='Enter')addPhaseTask()">
+      <button class="btn btn-p btn-sm" onclick="addPhaseTask()">+ Agregar</button>
+    </div>
+    <div class="m-actions"><button class="btn btn-g" onclick="closeM('phase-tasks-modal')">Cerrar</button></div>
+  </div>
+</div>
 </body>
 </html>
