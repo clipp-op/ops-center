@@ -1,1 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roaming Quito — Dashboard Diario</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f6f8; --surface:#ffffff; --surface2:#f0f2f5;
+  --border:rgba(0,0,0,0.08);
+  --accent:#00b89c; --accent2:#e09600; --accent3:#d63447;
+  --blue:#2d7dd2; --purple:#8b44d4;
+  --text:#1a1f2e; --muted:#7a8399;
+  --mono:'DM Mono',monospace; --sans:'Syne',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;overflow-y:auto;}
+.sidebar-header{padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.sidebar-tag{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.sidebar-title{font-size:14px;font-weight:800;letter-spacing:-.01em;line-height:1.2;}
+.sidebar-title span{color:var(--accent);}
+.sidebar-sub{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;}
+.nav-group{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:12px 20px 6px;opacity:.6;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;transition:all .15s;border-left:2px solid transparent;font-size:11px;font-weight:600;color:var(--muted);}
+.nav-item:hover{background:rgba(0,0,0,.04);color:var(--text);}
+.nav-item.active{border-left-color:var(--accent);color:var(--accent);background:rgba(0,184,156,.08);}
+.nav-icon{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:rgba(0,0,0,.05);}
+.nav-item.active .nav-icon{background:rgba(0,184,156,.15);}
+.nav-desc{font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:1px;font-weight:400;}
+.sidebar-footer{margin-top:auto;padding:14px 20px;border-top:1px solid var(--border);font-family:var(--mono);font-size:8px;color:var(--muted);line-height:1.8;}
+.sidebar-footer span{color:var(--accent);}
+.main{flex:1;overflow-y:auto;padding:28px 40px 60px 32px;}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);background:rgba(0,184,156,.08);border:1px solid rgba(0,184,156,.25);padding:3px 10px;border-radius:2px;display:inline-block;margin-bottom:12px;}
+.stitle{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;margin-top:22px;display:flex;align-items:center;gap:10px;}
+.stitle::after{content:'';flex:1;height:1px;background:var(--border);}
+.kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 14px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;}
+.kpi:hover{transform:translateY(-2px);border-color:rgba(0,184,156,.4);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.cg::before{background:var(--accent)} .cy::before{background:var(--accent2)} .cr::before{background:var(--accent3)} .cb::before{background:var(--blue)} .cp::before{background:var(--purple)}
+.klabel{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.kval{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:3px;}
+.cg .kval{color:var(--accent)} .cy .kval{color:var(--accent2)} .cr .kval{color:var(--accent3)} .cb .kval{color:var(--blue)} .cp .kval{color:var(--purple)}
+.ksub{font-family:var(--mono);font-size:8px;color:var(--muted);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;}
+.ctitle{font-size:12px;font-weight:700;margin-bottom:4px;}
+.csub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.full{margin-bottom:12px;}
+.chip{display:inline-block;padding:1px 5px;border-radius:2px;font-size:9px;font-weight:500;font-family:var(--mono);white-space:nowrap;}
+.cok{background:rgba(0,184,156,.12);color:var(--accent);}
+.cwa{background:rgba(224,150,0,.12);color:var(--accent2);}
+.cer{background:rgba(214,52,71,.12);color:var(--accent3);}
+.blist{display:flex;flex-direction:column;gap:9px;}
+.bmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;}
+.blabel{font-family:var(--mono);font-size:10px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bvals{font-family:var(--mono);font-size:9px;color:var(--muted);text-align:right;white-space:nowrap;flex-shrink:0;}
+.dbar{height:5px;display:flex;border-radius:3px;overflow:hidden;gap:1px;}
+.dok{background:var(--accent);} .derr{background:var(--accent3);}
+.tbl{width:100%;border-collapse:collapse;font-family:var(--mono);}
+.tbl th{text-align:left;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-size:8px;padding:0 6px 8px;border-bottom:1px solid var(--border);}
+.tbl td{padding:7px 6px;border-bottom:1px solid rgba(0,0,0,.04);font-size:10px;vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(0,0,0,.02);}
+.tbl th.r,.tbl td.r{text-align:right;}
+b.acc{color:var(--accent);font-weight:600;}
+.note{font-family:var(--mono);font-size:9px;color:var(--muted);line-height:1.7;margin-top:8px;}
+.flow{display:flex;align-items:stretch;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.fstep{flex:1;padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.fstep:not(:last-child){border-right:1px solid var(--border);}
+.ficon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.fi-b{background:rgba(77,159,255,.15);} .fi-y{background:rgba(247,166,0,.15);} .fi-g{background:rgba(0,229,195,.15);}
+.flabel{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.fname{font-size:11px;font-weight:700;}
+.farr{padding:0 4px;color:var(--muted);font-size:18px;display:flex;align-items:center;}
+.day-grid{display:grid;gap:6px;margin-bottom:18px;}
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;position:relative;}
+.day-card:hover{border-color:rgba(0,184,156,.4);transform:translateY(-2px);}
+.day-card.active{border-color:var(--accent);background:rgba(0,184,156,.06);box-shadow:0 2px 8px rgba(0,184,156,.15);}
+.day-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);border-radius:6px 6px 0 0;}
+.day-name{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.day-num{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.day-card.active .day-num{color:var(--accent);}
+.day-viajes{font-family:var(--mono);font-size:9px;color:var(--blue);font-weight:600;}
+.day-rev{font-family:var(--mono);font-size:9px;color:var(--accent);font-weight:600;}
+.day-tasa{font-family:var(--mono);font-size:8px;margin-top:3px;}
+.day-bar{height:3px;border-radius:2px;overflow:hidden;display:flex;margin-top:4px;gap:1px;}
+#detail-panel{display:none;animation:fadeIn .3s ease;}
+#detail-panel.show{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:100px;padding:0 2px;}
 
+/* UPLOAD */
+.upload-zone{border:2px dashed rgba(0,184,156,.3);border-radius:8px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(0,184,156,.02);margin-bottom:18px;}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(0,184,156,.06);}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.uz-icon{font-size:36px;margin-bottom:8px;}
+.uz-text{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.6;}
+.uz-text b{color:var(--accent);}
+
+/* LINE CHART */
+.line-chart-wrap{position:relative;}
+.line-chart-wrap svg{width:100%;display:block;}
+.lc-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+.lc-leg-item{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--muted);}
+.lc-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.lc-leg-line{width:16px;height:2px;border-radius:1px;flex-shrink:0;}
+
+/* TOOLTIP */
+.svg-tip{position:absolute;background:#1e2235;border:1px solid rgba(0,184,156,.4);border-radius:4px;padding:8px 12px;font-family:var(--mono);font-size:10px;color:#e8ecf5;pointer-events:none;opacity:0;transition:opacity .12s;z-index:99;line-height:1.7;white-space:nowrap;}
+.svg-tip.on{opacity:1;}
+.svg-tip b{color:#00e5c3;font-weight:700;display:block;margin-bottom:2px;}
+
+@media(max-width:1100px){.kgrid{grid-template-columns:repeat(3,1fr);}.two{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-tag">Clipp B2B · Roaming</div>
+    <div class="sidebar-title">Dashboard<br><span>Quito · Diario</span></div>
+    <div class="sidebar-sub" id="sb-sub">Sube un XML para comenzar</div>
+  </div>
+  <div class="nav-group">Navegación</div>
+  <div class="nav-item active" onclick="scrollEl('#section-top')">
+    <div class="nav-icon">📊</div>
+    <div><div>Resumen</div><div class="nav-desc">KPIs globales</div></div>
+  </div>
+  <div class="nav-item" onclick="scrollEl('#section-lines')">
+    <div class="nav-icon">📈</div>
+    <div><div>Líneas de Tiempo</div><div class="nav-desc">Viajes · Éxito · Ingreso</div></div>
+  </div>
+  <div class="nav-item" onclick="scrollEl('#section-days')">
+    <div class="nav-icon">📅</div>
+    <div><div>Selector Diario</div><div class="nav-desc">Click en un día</div></div>
+  </div>
+  <div class="nav-item" onclick="scrollEl('#section-table')">
+    <div class="nav-icon">📋</div>
+    <div><div>Tabla Comparativa</div><div class="nav-desc">Todos los días</div></div>
+  </div>
+  <div class="nav-group" style="margin-top:16px;" id="sb-days-label" style="display:none;">Días</div>
+  <div id="sidebar-days"></div>
+  <div class="sidebar-footer" id="sb-footer">
+    Sube un archivo <span>.xml</span><br>para generar el dashboard
+  </div>
+</nav>
+
+<div class="main" id="main-scroll">
+  <div id="section-top"></div>
+
+  <!-- UPLOAD ZONE (visible until data loaded) -->
+  <div id="upload-screen">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div class="tag">Clipp B2B · Proyecto Roaming · Quito</div>
+        <h1 style="font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.05;">Dashboard Diario <span style="color:var(--accent)">Roaming Quito</span></h1>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;">// Sube un archivo XML para generar el análisis por día</p>
+      </div>
+    </div>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept=".xml">
+      <div class="uz-icon">📂</div>
+      <div class="uz-text">Arrastra un archivo <b>.xml</b> aquí o haz click para seleccionar<br><br>
+      Columnas esperadas: <b>fecha · empresa · application_clipper · application_cliente · city · total · succes · digital · efectivo</b></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (hidden until data loaded) -->
+  <div id="dashboard" style="display:none;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div class="tag" id="dash-tag">Clipp B2B · Proyecto Roaming · Quito</div>
+        <h1 style="font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.05;">Dashboard Diario <span style="color:var(--accent)" id="dash-month"></span></h1>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px;" id="dash-sub"></p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--border);padding:4px 12px;border-radius:2px;background:var(--surface);" id="dash-range"></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;" id="dash-days-label"></div>
+        <label style="font-family:var(--mono);font-size:9px;color:var(--accent);cursor:pointer;border:1px solid rgba(0,184,156,.3);padding:3px 10px;border-radius:3px;background:rgba(0,184,156,.06);position:relative;">
+          📂 Cargar otro XML
+          <input type="file" accept=".xml" style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="handleFile(this.files)">
+        </label>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="fstep"><div class="ficon fi-b">📱</div><div><div class="flabel">application_cliente (Generadora)</div><div class="fname">Origina el pedido</div></div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="ficon fi-y">🔀</div><div><div class="flabel">Roaming Clipp</div><div class="fname">Enruta inter-empresas</div></div></div>
+      <div class="farr">→</div>
+      <div class="fstep"><div class="ficon fi-g">🚖</div><div><div class="flabel">empresa (Conductora)</div><div class="fname">Atiende el viaje</div></div></div>
+    </div>
+
+    <div class="kgrid" id="global-kpis"></div>
+
+    <!-- LINE CHARTS -->
+    <div id="section-lines"></div>
+    <div class="stitle">Comportamiento diario — Líneas de tiempo</div>
+    <div class="card full">
+      <div class="ctitle">Viajes · Exitosas · Errores</div>
+      <div class="csub">Línea continua por día — hover para detalle</div>
+      <div class="line-chart-wrap" id="lc-viajes"></div>
+      <div class="lc-legend">
+        <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--blue);"></div>Viajes totales</div>
+        <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Exitosas</div>
+        <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent3);"></div>Errores</div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div class="ctitle">Ingresos diarios — Efectivo vs Digital</div>
+        <div class="csub">Eje izquierdo: USD</div>
+        <div class="line-chart-wrap" id="lc-ingresos"></div>
+        <div class="lc-legend">
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Total</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent2);"></div>Efectivo</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--purple);"></div>Digital</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Tasa de Éxito diaria</div>
+        <div class="csub">Porcentaje — zonas: verde ≥75% · amarillo ≥60% · rojo &lt;60%</div>
+        <div class="line-chart-wrap" id="lc-tasa"></div>
+        <div class="lc-legend">
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Tasa de éxito %</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY SELECTOR -->
+    <div id="section-days"></div>
+    <div class="stitle">Selecciona un día para drill-down</div>
+    <div class="day-grid" id="day-grid"></div>
+
+    <!-- TREND BAR CHART -->
+    <div class="stitle">Tendencia diaria — Viajes e Ingresos</div>
+    <div class="card full">
+      <div class="ctitle">Viajes por día</div>
+      <div class="csub">Barras azules = viajes · Click en una barra para ver detalle</div>
+      <div class="bar-chart" id="trend-chart"></div>
+    </div>
+
+    <!-- DETAIL -->
+    <div id="detail-panel">
+      <div class="stitle" id="detail-title">Detalle del día</div>
+      <div class="kgrid" id="detail-kpis"></div>
+      <div class="two">
+        <div class="card"><div class="ctitle">Generadora (application_cliente)</div><div class="csub">App que origina el pedido del pasajero</div><div class="blist" id="detail-gen"></div></div>
+        <div class="card"><div class="ctitle">Conductora (empresa)</div><div class="csub">Empresa que atiende y ejecuta el viaje</div><div class="blist" id="detail-con"></div></div>
+      </div>
+      <div class="card full"><div class="ctitle" id="flows-title">Top flujos inter-empresa</div><div class="csub">Generadora (app_cliente) → Conductora (empresa) · Por volumen</div>
+        <table class="tbl"><thead><tr><th>Generadora</th><th>Conductora</th><th class="r">Viajes</th><th class="r">Éxito</th><th class="r">$</th><th class="r">Tasa</th></tr></thead><tbody id="flows-body"></tbody></table>
+      </div>
+      <div class="card full"><div class="ctitle">Método de Cobro</div><div id="detail-cobro"></div></div>
+    </div>
+
+    <!-- TABLE -->
+    <div id="section-table"></div>
+    <div class="stitle" style="margin-top:28px;">Resumen comparativo — Todos los días</div>
+    <div class="card full"><div class="ctitle">Tabla día a día</div><div class="csub">Click en una fila para ver el drill-down completo</div>
+      <div style="overflow-x:auto;">
+        <table class="tbl"><thead><tr><th>Día</th><th class="r">Viajes</th><th class="r">Éxito</th><th class="r">Tasa</th><th class="r">Ingreso</th><th class="r">Efectivo</th><th class="r">Digital</th><th class="r">Clipp 4%</th><th>Top Generadora</th></tr></thead>
+        <tbody id="comparison-body"></tbody></table>
+      </div>
+    </div>
+    <div style="text-align:center;padding:30px 0;font-family:var(--mono);font-size:9px;color:var(--muted);" id="dash-footer"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ============== STATE ==============
+let DATA = {};
+let DATES = [];
+let TOTALS = {};
+let MONTH_LABEL = '';
+let selectedDay = null;
+const DAYS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MONTHS_ES = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// ============== XML PARSER ==============
+function parseXML(text) {
+  const rows = [];
+  const rowMatches = text.match(/<Row>[\s\S]*?<\/Row>/g) || [];
+  for (const rm of rowMatches) {
+    const cells = [];
+    const cellMatches = rm.match(/<Data[^>]*>([\s\S]*?)<\/Data>/g) || [];
+    for (const cm of cellMatches) cells.push(cm.replace(/<Data[^>]*>/,'').replace(/<\/Data>/,'').trim());
+    if (cells.length >= 6) rows.push(cells);
+  }
+  if (rows.length < 2) return null;
+  const hdr = rows[0].map(h => h.toLowerCase());
+  const iF = hdr.findIndex(h=>h.includes('fecha'));
+  const iEmp = hdr.findIndex(h=>h==='empresa');            // Conductora (quien atiende)
+  const iCli = hdr.findIndex(h=>h.includes('cliente'));    // Generadora (app que origina)
+  const iT = hdr.findIndex(h=>h.includes('total'));
+  const iS = hdr.findIndex(h=>h.includes('succes')), iD = hdr.findIndex(h=>h.includes('digital'));
+  const iE = hdr.findIndex(h=>h.includes('efectivo'));
+  if (iF<0||iT<0) return null;
+  const parsed = [];
+  for (const r of rows.slice(1)) {
+    if (r.length < Math.max(iF,iT,iS,iD,iE)+1) continue;
+    parsed.push({
+      fecha: r[iF],
+      generadora: (r[iCli]||'').replace(/^APP\s+|^BOT\s+/i,''),  // application_cliente = Generadora
+      conductora: (r[iEmp]||''),                                    // empresa = Conductora
+      total: parseInt(r[iT])||0,
+      success: parseFloat(r[iS])||0,
+      digital: parseFloat(r[iD])||0,
+      efectivo: parseFloat(r[iE])||0,
+    });
+  }
+  return parsed;
+}
+
+function processData(raw) {
+  const byDay = {};
+  let tV=0,tS=0,tD=0,tE=0;
+  for (const r of raw) {
+    if (!byDay[r.fecha]) byDay[r.fecha]={viajes:0,success:0,digital:0,efectivo:0,generadora:{},conductora:{},flows:{}};
+    const d = byDay[r.fecha];
+    d.viajes+=r.total; d.success+=r.success; d.digital+=r.digital; d.efectivo+=r.efectivo;
+    tV+=r.total; tS+=r.success; tD+=r.digital; tE+=r.efectivo;
+    // application_cliente = Generadora (app que origina el pedido)
+    if(!d.generadora[r.generadora]) d.generadora[r.generadora]={v:0,s:0,r:0};
+    d.generadora[r.generadora].v+=r.total; d.generadora[r.generadora].s+=r.success; d.generadora[r.generadora].r+=r.digital+r.efectivo;
+    // empresa = Conductora (quien atiende)
+    if(!d.conductora[r.conductora]) d.conductora[r.conductora]={v:0,s:0,r:0};
+    d.conductora[r.conductora].v+=r.total; d.conductora[r.conductora].s+=r.success; d.conductora[r.conductora].r+=r.digital+r.efectivo;
+    // flows: Generadora → Conductora
+    const fk=r.generadora+'→'+r.conductora;
+    if(!d.flows[fk]) d.flows[fk]={from:r.generadora,to:r.conductora,v:0,s:0,r:0};
+    d.flows[fk].v+=r.total; d.flows[fk].s+=r.success; d.flows[fk].r+=r.digital+r.efectivo;
+  }
+  for (const dk of Object.keys(byDay)) {
+    const d=byDay[dk]; d.rev=d.digital+d.efectivo; d.tasa=d.viajes>0?(d.success/d.viajes*100):0;
+    d.flowsArr=Object.values(d.flows).sort((a,b)=>b.v-a.v);
+  }
+  const dates=Object.keys(byDay).sort();
+  const tR=tD+tE;
+  return {byDay, dates, totals:{viajes:tV,success:Math.round(tS),digital:tD,efectivo:tE,rev:tR,tasa:tV>0?(tS/tV*100):0,dias:dates.length}};
+}
+
+// ============== FILE HANDLING ==============
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('file-input');
+uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag');});
+uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.classList.remove('drag');handleFile(e.dataTransfer.files);});
+fileInput.addEventListener('change',e=>handleFile(e.target.files));
+
+function handleFile(files) {
+  if (!files||!files.length) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const raw = parseXML(e.target.result);
+    if (!raw||!raw.length) {alert('No se pudo parsear el archivo XML.');return;}
+    const result = processData(raw);
+    DATA = result.byDay; DATES = result.dates; TOTALS = result.totals;
+    selectedDay = null;
+    // Detect month
+    const [y,m] = DATES[0].split('-').map(Number);
+    MONTH_LABEL = `${MONTHS_ES[m]} ${y}`;
+    document.getElementById('upload-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    renderAll();
+  };
+  reader.readAsText(files[0]);
+}
+
+// ============== HELPERS ==============
+function rev(d){return d.digital+d.efectivo;}
+function chipHtml(t){t=+t;if(t>=75)return`<span class="chip cok">${t.toFixed(1)}%</span>`;if(t>=60)return`<span class="chip cwa">${t.toFixed(1)}%</span>`;return`<span class="chip cer">${t.toFixed(1)}%</span>`;}
+function fmtDate(ds){const dt=new Date(ds+'T12:00:00');const[,m,d]=ds.split('-').map(Number);return`${DAYS_ES[dt.getDay()]} ${d} ${MONTHS_ES[m]}`;}
+function shortDay(ds){return DAYS_ES[new Date(ds+'T12:00:00').getDay()];}
+function isWeekend(ds){const d=new Date(ds+'T12:00:00').getDay();return d===0||d===6;}
+
+// ============== SVG LINE CHART ==============
+// Store chart metadata for tooltips (avoids inline HTML in SVG attributes)
+const _chartMeta = {};
+
+function lineChart(containerId, series, dates, opts={}) {
+  const W=720, H=opts.height||180, P={t:20,r:50,b:30,l:45};
+  const cW=W-P.l-P.r, cH=H-P.t-P.b;
+  const n=dates.length;
+  if(n<2) return;
+
+  // Store metadata for tooltip lookups
+  _chartMeta[containerId] = { series, dates, opts, W };
+
+  let allVals=[];
+  series.forEach(s=>allVals.push(...s.values));
+  let maxV=Math.max(...allVals)*1.1||1;
+  let minV=opts.minY!==undefined?opts.minY:0;
+  if(opts.maxY!==undefined) maxV=opts.maxY;
+
+  function x(i){return P.l+(i/(n-1))*cW;}
+  function y(v){return P.t+cH-(((v-minV)/(maxV-minV))*cH);}
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">`;
+
+  // Grid lines
+  const gridN=5;
+  for(let i=0;i<=gridN;i++){
+    const val=minV+(maxV-minV)*(i/gridN);
+    const yy=y(val);
+    svg+=`<line x1="${P.l}" y1="${yy}" x2="${W-P.r}" y2="${yy}" stroke="rgba(0,0,0,.06)" stroke-width="1"/>`;
+    svg+=`<text x="${P.l-6}" y="${yy+3}" text-anchor="end" fill="#7a8399" font-family="DM Mono" font-size="8">${opts.fmtY?opts.fmtY(val):Math.round(val)}</text>`;
+  }
+
+  // Zones for tasa chart
+  if(opts.zones){
+    svg+=`<rect x="${P.l}" y="${y(100)}" width="${cW}" height="${y(75)-y(100)}" fill="rgba(0,184,156,.04)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(75)}" width="${cW}" height="${y(60)-y(75)}" fill="rgba(224,150,0,.04)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(60)}" width="${cW}" height="${y(minV)-y(60)}" fill="rgba(214,52,71,.04)"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(75)}" x2="${W-P.r}" y2="${y(75)}" stroke="rgba(0,184,156,.2)" stroke-dasharray="4,3" stroke-width="1"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(60)}" x2="${W-P.r}" y2="${y(60)}" stroke="rgba(214,52,71,.2)" stroke-dasharray="4,3" stroke-width="1"/>`;
+  }
+
+  // X labels
+  dates.forEach((d,i)=>{
+    svg+=`<text x="${x(i)}" y="${H-4}" text-anchor="middle" fill="#7a8399" font-family="DM Mono" font-size="8">${shortDay(d)} ${parseInt(d.split('-')[2])}</text>`;
+    svg+=`<line x1="${x(i)}" y1="${P.t}" x2="${x(i)}" y2="${H-P.b}" stroke="rgba(0,0,0,.03)" stroke-width="1"/>`;
+  });
+
+  // Vertical hover guide line (hidden by default)
+  svg+=`<line class="lc-guide" x1="0" y1="${P.t}" x2="0" y2="${H-P.b}" stroke="rgba(0,0,0,.12)" stroke-width="1" stroke-dasharray="3,2" visibility="hidden"/>`;
+
+  // Lines + dots
+  series.forEach(s=>{
+    const pts = s.values.map((v,i)=>`${x(i)},${y(v)}`);
+    if(s.fill) svg+=`<polygon points="${x(0)},${y(minV)} ${pts.join(' ')} ${x(n-1)},${y(minV)}" fill="${s.color}" opacity=".06"/>`;
+    svg+=`<polyline points="${pts.join(' ')}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${s.dashed?'stroke-dasharray="6,4"':''}/>`;
+    s.values.forEach((v,i)=>{
+      svg+=`<circle cx="${x(i)}" cy="${y(v)}" r="3.5" fill="${s.color}" stroke="white" stroke-width="1.5" style="cursor:pointer;"/>`;
+    });
+  });
+
+  // Invisible hover rectangles — use data attributes only, NO inline HTML
+  dates.forEach((d,i)=>{
+    const xPos = x(i);
+    svg+=`<rect class="lc-hover" data-chart="${containerId}" data-idx="${i}" data-xpos="${xPos}" x="${xPos-cW/n/2}" y="${P.t}" width="${cW/n}" height="${cH}" fill="transparent" style="cursor:crosshair;"/>`;
+  });
+
+  svg+=`</svg><div class="svg-tip"></div>`;
+
+  const container = document.getElementById(containerId);
+  container.innerHTML = svg;
+
+  // Attach event listeners via JS (safe, no inline HTML issues)
+  container.querySelectorAll('.lc-hover').forEach(rect => {
+    rect.addEventListener('mouseenter', handleChartHover);
+    rect.addEventListener('mouseleave', handleChartLeave);
+  });
+}
+
+function handleChartHover(e) {
+  const rect = e.target;
+  const chartId = rect.getAttribute('data-chart');
+  const idx = parseInt(rect.getAttribute('data-idx'));
+  const xPos = parseFloat(rect.getAttribute('data-xpos'));
+  const meta = _chartMeta[chartId];
+  if (!meta) return;
+
+  const wrap = rect.closest('.line-chart-wrap');
+  const tip = wrap.querySelector('.svg-tip');
+  const guide = wrap.querySelector('.lc-guide');
+
+  // Build tooltip content safely via DOM
+  const title = fmtDate(meta.dates[idx]);
+  let html = '<b>' + title + '</b>';
+  meta.series.forEach(s => {
+    const val = meta.opts.fmtTip ? meta.opts.fmtTip(s.values[idx]) : s.values[idx].toFixed(1);
+    html += '<br><span style="color:' + s.color + '">● ' + s.label + ': ' + val + '</span>';
+  });
+  tip.innerHTML = html;
+  tip.classList.add('on');
+
+  const svgW = wrap.querySelector('svg').getBoundingClientRect().width;
+  const scale = svgW / meta.W;
+  tip.style.left = Math.min(xPos * scale, svgW - 180) + 'px';
+  tip.style.top = '10px';
+
+  if (guide) { guide.setAttribute('x1', xPos); guide.setAttribute('x2', xPos); guide.setAttribute('visibility', 'visible'); }
+}
+
+function handleChartLeave(e) {
+  const wrap = e.target.closest('.line-chart-wrap');
+  const tip = wrap.querySelector('.svg-tip');
+  const guide = wrap.querySelector('.lc-guide');
+  tip.classList.remove('on');
+  if (guide) guide.setAttribute('visibility', 'hidden');
+}
+
+// ============== RENDER ==============
+function renderAll(){
+  if(!DATES.length) return;
+  const t=TOTALS;
+  // Header
+  document.getElementById('dash-month').textContent=MONTH_LABEL;
+  document.getElementById('dash-sub').textContent=`// Análisis por día · Interoperabilidad entre empresas de taxi · ${MONTH_LABEL}`;
+  document.getElementById('dash-range').textContent=`${fmtDate(DATES[0])} – ${fmtDate(DATES[DATES.length-1])}`;
+  document.getElementById('dash-days-label').textContent=`⬤ ${t.dias} días de operación`;
+  document.getElementById('sb-sub').textContent=`${MONTH_LABEL} · ${t.dias} días`;
+  document.getElementById('dash-footer').textContent=`Clipp B2B · Roaming Quito · Dashboard Diario ${MONTH_LABEL}`;
+  document.getElementById('sb-footer').innerHTML=`<span>${t.viajes}</span> viajes · <span>$${t.rev.toFixed(0)}</span><br>${t.dias} días<br>Éxito: <span>${t.tasa.toFixed(1)}%</span><br>Clipp 4%: <span>$${(t.rev*.04).toFixed(2)}</span>`;
+
+  // Day grid columns
+  document.getElementById('day-grid').style.gridTemplateColumns=`repeat(${Math.min(DATES.length,16)},1fr)`;
+
+  // Global KPIs
+  const gens=new Set(); DATES.forEach(d=>Object.keys(DATA[d].generadora).forEach(k=>gens.add(k)));
+  document.getElementById('global-kpis').innerHTML=`
+    <div class="kpi cg"><div class="klabel">Ingreso Total</div><div class="kval">$${t.rev.toFixed(0)}</div><div class="ksub">Efectivo + Digital</div></div>
+    <div class="kpi cb"><div class="klabel">Viajes Totales</div><div class="kval">${t.viajes}</div><div class="ksub">${gens.size} generadoras · ${t.dias} días</div></div>
+    <div class="kpi cy"><div class="klabel">Tasa de Éxito</div><div class="kval">${t.tasa.toFixed(1)}%</div><div class="ksub">${t.success} correctos</div></div>
+    <div class="kpi cp"><div class="klabel">Ticket Promedio</div><div class="kval">$${t.success>0?(t.rev/t.success).toFixed(2):'0'}</div><div class="ksub">Por viaje exitoso</div></div>
+    <div class="kpi cg"><div class="klabel">Clipp 4%</div><div class="kval">$${(t.rev*.04).toFixed(2)}</div><div class="ksub">Comisión plataforma</div></div>`;
+
+  // LINE CHARTS
+  lineChart('lc-viajes', [
+    {values:DATES.map(d=>DATA[d].viajes), color:'var(--blue)', label:'Viajes', fill:true},
+    {values:DATES.map(d=>DATA[d].success), color:'var(--accent)', label:'Exitosas', fill:false},
+    {values:DATES.map(d=>DATA[d].viajes-DATA[d].success), color:'var(--accent3)', label:'Errores', fill:false},
+  ], DATES, {height:200, fmtTip:v=>Math.round(v)});
+
+  lineChart('lc-ingresos', [
+    {values:DATES.map(d=>DATA[d].rev), color:'var(--accent)', label:'Total', fill:true},
+    {values:DATES.map(d=>DATA[d].efectivo), color:'var(--accent2)', label:'Efectivo', dashed:false},
+    {values:DATES.map(d=>DATA[d].digital), color:'var(--purple)', label:'Digital', dashed:true},
+  ], DATES, {height:160, fmtY:v=>'$'+Math.round(v), fmtTip:v=>'$'+v.toFixed(2)});
+
+  lineChart('lc-tasa', [
+    {values:DATES.map(d=>DATA[d].tasa), color:'var(--accent)', label:'Tasa', fill:true},
+  ], DATES, {height:160, minY:0, maxY:100, zones:true, fmtY:v=>v+'%', fmtTip:v=>v.toFixed(1)+'%'});
+
+  renderDayGrid();
+  renderSidebarDays();
+  renderTrendChart();
+  renderDetail();
+  renderComparisonTable();
+}
+
+function renderDayGrid(){
+  const grid=document.getElementById('day-grid');
+  grid.innerHTML=DATES.map(d=>{
+    const dd=DATA[d],r=rev(dd),we=isWeekend(d);
+    return`<div class="day-card ${d===selectedDay?'active':''}" onclick="selectDay('${d}')">
+      <div class="day-name">${shortDay(d)}${we?' 🔸':''}</div>
+      <div class="day-num">${parseInt(d.split('-')[2])}</div>
+      <div class="day-viajes">${dd.viajes}v</div>
+      <div class="day-rev">$${r.toFixed(0)}</div>
+      <div class="day-tasa">${chipHtml(dd.tasa)}</div>
+      <div class="day-bar"><div class="dok" style="width:${dd.tasa}%"></div><div class="derr" style="width:${100-dd.tasa}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderSidebarDays(){
+  document.getElementById('sb-days-label').style.display='block';
+  document.getElementById('sidebar-days').innerHTML=DATES.map(d=>{
+    const dd=DATA[d];
+    return`<div class="nav-item ${d===selectedDay?'active':''}" onclick="selectDay('${d}')">
+      <div class="nav-icon" style="font-size:10px;font-family:var(--mono);font-weight:700;">${parseInt(d.split('-')[2])}</div>
+      <div><div>${fmtDate(d)}</div><div class="nav-desc">${dd.viajes}v · $${rev(dd).toFixed(0)} · ${dd.tasa.toFixed(1)}%</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrendChart(){
+  const chart=document.getElementById('trend-chart');
+  const maxV=Math.max(...DATES.map(d=>DATA[d].viajes));
+  chart.innerHTML=DATES.map(d=>{
+    const dd=DATA[d],h=(dd.viajes/maxV)*100,we=isWeekend(d),sel=d===selectedDay;
+    const color=sel?'var(--accent)':we?'#c5cad6':'var(--blue)';
+    return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;" onclick="selectDay('${d}')">
+      <div style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-bottom:2px;">$${rev(dd).toFixed(0)}</div>
+      <div style="width:100%;height:${Math.max(h,5)}%;background:${color};border-radius:3px 3px 0 0;transition:height .4s;"></div>
+      <div style="font-family:var(--mono);font-size:9px;font-weight:700;color:${sel?'var(--accent)':'var(--text)'};margin-top:4px;">${dd.viajes}</div>
+      <div style="font-family:var(--mono);font-size:8px;color:var(--muted);">${shortDay(d)} ${parseInt(d.split('-')[2])}</div>
+      <div style="margin-top:2px;">${chipHtml(dd.tasa)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRolBars(id,data){
+  const el=document.getElementById(id);
+  const entries=Object.entries(data).sort((a,b)=>b[1].v-a[1].v);
+  el.innerHTML=entries.map(([name,d])=>{
+    const tasa=d.v>0?(d.s/d.v*100):0;
+    return`<div><div class="bmeta"><span class="blabel">${name}</span><span class="bvals">${d.v} · <b class="acc">$${d.r.toFixed(0)}</b> · ${chipHtml(tasa)}</span></div>
+    <div class="dbar"><div class="dok" style="width:${tasa}%"></div><div class="derr" style="width:${100-tasa}%"></div></div>
+    <div style="display:flex;gap:12px;margin-top:3px;"><span style="font-family:var(--mono);font-size:9px;color:var(--accent);">✓ ${Math.round(d.s)}</span><span style="font-family:var(--mono);font-size:9px;color:var(--accent3);">✗ ${d.v-Math.round(d.s)}</span></div></div>`;
+  }).join('');
+}
+
+function renderDetail(){
+  const panel=document.getElementById('detail-panel');
+  if(!selectedDay){panel.classList.remove('show');return;}
+  panel.classList.add('show');
+  const dd=DATA[selectedDay],r=rev(dd),label=fmtDate(selectedDay);
+  document.getElementById('detail-title').textContent=`◆ Detalle — ${label}`;
+  const tc=dd.tasa>=75?'cg':dd.tasa>=60?'cy':'cr';
+  document.getElementById('detail-kpis').innerHTML=`
+    <div class="kpi cb"><div class="klabel">Viajes</div><div class="kval">${dd.viajes}</div><div class="ksub">${Math.round(dd.success)} exitosos</div></div>
+    <div class="kpi cg"><div class="klabel">Ingreso</div><div class="kval">$${r.toFixed(2)}</div><div class="ksub">Efec: $${dd.efectivo.toFixed(2)}</div></div>
+    <div class="kpi ${tc}"><div class="klabel">Tasa Éxito</div><div class="kval">${dd.tasa.toFixed(1)}%</div><div class="ksub">${dd.viajes-Math.round(dd.success)} fallidos</div></div>
+    <div class="kpi cp"><div class="klabel">Ticket Prom.</div><div class="kval">$${dd.success>0?(r/dd.success).toFixed(2):'0'}</div><div class="ksub">Por viaje exitoso</div></div>
+    <div class="kpi cy"><div class="klabel">Clipp 4%</div><div class="kval">$${(r*.04).toFixed(2)}</div><div class="ksub">Digital: $${dd.digital.toFixed(2)}</div></div>`;
+  renderRolBars('detail-gen',dd.generadora);
+  renderRolBars('detail-con',dd.conductora);
+  document.getElementById('flows-title').textContent=`Top flujos inter-empresa — ${label}`;
+  document.getElementById('flows-body').innerHTML=dd.flowsArr.filter(f=>f.v>0).slice(0,10).map(f=>{
+    const t=f.v>0?(f.s/f.v*100):0;
+    return`<tr><td style="font-weight:600;">${f.from}</td><td>${f.to}</td><td class="r">${f.v}</td><td class="r">${Math.round(f.s)}</td><td class="r" style="color:var(--accent);">$${f.r.toFixed(2)}</td><td class="r">${chipHtml(t)}</td></tr>`;
+  }).join('');
+  const pE=r>0?(dd.efectivo/r*100).toFixed(1):0, pD=r>0?(dd.digital/r*100).toFixed(1):0;
+  document.getElementById('detail-cobro').innerHTML=`<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:8px;">
+    <div><div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Efectivo</div><div style="font-size:22px;font-weight:800;color:var(--accent);">$${dd.efectivo.toFixed(2)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--muted);">${pE}%</div></div>
+    <div><div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Digital</div><div style="font-size:22px;font-weight:800;color:var(--accent2);">$${dd.digital.toFixed(2)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--muted);">${pD}%</div></div>
+    <div style="flex:1;min-width:120px;"><div style="height:8px;border-radius:4px;overflow:hidden;display:flex;gap:1px;"><div style="height:100%;background:var(--accent);width:${pE}%;"></div><div style="height:100%;background:var(--accent2);width:${pD}%;"></div></div></div>
+    <div><div style="font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Total</div><div style="font-size:22px;font-weight:800;">$${r.toFixed(2)}</div></div>
+    <div style="border-left:2px solid rgba(0,184,156,.3);padding-left:16px;"><div style="font-family:var(--mono);font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Clipp 4%</div><div style="font-size:22px;font-weight:800;color:var(--accent);">$${(r*.04).toFixed(2)}</div></div></div>`;
+}
+
+function renderComparisonTable(){
+  const tb=document.getElementById('comparison-body');
+  let tV=0,tS=0,tR=0,tE=0,tD=0;
+  tb.innerHTML=DATES.map(d=>{
+    const dd=DATA[d],r=rev(dd);tV+=dd.viajes;tS+=dd.success;tR+=r;tE+=dd.efectivo;tD+=dd.digital;
+    const top=Object.entries(dd.generadora).sort((a,b)=>b[1].v-a[1].v)[0];
+    const sel=d===selectedDay;
+    return`<tr onclick="selectDay('${d}')" style="cursor:pointer;${sel?'background:rgba(0,184,156,.06);':''}">
+      <td style="font-weight:700;${sel?'color:var(--accent);':''}">${fmtDate(d)}</td>
+      <td class="r">${dd.viajes}</td><td class="r">${Math.round(dd.success)}</td><td class="r">${chipHtml(dd.tasa)}</td>
+      <td class="r" style="color:var(--accent);font-weight:600;">$${r.toFixed(2)}</td>
+      <td class="r">$${dd.efectivo.toFixed(2)}</td><td class="r" style="color:var(--accent2);">$${dd.digital.toFixed(2)}</td>
+      <td class="r" style="color:var(--accent);">$${(r*.04).toFixed(2)}</td>
+      <td>${top?top[0]+' ('+top[1].v+'v)':'-'}</td></tr>`;
+  }).join('');
+  const tT=tV>0?(tS/tV*100):0;
+  tb.innerHTML+=`<tr style="border-top:2px solid rgba(0,184,156,.3);font-weight:700;">
+    <td style="color:var(--accent);">TOTAL</td><td class="r" style="color:var(--accent);">${tV}</td><td class="r" style="color:var(--accent);">${Math.round(tS)}</td><td class="r">${chipHtml(tT)}</td>
+    <td class="r" style="color:var(--accent);">$${tR.toFixed(2)}</td><td class="r">$${tE.toFixed(2)}</td><td class="r" style="color:var(--accent2);">$${tD.toFixed(2)}</td>
+    <td class="r" style="color:var(--accent);">$${(tR*.04).toFixed(2)}</td><td style="color:var(--muted);">${TOTALS.dias} días</td></tr>`;
+}
+
+function selectDay(d){selectedDay=selectedDay===d?null:d;renderAll();if(selectedDay)document.getElementById('detail-panel').scrollIntoView({behavior:'smooth',block:'start'});}
+function scrollEl(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth'});}
+</script>
+</body>
+</html>
