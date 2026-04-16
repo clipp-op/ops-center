@@ -215,6 +215,639 @@
   #tbl-d{ min-width:1900px; }
 }
 
+
+/* ===== v5.41 ajustes compactos + líneas verticales ===== */
+table{
+  font-size:11.5px;
+}
+thead th{
+  font-size:9.5px;
+  padding:6px 8px;
+  overflow:visible !important;
+}
+td{
+  padding:6px 8px;
+  line-height:1.3;
+}
+#tbl-d,#tbl-o,#tbl-i,#tbl-c{
+  table-layout:auto !important;
+}
+.dep-col-days,
+.dep-col-hours{
+  width:60px !important;
+  text-align:center;
+  font-weight:600;
+}
+.dep-col-pending{ width:260px !important; }
+.dep-col-notes{ width:220px !important; }
+.dep-pending-list,
+.dep-notes-list{
+  margin:0;
+  padding-left:12px;
+  overflow-wrap:anywhere;
+}
+/* verticales más visibles, horizontales intactas */
+td{ border-right:1px solid #7c8aa0 !important; }
+th{ border-right:1px solid #7c8aa0 !important; }
+/* icono tooltip visible */
+.info-btn{
+  display:inline-flex !important;
+  margin-left:4px;
+  vertical-align:middle;
+  position:relative;
+  z-index:6;
+}
+.info-popover{ z-index:99999 !important; }
+/* áreas con tooltip visibles */
+.tbl-wrap,
+.card,
+.card-b,
+.cont-table,
+.cat-table{
+  overflow:visible;
+}
+
+/* ===== v5.41 modo oscuro ===== */
+:root{
+  --vline:#7c8aa0;
+}
+body.dark{
+  --bg:#0b1220;
+  --bg2:#111827;
+  --border:#334155;
+  --border2:#475569;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --subtle:#94a3b8;
+  --blue:#60a5fa;
+  --blue-l:#172554;
+  --blue-m:#1d4ed8;
+  --green:#4ade80;
+  --green-l:#052e16;
+  --amber:#fbbf24;
+  --amber-l:#451a03;
+  --violet:#c4b5fd;
+  --violet-l:#2e1065;
+  --red:#fb7185;
+  --red-l:#4c0519;
+  --orange:#fb923c;
+  --orange-l:#431407;
+  --slate:#cbd5e1;
+  --slate-l:#0f172a;
+  --sh:0 1px 3px rgba(0,0,0,.35),0 1px 2px rgba(0,0,0,.22);
+  --sh2:0 8px 28px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.28);
+  --vline:#64748b;
+}
+body.dark,
+body.dark html{
+  background:var(--bg2);
+  color:var(--text);
+}
+body.dark .sidebar{ background:#020617; }
+body.dark .topbar,
+body.dark .card,
+body.dark .tbl-wrap,
+body.dark .modal,
+body.dark .filter-bar,
+body.dark .fi,
+body.dark .fld,
+body.dark .login-box,
+body.dark .cat-section,
+body.dark .toggle-sec,
+body.dark .mini-stat,
+body.dark .action-card{
+  background:var(--bg);
+  color:var(--text);
+  border-color:var(--border);
+}
+body.dark thead th,
+body.dark .cat-table thead th,
+body.dark .cont-table thead th{
+  background:#0f172a;
+  color:var(--muted);
+}
+body.dark td,
+body.dark th{
+  border-right:1px solid var(--vline) !important;
+}
+body.dark td{
+  border-bottom:1px solid var(--border) !important;
+}
+body.dark tr:hover td{ background:#0f172a; }
+body.dark .btn-g{
+  color:var(--text);
+  border-color:var(--border);
+  background:transparent;
+}
+body.dark .btn-g:hover{ background:#0f172a; }
+body.dark .kpi,
+body.dark .mod-card{ background:var(--bg); border-color:var(--border); }
+body.dark .info-popover{
+  background:#e5e7eb;
+  color:#0f172a;
+}
+body.dark .info-popover strong{ color:#1d4ed8; }
+body.dark .s-item{ color:rgba(255,255,255,.65); }
+body.dark .s-item:hover{ color:#fff; }
+body.dark .login-input{
+  background:#0f172a;
+  color:var(--text);
+  border-color:var(--border);
+}
+
+
+/* ===== v5.42 compacto + dark mode refinado ===== */
+
+/* escala general más compacta */
+html, body{
+  font-size:13px;
+}
+.content{ padding:16px; }
+.view.active{ padding:14px 18px; }
+.topbar{ height:48px; padding:0 18px; }
+.tb-l h1{ font-size:15px; }
+.tb-l span{ font-size:11px; }
+.btn{ padding:6px 11px; font-size:12px; }
+.btn-sm{ padding:4px 9px; font-size:11px; }
+.sec-title{ font-size:16px; }
+.sec-sub, .card-sub, .fcnt, .clear-link{ font-size:11px; }
+
+.card-h{ padding:11px 14px 0; }
+.card-b{ padding:11px 14px; }
+.filter-bar{ padding:8px 10px; gap:6px; }
+.filters{ gap:6px; margin-bottom:10px; }
+.fi, .fld{ padding:6px 9px; font-size:12px; }
+.s-item{ padding:7px 9px; font-size:12.5px; }
+.s-foot{ font-size:10px; }
+
+/* tablas más compactas */
+table,
+.cont-table,
+.cat-table{
+  font-size:11px !important;
+}
+thead th,
+.cont-table thead th,
+.cat-table thead th{
+  font-size:9px !important;
+  padding:5px 8px !important;
+  line-height:1.15;
+}
+td,
+.cont-table td,
+.cat-table td{
+  padding:5px 8px !important;
+  line-height:1.25 !important;
+}
+.cl-txt,.cl-note,.cl-date,.dep-text,.dep-date,.dep-notes,
+.dep-notes-list,.dep-pending-list,.cl-ro{
+  font-size:11px !important;
+}
+.mt,.chip,.tag,.days-badge,.cl-tag{
+  font-size:10px !important;
+  padding-top:2px;
+  padding-bottom:2px;
+}
+.info-btn{
+  width:16px !important;
+  height:16px !important;
+  font-size:10px !important;
+  margin-left:3px !important;
+}
+
+/* líneas: horizontal más visible, vertical más sutil */
+td, .cont-table td, .cat-table td{
+  border-bottom:1px solid #5f6f86 !important;
+  border-right:1px solid #94a3b833 !important;
+}
+th, .cont-table th, .cat-table th{
+  border-bottom:2px solid #5f6f86 !important;
+  border-right:1px solid #94a3b833 !important;
+}
+td:last-child, th:last-child{ border-right:none !important; }
+
+/* anchos compactos */
+.dep-col-client{ width:200px !important; }
+.dep-col-country{ width:84px !important; }
+.dep-col-city{ width:95px !important; }
+.dep-col-modalidad{ width:130px !important; }
+.dep-col-estado{ width:135px !important; }
+.dep-col-fase{ width:150px !important; }
+.dep-col-cx{ width:95px !important; }
+.dep-col-mods{ width:190px !important; }
+.dep-col-launcher{ width:120px !important; }
+.dep-col-date,.dep-col-fconf{ width:92px !important; max-width:92px !important; }
+.dep-col-days{ width:58px !important; }
+.dep-col-pending{ width:230px !important; }
+.dep-col-hours{ width:56px !important; }
+.dep-col-notes{ width:180px !important; }
+.dep-col-link{ width:130px !important; }
+.dep-col-actions{ width:82px !important; }
+
+/* dark mode refinado */
+body.dark{
+  background:#0f172a !important;
+  color:var(--text);
+}
+body.dark .main,
+body.dark .content,
+body.dark .view,
+body.dark .view.active{
+  background:#0f172a !important;
+}
+body.dark .topbar,
+body.dark .card,
+body.dark .tbl-wrap,
+body.dark .modal,
+body.dark .filter-bar,
+body.dark .fi,
+body.dark .fld,
+body.dark .cat-section,
+body.dark .toggle-sec,
+body.dark .mini-stat,
+body.dark .action-card,
+body.dark .cat-section-hdr,
+body.dark .cat-section-body,
+body.dark .cat-table,
+body.dark .cont-table,
+body.dark table{
+  background:#0b1220 !important;
+  color:#e5e7eb !important;
+  border-color:#334155 !important;
+}
+body.dark .cat-tabs{
+  border-bottom-color:#334155 !important;
+}
+body.dark .cat-tab{
+  color:#94a3b8 !important;
+}
+body.dark .cat-tab.active{
+  color:#60a5fa !important;
+  border-bottom-color:#60a5fa !important;
+}
+body.dark .card-title,
+body.dark .sec-title,
+body.dark .m-title,
+body.dark .cat-section-hdr,
+body.dark .tb-l h1{
+  color:#f8fafc !important;
+}
+body.dark .card-sub,
+body.dark .sec-sub,
+body.dark .tb-l span,
+body.dark .fl,
+body.dark .fcnt,
+body.dark .s-foot{
+  color:#94a3b8 !important;
+}
+body.dark thead th,
+body.dark .cat-table thead th,
+body.dark .cont-table thead th{
+  background:#111827 !important;
+  color:#a5b4fc !important;
+  border-bottom:2px solid #64748b !important;
+  border-right:1px solid rgba(148,163,184,.18) !important;
+}
+body.dark td,
+body.dark .cat-table td,
+body.dark .cont-table td{
+  background:#0b1220 !important;
+  color:#e5e7eb !important;
+  border-bottom:1px solid #475569 !important;
+  border-right:1px solid rgba(148,163,184,.18) !important;
+}
+body.dark tr:hover td,
+body.dark .cat-table tr:hover td,
+body.dark .cont-table tr:hover td{
+  background:#111827 !important;
+}
+body.dark .kpi,
+body.dark .mod-card{
+  background:#0b1220 !important;
+  border-color:#334155 !important;
+}
+body.dark .btn-g{
+  color:#e5e7eb !important;
+  border-color:#334155 !important;
+}
+body.dark .btn-g:hover{
+  background:#111827 !important;
+}
+body.dark .s-item.active{
+  color:#fff !important;
+}
+body.dark .cat-error{
+  background:#3a1d0d !important;
+  border-color:#7c2d12 !important;
+  color:#fdba74 !important;
+}
+body.dark .info-panel{
+  background:#172554 !important;
+  border-color:#1d4ed8 !important;
+  color:#dbeafe !important;
+}
+body.dark .info-btn{
+  border-color:#3b82f6 !important;
+  color:#93c5fd !important;
+}
+
+
+/* ===== v5.43 dark contrast + ultra compacto ===== */
+html, body{ font-size:12px !important; }
+.content{ padding:12px !important; }
+.view.active{ padding:10px 14px !important; }
+.topbar{ height:44px !important; padding:0 14px !important; }
+.tb-l h1{ font-size:14px !important; }
+.tb-l span{ font-size:10px !important; }
+.btn{ padding:5px 9px !important; font-size:11px !important; }
+.btn-sm{ padding:3px 8px !important; font-size:10.5px !important; }
+.card-h{ padding:9px 12px 0 !important; }
+.card-b{ padding:9px 12px !important; }
+.filter-bar{ padding:6px 8px !important; gap:5px !important; }
+.filters{ gap:5px !important; margin-bottom:8px !important; }
+.fi, .fld{ padding:5px 8px !important; font-size:11px !important; }
+.s-item{ padding:6px 8px !important; font-size:12px !important; }
+.s-sec{ font-size:8px !important; padding:11px 10px 4px !important; }
+.kpi-val{ font-size:22px !important; }
+.kpi-lbl,.mini-stat-l,.card-sub,.sec-sub,.fcnt,.clear-link,.fl{ font-size:10px !important; }
+.sec-title,.card-title,.m-title{ font-size:15px !important; }
+
+table,.cont-table,.cat-table{ font-size:10.5px !important; }
+thead th,.cont-table thead th,.cat-table thead th{ font-size:8.5px !important; padding:4px 7px !important; }
+td,.cont-table td,.cat-table td{ padding:4px 7px !important; line-height:1.2 !important; }
+.cl-txt,.cl-note,.cl-date,.dep-text,.dep-date,.dep-notes,.dep-notes-list,.dep-pending-list,.cl-ro{ font-size:10.5px !important; }
+.mt,.chip,.tag,.days-badge,.cl-tag{ font-size:9.5px !important; }
+.info-btn{ width:15px !important; height:15px !important; font-size:9px !important; }
+
+/* dark text contrast fixes */
+body.dark .cat-add-row,
+body.dark .cat-add-row .fr,
+body.dark .cat-add-row label,
+body.dark .cat-input,
+body.dark select,
+body.dark option,
+body.dark textarea,
+body.dark input,
+body.dark .fi,
+body.dark .fld,
+body.dark .login-input{
+  color:#f8fafc !important;
+}
+body.dark .cat-add-row,
+body.dark .toggle-sec,
+body.dark .filter-bar{
+  background:#0f172a !important;
+  border-color:#334155 !important;
+}
+body.dark .cat-input,
+body.dark select,
+body.dark textarea,
+body.dark input,
+body.dark .fi,
+body.dark .fld{
+  background:#020817 !important;
+  border-color:#334155 !important;
+}
+body.dark .cat-table td,
+body.dark .cont-table td,
+body.dark td{
+  color:#e2e8f0 !important;
+}
+body.dark .cat-table td strong,
+body.dark .cont-table td strong,
+body.dark td strong,
+body.dark .dep-client-name,
+body.dark .cl-name{
+  color:#f8fafc !important;
+}
+body.dark .dep-client-meta,
+body.dark .cl-note,
+body.dark .cl-date,
+body.dark .dep-text.muted,
+body.dark .dep-notes,
+body.dark .kpi-note{
+  color:#94a3b8 !important;
+}
+body.dark .cat-table thead th,
+body.dark .cont-table thead th,
+body.dark thead th{
+  color:#c7d2fe !important;
+}
+body.dark .cat-section-hdr,
+body.dark .cat-tab,
+body.dark .s-item,
+body.dark .tb-l span{
+  color:#cbd5e1 !important;
+}
+body.dark .btn-p{
+  color:#fff !important;
+}
+body.dark .info-btn{
+  background:#0f172a !important;
+}
+body.dark .info-popover{
+  background:#f8fafc !important;
+  color:#0f172a !important;
+}
+
+/* chart labels helper */
+.city-country-sub{
+  display:block;
+  font-size:9px;
+  color:var(--muted);
+  margin-top:2px;
+  line-height:1.15;
+}
+body.dark .city-country-sub{ color:#94a3b8; }
+
+
+/* ===== v5.44 tablas: contraste de líneas y encabezados ===== */
+
+/* Modo claro: horizontal un poco más oscura, vertical más clara */
+thead th,
+.cont-table thead th,
+.cat-table thead th{
+  background:#dbe4f0 !important;
+  color:#64748b !important;
+  border-bottom:2px solid #5f6f86 !important;
+  border-right:1px solid rgba(95,111,134,.28) !important;
+}
+
+td,
+.cont-table td,
+.cat-table td{
+  border-bottom:1px solid #6b7b92 !important;
+  border-right:1px solid rgba(107,123,146,.24) !important;
+}
+
+td:last-child, th:last-child{ border-right:none !important; }
+
+/* Modo oscuro: headers más resaltados y con mejor contraste */
+body.dark thead th,
+body.dark .cont-table thead th,
+body.dark .cat-table thead th{
+  background:#1e293b !important;
+  color:#dbeafe !important;
+  border-bottom:2px solid #7c8faa !important;
+  border-right:1px solid rgba(148,163,184,.20) !important;
+}
+
+body.dark td,
+body.dark .cont-table td,
+body.dark .cat-table td{
+  border-bottom:1px solid #64748b !important;
+  border-right:1px solid rgba(148,163,184,.16) !important;
+}
+
+/* encabezados sticky también más visibles */
+#tbl-d thead th,
+#tbl-o thead th,
+#tbl-i thead th,
+#tbl-c thead th{
+  box-shadow: inset 0 -1px 0 rgba(95,111,134,.18);
+}
+
+body.dark #tbl-d thead th,
+body.dark #tbl-o thead th,
+body.dark #tbl-i thead th,
+body.dark #tbl-c thead th{
+  box-shadow: inset 0 -1px 0 rgba(124,143,170,.28);
+}
+
+
+/* ===== v5.45 paginación + quitar subnav + headers fijos ===== */
+
+/* quitar barra horizontal de accesos directos */
+.deploy-subnav-wrap{ display:none !important; }
+
+/* headers fijos clientes e inactivos */
+#view-clientes .tbl-wrap,
+#view-inactivos .tbl-wrap,
+#view-operativos .tbl-wrap{
+  max-height:calc(100vh - 210px);
+  overflow-y:auto;
+  overflow-x:auto;
+}
+#tbl-c thead th,
+#tbl-i thead th,
+#tbl-o thead th{
+  position:sticky !important;
+  top:0;
+  z-index:8;
+}
+
+/* barra de paginación */
+.pg-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:8px 0 10px;
+  padding:8px 10px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:var(--sh);
+}
+.pg-toolbar .pg-left,
+.pg-toolbar .pg-right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.pg-toolbar label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+}
+.pg-select{
+  padding:5px 8px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:var(--bg);
+  color:var(--text);
+  font:inherit;
+  font-size:11px;
+}
+.pg-btn{
+  padding:4px 8px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:var(--bg);
+  color:var(--text);
+  cursor:pointer;
+  font:inherit;
+  font-size:11px;
+  font-weight:700;
+}
+.pg-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.pg-status{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+/* dark mode pagination */
+body.dark .pg-toolbar{
+  background:#0b1220;
+  border-color:#334155;
+}
+body.dark .pg-select,
+body.dark .pg-btn{
+  background:#020817;
+  border-color:#334155;
+  color:#e5e7eb;
+}
+
+
+/* ===== v5.49 dashboard modalidad + ciudad(país) seguro ===== */
+#view-estrategia{ display:none !important; }
+#ch-city .bar-lbl{
+  width:190px !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  line-height:1.15 !important;
+}
+#ch-modality-note{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:220px;
+  text-align:center;
+  color:var(--muted);
+}
+#ch-modality-note .big{
+  font-size:26px;
+  font-weight:800;
+  line-height:1;
+  color:var(--text);
+}
+#ch-modality-note .sub{
+  font-size:11px;
+  margin-top:6px;
+  color:var(--muted);
+}
+
+
+/* ===== v5.50 dashboard ciudad(país) + paginación real clientes/inactivos ===== */
+#ch-city .bar-lbl{
+  width: 200px !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.15 !important;
+}
+#pg-clientes .pg-toolbar,
+#pg-inact .pg-toolbar{
+  margin-top: 0;
+}
+
 </style>
 <style>
 :root{
@@ -580,6 +1213,18 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
 /* ── Filtros de fecha ─── */
 .date-filter-group { background:rgba(27,79,216,.04); border:1px solid #E4E9F0; border-radius:10px; padding:5px 8px; }
 .date-preset { font-weight:600; color:var(--blue); }
+
+/* ── Header tooltips ── */
+.th-label-wrap{display:inline-flex;align-items:center;gap:6px;max-width:100%}
+.th-tip-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid #BFDBFE;background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;cursor:help;flex-shrink:0}
+.th-tip-btn:hover{background:#DBEAFE}
+.ops-client-cell{background:#F8FAFC;vertical-align:top !important}
+.ops-client-name{font-weight:700;color:var(--text);line-height:1.25}
+.ops-client-meta{font-size:11px;color:var(--muted);margin-top:4px}
+.ops-client-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:#1D4ED8;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:999px;padding:2px 8px;margin-top:8px}
+.ops-subrow td{background:#fff}
+.ops-subrow td:first-child{border-left:none}
+
 </style>
 </head>
 <body>
@@ -601,7 +1246,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
     <div class="login-err" id="li-err"></div>
     <div class="login-status" id="li-status"></div>
     <div style="margin-top:16px;border-top:1px solid #E4E9F0;padding-top:14px">
-      <button onclick="document.getElementById('li-email').value='demo@clipp.com';document.getElementById('li-pass').value='demo';doLogin();"
+      <button 
         style="background:none;border:1.5px solid #E4E9F0;border-radius:8px;padding:9px 18px;font-size:13px;color:#637087;cursor:pointer;width:100%;font-family:inherit;transition:all .2s"
         onmouseover="this.style.borderColor='#1B4FD8';this.style.color='#1B4FD8'"
         onmouseout="this.style.borderColor='#E4E9F0';this.style.color='#637087'">
@@ -630,14 +1275,14 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
     <div class="s-item" onclick="setV('clientes')" id="nav-clientes"><span>👥</span> Clientes <span class="s-badge" id="bcl">0</span></div>
     <div class="s-item" onclick="setV('contratos')" id="nav-contratos"><span>📋</span> Contratos <span class="s-badge" id="bcont">0</span></div>
     <div class="s-item" onclick="setV('cobranzas')" id="nav-cobranzas"><span>💰</span> Cobranzas <span class="s-badge r" id="bcob">0</span></div>
-    <div class="s-item" onclick="setV('estrategia')" id="nav-estrategia"><span>🎯</span> Estrategia Despliegue</div>
+    
     <div class="s-sec">Configuración</div>
     <div class="s-item" onclick="setV('catalogos')" id="nav-catalogos"><span>🗂</span> Catálogos</div>
     <div class="s-item" onclick="setV('manual')" id="nav-manual"><span>📖</span> Manual de Uso</div>
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.34 · 14 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.51 · 15 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -650,6 +1295,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
       <button class="btn btn-g btn-sm" id="btn-roles" onclick="setV('usuarios')" title="Gestionar usuarios y roles" style="display:none">👤 Mi Rol: <span id="tb-rol-name">—</span></button>
       <button class="btn btn-g btn-sm" onclick="document.getElementById('import-file').click()" title="Restaurar desde backup JSON">📂 Restaurar</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this)">
+      <button class="btn btn-g btn-sm" id="btn-theme" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌙 Modo</button>
       <button class="btn btn-g btn-sm" onclick="exportCSV()">⬇ CSV</button>
       <button class="btn btn-g btn-sm" onclick="doLogout()" title="Cerrar sesión" style="color:#DC2626;border-color:#FECDD3">⏻ Salir</button>
       <button class="btn btn-p btn-sm" id="btn-new" style="display:none" onclick="openAdd()">+ Nuevo</button>
@@ -691,7 +1337,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           <button class="deploy-tab-btn" data-view="despliegues" onclick="setDeployView('despliegues')">🚀 Despliegues</button>
           <button class="deploy-tab-btn" data-view="timeline" onclick="setDeployView('timeline')">📅 Línea de Tiempo</button>
           <button class="deploy-tab-btn" data-view="capacidad" onclick="setDeployView('capacidad')">⚡ Capacidad Operativa</button>
-          <button class="deploy-tab-btn" data-view="estrategia" onclick="setDeployView('estrategia')">🎯 Estrategia</button>
+          
           <button class="deploy-tab-btn" data-view="cobranzas" onclick="setDeployView('cobranzas')">💰 Cobranzas</button>
         </div>
       </div>
@@ -705,6 +1351,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
         <span class="fcnt" id="cd"></span>
       </div>
       <div id="df-deps" style="padding:0 0 8px 0"></div>
+      <div id="pg-deps"></div>
       <div class="tbl-wrap"><table id="tbl-d"><thead><tr id="th-d"></tr></thead><tbody id="dtb"></tbody></table></div>
     </div>
 
@@ -719,6 +1366,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
         <span class="fcnt" id="co"></span>
       </div>
       <div id="df-ops" style="padding:0 0 8px 0"></div>
+      <div id="pg-ops"></div>
       <div class="tbl-wrap"><table id="tbl-o"><thead><tr id="th-o"></tr></thead><tbody id="otb"></tbody></table></div>
     </div>
 
@@ -804,7 +1452,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           <button class="deploy-tab-btn" data-view="despliegues" onclick="setDeployView('despliegues')">🚀 Despliegues</button>
           <button class="deploy-tab-btn" data-view="timeline" onclick="setDeployView('timeline')">📅 Línea de Tiempo</button>
           <button class="deploy-tab-btn" data-view="capacidad" onclick="setDeployView('capacidad')">⚡ Capacidad Operativa</button>
-          <button class="deploy-tab-btn" data-view="estrategia" onclick="setDeployView('estrategia')">🎯 Estrategia</button>
+          
           <button class="deploy-tab-btn" data-view="cobranzas" onclick="setDeployView('cobranzas')">💰 Cobranzas</button>
         </div>
       </div>
@@ -849,7 +1497,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           <button class="deploy-tab-btn" data-view="despliegues" onclick="setDeployView('despliegues')">🚀 Despliegues</button>
           <button class="deploy-tab-btn" data-view="timeline" onclick="setDeployView('timeline')">📅 Línea de Tiempo</button>
           <button class="deploy-tab-btn" data-view="capacidad" onclick="setDeployView('capacidad')">⚡ Capacidad Operativa</button>
-          <button class="deploy-tab-btn" data-view="estrategia" onclick="setDeployView('estrategia')">🎯 Estrategia</button>
+          
           <button class="deploy-tab-btn" data-view="cobranzas" onclick="setDeployView('cobranzas')">💰 Cobranzas</button>
         </div>
       </div>
@@ -973,7 +1621,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           <button class="deploy-tab-btn" data-view="despliegues" onclick="setDeployView('despliegues')">🚀 Despliegues</button>
           <button class="deploy-tab-btn" data-view="timeline" onclick="setDeployView('timeline')">📅 Línea de Tiempo</button>
           <button class="deploy-tab-btn" data-view="capacidad" onclick="setDeployView('capacidad')">⚡ Capacidad Operativa</button>
-          <button class="deploy-tab-btn" data-view="estrategia" onclick="setDeployView('estrategia')">🎯 Estrategia</button>
+          
           <button class="deploy-tab-btn" data-view="cobranzas" onclick="setDeployView('cobranzas')">💰 Cobranzas</button>
         </div>
       </div>
@@ -1043,7 +1691,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           <button class="deploy-tab-btn" data-view="despliegues" onclick="setDeployView('despliegues')">🚀 Despliegues</button>
           <button class="deploy-tab-btn" data-view="timeline" onclick="setDeployView('timeline')">📅 Línea de Tiempo</button>
           <button class="deploy-tab-btn" data-view="capacidad" onclick="setDeployView('capacidad')">⚡ Capacidad Operativa</button>
-          <button class="deploy-tab-btn" data-view="estrategia" onclick="setDeployView('estrategia')">🎯 Estrategia</button>
+          
           <button class="deploy-tab-btn" data-view="cobranzas" onclick="setDeployView('cobranzas')">💰 Cobranzas</button>
         </div>
       </div>
@@ -1459,6 +2107,28 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
           </table></div>
         </div>
       </div>
+
+      <div class="cat-section">
+        <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
+          <span>ℹ️ Tooltips de Columnas</span><span class="cat-section-arrow">▾</span>
+        </div>
+        <div class="cat-section-body">
+          <div class="cat-add-row" style="align-items:stretch;flex-wrap:wrap">
+            <div class="fr" style="min-width:210px"><label class="fl">Módulo</label><select class="cat-input" id="ctm-module" onchange="onColTipModuleChange()"></select></div>
+            <div class="fr" style="min-width:210px"><label class="fl">Columna</label><select class="cat-input" id="ctm-column" onchange="onColTipColumnChange()"></select></div>
+            <div class="fr" style="flex:2;min-width:260px"><label class="fl">Tooltip</label><textarea class="cat-input" id="ctm-text" rows="3" placeholder="Explica qué muestra esta columna"></textarea></div>
+            <div style="display:flex;gap:8px;align-items:flex-end">
+              <button class="btn btn-p btn-sm" onclick="saveColTip()">💾 Guardar</button>
+              <button class="btn btn-g btn-sm" onclick="clearColTip()">Limpiar</button>
+            </div>
+          </div>
+          <div class="tbl-wrap"><table class="cat-table">
+            <thead><tr><th>Columna</th><th>Tooltip activo</th><th>Origen</th><th style="width:90px">Acciones</th></tr></thead>
+            <tbody id="ctt-tbody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
       <div class="cat-section">
         <div class="cat-section-hdr" onclick="this.parentElement.classList.toggle('open')">
           <span>🚦 Estados de Riesgo</span><span class="cat-section-arrow">▾</span>
@@ -2092,7 +2762,7 @@ const SB_URL='https://owfetilyxgvkrtdopskz.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93ZmV0aWx5eGd2a3J0ZG9wc2t6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MzcyMzYsImV4cCI6MjA5MDQxMzIzNn0.tQuq7XBTvqhn5dI3XMgm8fEc3c4RsvyF4JbXZ2Ttp0Q';
 let supabase=null,_currentUser=null;
 let usuarios=[],roles=[];
-let deps=[],cls=[],cats={ap:[],tp:[],md:[],modal:[],risk:[],implTimes:[],phases:[],catmod:[],billingTypes:[],complexity:[],launchers:[],vendors:[]};
+let deps=[],cls=[],cats={ap:[],tp:[],md:[],modal:[],risk:[],implTimes:[],phases:[],catmod:[],billingTypes:[],complexity:[],launchers:[],vendors:[],colTips:{}};
 let contratos=[],cobros=[],checklists={},trash=[];
 let mTgt=null,editClId=null,clMods=new Set(),dOpen=false,curV='dashboard',curCatTab='modulos',curScenario='mod';
 let _contComps=[],editingContratoId=null,_editCobroId=null,_csmClientId=null;
@@ -2108,6 +2778,336 @@ function fmtD(s){if(!isD(s))return s||'—';const[y,m,d]=s.split('-');return`${d
 function setSyncStatus(msg,color){const el=document.getElementById('sync-status');if(el){el.textContent=msg;el.style.color=color||'var(--muted)';}}
 function showSync(ok,msg){setSyncStatus((ok?'✓ ':'✗ ')+msg,ok?'#0F7E4F':'#DC2626');setTimeout(()=>setSyncStatus(''),3000);}
 function closeM(id){const el=document.getElementById(id);if(el)el.classList.remove('open');}
+
+
+const TOOLTIP_MODULE_LABELS={
+  despliegues:'🚀 Despliegues',
+  operativos:'✅ Clientes Operativos',
+  inactivos:'⛔ Clientes Inactivos',
+  clientes:'👥 Clientes',
+  capacidad_resumen:'⚡ Capacidad · Detalle por Mes',
+  capacidad_detalle:'⚡ Capacidad · Desglose del Período',
+  contratos:'📋 Contratos',
+  cobranzas:'💰 Cobranzas'
+};
+const COLUMN_TOOLTIP_REGISTRY={
+  despliegues:[
+    {key:'numero',label:'#',desc:'Posición del registro dentro de la vista filtrada.'},
+    {key:'cliente',label:'Cliente',desc:'Nombre comercial del cliente asociado al despliegue.'},
+    {key:'pais',label:'País',desc:'País donde opera el cliente o la implementación.'},
+    {key:'ciudad',label:'Ciudad',desc:'Ciudad principal donde se ejecuta el despliegue.'},
+    {key:'modalidad',label:'Modalidad',desc:'Tipo de despliegue, por ejemplo cliente nuevo o capacitación.'},
+    {key:'estado',label:'Estado',desc:'Estado actual del despliegue dentro del flujo operativo.'},
+    {key:'fase',label:'Fase',desc:'Etapa actual de implementación según el catálogo de fases.'},
+    {key:'complejidad',label:'Complejidad',desc:'Nivel calculado por módulos y reglas del catálogo de complejidad.'},
+    {key:'modulos',label:'Módulos',desc:'Módulos o componentes incluidos en el despliegue.'},
+    {key:'launcher',label:'Launcher',desc:'Responsable principal del despliegue.'},
+    {key:'vendedor',label:'Vendedor',desc:'Comercial responsable asociado al cliente o proyecto.'},
+    {key:'f_confirm',label:'F. Confirm.',desc:'Fecha de confirmación del cliente tomada desde CRM.'},
+    {key:'f_inicio',label:'F. Inicio',desc:'Fecha real en la que se inició el despliegue.'},
+    {key:'f_ideal',label:'F. Ideal',desc:'Fecha objetivo calculada o definida para terminar el despliegue.'},
+    {key:'f_entrega',label:'F. Entrega',desc:'Fecha real de entrega o salida a producción.'},
+    {key:'dias_desp',label:'Días desp.',desc:'Días reales transcurridos entre inicio y entrega.'},
+    {key:'dias_ideal',label:'Días ideal',desc:'Días planeados según complejidad o fecha ideal.'},
+    {key:'diferencia',label:'Diferencia',desc:'Desviación entre tiempo ideal y tiempo real del despliegue.'},
+    {key:'pendientes',label:'Pendientes',desc:'Lista de tareas o bloqueos pendientes para cerrar el despliegue.'},
+    {key:'hrs_sop',label:'Hrs Sop.',desc:'Horas mensuales estimadas de soporte una vez operativo.'},
+    {key:'hrs_desp',label:'Hrs Desp.',desc:'Horas consumidas por el despliegue o implementación.'},
+    {key:'notas',label:'Notas',desc:'Observaciones internas del registro.'},
+    {key:'link',label:'Link',desc:'Enlace de referencia a documentos, tablero o recurso asociado.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones rápidas para editar o eliminar el registro.'}
+  ],
+  operativos:[
+    {key:'numero',label:'#',desc:'Cliente operativo listado en la vista filtrada. Cada cliente se muestra una sola vez y sus despliegues quedan debajo.'},
+    {key:'cliente',label:'Cliente',desc:'Cliente operativo agrupado. El contador indica cuántos despliegues finalizados tiene.'},
+    {key:'pais',label:'País',desc:'País principal del cliente operativo.'},
+    {key:'ciudad',label:'Ciudad',desc:'Ciudad principal del cliente operativo.'},
+    {key:'modalidad',label:'Modalidad',desc:'Tipo de cada despliegue finalizado dentro del cliente.'},
+    {key:'estado',label:'Estado',desc:'Estado del despliegue operativo. Normalmente debería ser Listo.'},
+    {key:'fase',label:'Fase',desc:'Fase alcanzada por ese despliegue específico.'},
+    {key:'complejidad',label:'Complejidad',desc:'Complejidad calculada para ese despliegue.'},
+    {key:'modulos',label:'Módulos',desc:'Módulos activos del cliente operativo leídos desde CRM.'},
+    {key:'launcher',label:'Launcher',desc:'Responsable de ese despliegue finalizado.'},
+    {key:'vendedor',label:'Vendedor',desc:'Vendedor asociado al despliegue o al cliente.'},
+    {key:'f_confirm',label:'F. Confirm.',desc:'Fecha de confirmación del cliente, mostrada una sola vez por cliente.'},
+    {key:'f_inicio',label:'F. Inicio',desc:'Fecha de inicio del despliegue específico.'},
+    {key:'f_ideal',label:'F. Ideal',desc:'Fecha objetivo del despliegue específico.'},
+    {key:'f_entrega',label:'F. Entrega',desc:'Fecha de entrega del despliegue específico.'},
+    {key:'dias_desp',label:'Días desp.',desc:'Duración real del despliegue específico.'},
+    {key:'dias_ideal',label:'Días ideal',desc:'Duración ideal del despliegue específico.'},
+    {key:'diferencia',label:'Diferencia',desc:'Diferencia entre lo ideal y lo real para ese despliegue.'},
+    {key:'pendientes',label:'Pendientes',desc:'Pendientes que quedaron registrados para ese despliegue.'},
+    {key:'hrs_sop',label:'Hrs Sop.',desc:'Horas mensuales de soporte asociadas al despliegue o cliente.'},
+    {key:'hrs_desp',label:'Hrs Desp.',desc:'Horas de despliegue consumidas por ese registro.'},
+    {key:'notas',label:'Notas',desc:'Notas internas del despliegue.'},
+    {key:'link',label:'Link',desc:'Enlace relacionado al despliegue.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones disponibles para ese despliegue.'}
+  ],
+  inactivos:[
+    {key:'numero',label:'#',desc:'Posición del cliente inactivo en la vista.'},
+    {key:'cliente',label:'Cliente',desc:'Nombre del cliente deshabilitado o perdido.'},
+    {key:'pais',label:'País',desc:'País del cliente.'},
+    {key:'ciudad',label:'Ciudad',desc:'Ciudad del cliente.'},
+    {key:'aplicativo',label:'Aplicativo',desc:'Aplicativo principal del cliente.'},
+    {key:'tipo',label:'Tipo',desc:'Tipo o segmento comercial del cliente.'},
+    {key:'estado',label:'Estado',desc:'Estado del cliente, por ejemplo deshabilitado o perdido.'},
+    {key:'modulos',label:'Módulos',desc:'Módulos que tenía asignados el cliente.'},
+    {key:'contacto',label:'Contacto',desc:'Persona principal de contacto del cliente.'},
+    {key:'telefono',label:'Teléfono',desc:'Teléfono principal del contacto.'},
+    {key:'notas',label:'Notas',desc:'Observaciones del motivo o contexto de inactividad.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones para editar o eliminar el cliente.'}
+  ],
+  clientes:[
+    {key:'numero',label:'#',desc:'Posición del cliente dentro de la vista.'},
+    {key:'cliente',label:'Cliente',desc:'Nombre del cliente registrado en CRM.'},
+    {key:'pais',label:'País',desc:'País principal del cliente.'},
+    {key:'ciudad',label:'Ciudad',desc:'Ciudad principal del cliente.'},
+    {key:'aplicativo',label:'Aplicativo',desc:'Aplicativo o marca asociada al cliente.'},
+    {key:'tipo',label:'Tipo',desc:'Tipo o segmento del cliente.'},
+    {key:'bot_wa',label:'Bot WA',desc:'Configuración o modo de bot de WhatsApp asignado al cliente.'},
+    {key:'estado',label:'Estado',desc:'Estado comercial del cliente.'},
+    {key:'f_confirm',label:'F. Confirmación',desc:'Fecha en que el cliente confirmó o cerró la negociación.'},
+    {key:'modulos',label:'Módulos',desc:'Módulos activos del cliente.'},
+    {key:'complejidad',label:'Complej.',desc:'Complejidad sugerida del cliente según módulos.'},
+    {key:'contacto',label:'Contacto',desc:'Nombre del contacto principal del cliente.'},
+    {key:'tel_email',label:'Tel / Email',desc:'Datos principales de contacto del cliente.'},
+    {key:'whatsapp',label:'WhatsApp',desc:'Números de WhatsApp vinculados al cliente.'},
+    {key:'notas',label:'Notas',desc:'Notas internas del cliente.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones disponibles para editar o eliminar.'}
+  ],
+  capacidad_resumen:[
+    {key:'anio',label:'Año',desc:'Año al que corresponde el cálculo mensual.'},
+    {key:'mes',label:'Mes',desc:'Mes analizado dentro del año seleccionado.'},
+    {key:'clientes_soporte',label:'Clientes con soporte',desc:'Número de clientes operativos que consumen soporte en ese mes.'},
+    {key:'despliegues_proceso',label:'Despliegues en proceso',desc:'Número de despliegues que estuvieron activos en ese mes.'},
+    {key:'hrs_soporte',label:'Hrs soporte',desc:'Horas de soporte calculadas para ese mes.'},
+    {key:'hrs_despliegue',label:'Hrs despliegue',desc:'Horas de despliegue calculadas para ese mes.'},
+    {key:'hrs_reales',label:'Hrs reales',desc:'Suma de horas de soporte y despliegue.'},
+    {key:'hrs_disponibles',label:'Hrs disponibles',desc:'Capacidad máxima disponible del equipo para ese mes.'},
+    {key:'uso',label:'% Uso',desc:'Porcentaje de utilización de la capacidad disponible.'},
+    {key:'estado',label:'Estado',desc:'Diagnóstico de capacidad para ese mes.'}
+  ],
+  capacidad_detalle:[
+    {key:'tipo',label:'Tipo',desc:'Origen de la carga: soporte o despliegue.'},
+    {key:'cliente',label:'Cliente',desc:'Cliente relacionado con la carga del período.'},
+    {key:'estado',label:'Estado',desc:'Estado del registro en el período.'},
+    {key:'periodo',label:'Período',desc:'Mes o rango del registro mostrado.'},
+    {key:'horas',label:'Horas',desc:'Horas asignadas al registro en el período.'},
+    {key:'fuente',label:'Fuente',desc:'Campo o criterio usado para calcular las horas.'}
+  ],
+  contratos:[
+    {key:'numero',label:'#',desc:'Posición del contrato en la vista.'},
+    {key:'cliente',label:'Cliente',desc:'Cliente al que pertenece el contrato.'},
+    {key:'tipos_cobro',label:'Tipos de Cobro',desc:'Componentes o conceptos que se cobran en el contrato.'},
+    {key:'bots_wa',label:'Bots WA Activos',desc:'Cantidad de bots WA activos considerados para el contrato.'},
+    {key:'estimado',label:'Est. Mensual',desc:'Estimación mensual del valor del contrato.'},
+    {key:'estado',label:'Estado',desc:'Estado del contrato.'},
+    {key:'notas',label:'Notas',desc:'Observaciones del contrato.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones para editar o eliminar el contrato.'}
+  ],
+  cobranzas:[
+    {key:'cliente',label:'Cliente',desc:'Cliente al que corresponde el cobro.'},
+    {key:'mes',label:'Mes',desc:'Mes facturado o registrado.'},
+    {key:'activos',label:'Activos',desc:'Cantidad de activos considerados para el cobro.'},
+    {key:'desglose',label:'Desglose de Cobro',desc:'Detalle de conceptos incluidos en el cobro.'},
+    {key:'descuento',label:'Descuento',desc:'Descuento aplicado al cobro.'},
+    {key:'monto_final',label:'Monto Final',desc:'Monto final a cobrar después de descuentos.'},
+    {key:'estado_pago',label:'Estado Pago',desc:'Estado actual del pago.'},
+    {key:'notas',label:'Notas',desc:'Notas asociadas al cobro.'},
+    {key:'acciones',label:'Acciones',desc:'Acciones rápidas sobre el registro de cobro.'}
+  ]
+};
+function ensureColTips(){ if(!cats.colTips || typeof cats.colTips!=='object' || Array.isArray(cats.colTips)) cats.colTips={}; }
+function normalizeHeaderKey(v){
+  return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+}
+function getModuleColDefs(moduleKey){ return COLUMN_TOOLTIP_REGISTRY[moduleKey]||[]; }
+function getColDef(moduleKey,colKey,label){
+  const defs=getModuleColDefs(moduleKey);
+  const nk=normalizeHeaderKey(colKey||label);
+  return defs.find(function(d){ return d.key===colKey || normalizeHeaderKey(d.label)===nk || d.key===nk; }) || null;
+}
+function getColumnTooltip(moduleKey,colKey,label){
+  ensureColTips();
+  const def=getColDef(moduleKey,colKey,label);
+  const key=def?def.key:normalizeHeaderKey(colKey||label);
+  return (cats.colTips[moduleKey]&&cats.colTips[moduleKey][key]) || (def&&def.desc) || '';
+}
+function setColumnTooltip(moduleKey,colKey,text){
+  ensureColTips();
+  cats.colTips[moduleKey]=cats.colTips[moduleKey]||{};
+  if(String(text||'').trim()) cats.colTips[moduleKey][colKey]=String(text).trim();
+  else delete cats.colTips[moduleKey][colKey];
+  if(!Object.keys(cats.colTips[moduleKey]).length) delete cats.colTips[moduleKey];
+}
+function resolveTableTooltipModule(table){
+  if(!table) return '';
+  if(table.id==='tbl-d') return 'despliegues';
+  if(table.id==='tbl-o') return 'operativos';
+  if(table.id==='tbl-i') return 'inactivos';
+  if(table.id==='tbl-c') return 'clientes';
+  if(table.id==='cont-table') return 'contratos';
+  var tbody=table.querySelector('tbody');
+  var tbid=tbody&&tbody.id||'';
+  if(tbid==='cap-tbody') return 'capacidad_resumen';
+  if(tbid==='cap-clients-tbody') return 'capacidad_detalle';
+  if(tbid==='cob-tbody') return 'cobranzas';
+  return '';
+}
+function buildHeaderCell(moduleKey,colKey,label,cls,w){
+  const text=getColumnTooltip(moduleKey,colKey,label);
+  const tipAttr=text?` title="${esc(text)}" data-col-key="${esc(colKey)}" data-module-key="${esc(moduleKey)}" data-col-label="${esc(label)}"`:` data-col-key="${esc(colKey)}" data-module-key="${esc(moduleKey)}" data-col-label="${esc(label)}"`;
+  return `<th class="${cls||''}" ${w||''}${tipAttr}><span class="th-label-wrap"><span>${label}</span><span class="th-tip-btn" title="${esc(text||'Sin tooltip configurado')}" aria-hidden="true">i</span></span></th>`;
+}
+function applyAllHeaderTooltips(root){
+  root=root||document;
+  root.querySelectorAll('table thead th').forEach(function(th){
+    var table=th.closest('table');
+    var moduleKey=resolveTableTooltipModule(table);
+    if(!moduleKey) return;
+    var colKey=th.dataset.colKey||'';
+    var label=th.dataset.colLabel||th.textContent.replace(/i$/,'').trim();
+    var def=getColDef(moduleKey,colKey,label);
+    var finalKey=def?def.key:(colKey||normalizeHeaderKey(label));
+    var text=getColumnTooltip(moduleKey,finalKey,label);
+    th.dataset.moduleKey=moduleKey;
+    th.dataset.colKey=finalKey;
+    th.dataset.colLabel=label;
+    th.title=text||'';
+    var btn=th.querySelector('.th-tip-btn');
+    if(!btn){
+      var wrap=th.querySelector('.th-label-wrap');
+      if(!wrap){
+        var hasResizer=!!th.querySelector('.col-r');
+        var txt=th.childNodes[0]&&th.childNodes[0].nodeType===3?th.childNodes[0].textContent.trim():label;
+        th.innerHTML='<span class="th-label-wrap"><span>'+esc(txt||label)+'</span><span class="th-tip-btn" aria-hidden="true">i</span></span>' + (hasResizer?'<span class="col-r"></span>':'');
+        btn=th.querySelector('.th-tip-btn');
+        if(hasResizer){ var rz=th.querySelector('.col-r'); if(rz) rz.addEventListener('mousedown',initColResize); }
+      }
+    }
+    if(btn) btn.title=text||'Sin tooltip configurado';
+  });
+}
+function renderColTips(){
+  ensureColTips();
+  var modSel=document.getElementById('ctm-module');
+  var colSel=document.getElementById('ctm-column');
+  var txt=document.getElementById('ctm-text');
+  var tb=document.getElementById('ctt-tbody');
+  if(!modSel||!colSel||!txt||!tb) return;
+  var mods=Object.keys(TOOLTIP_MODULE_LABELS);
+  if(!mods.includes(modSel.value)){
+    modSel.innerHTML=mods.map(function(k){ return '<option value="'+k+'">'+TOOLTIP_MODULE_LABELS[k]+'</option>'; }).join('');
+    if(!modSel.value) modSel.value=mods[0]||'';
+  }
+  var moduleKey=modSel.value || mods[0] || '';
+  var defs=getModuleColDefs(moduleKey);
+  colSel.innerHTML=defs.map(function(d){ return '<option value="'+d.key+'">'+esc(d.label)+'</option>'; }).join('');
+  if(!defs.length){ txt.value=''; tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--subtle)">Sin columnas configuradas para este módulo.</td></tr>'; return; }
+  if(!defs.some(function(d){ return d.key===colSel.value; })) colSel.value=defs[0].key;
+  var activeKey=colSel.value;
+  txt.value=getColumnTooltip(moduleKey,activeKey,'');
+  tb.innerHTML=defs.map(function(d){
+    var custom=(cats.colTips[moduleKey]&&cats.colTips[moduleKey][d.key])||'';
+    var effective=getColumnTooltip(moduleKey,d.key,d.label);
+    return '<tr>'+
+      '<td><strong>'+esc(d.label)+'</strong></td>'+
+      '<td style="color:var(--muted);font-size:12px">'+esc(effective||'Sin tooltip')+'</td>'+
+      '<td style="font-size:12px">'+(custom?'<span class="tag tag-blue">Personalizado</span>':'<span class="tag">Base</span>')+'</td>'+
+      '<td style="white-space:nowrap"><button class="icon-btn edit" onclick="selectColTip(\''+moduleKey+'\',\''+d.key+'\')">✏️</button><button class="icon-btn del" onclick="clearColTip(\''+moduleKey+'\',\''+d.key+'\')">🗑</button></td>'+
+    '</tr>';
+  }).join('');
+}
+function selectColTip(moduleKey,colKey){
+  var modSel=document.getElementById('ctm-module');
+  var colSel=document.getElementById('ctm-column');
+  if(modSel) modSel.value=moduleKey;
+  renderColTips();
+  if(colSel) colSel.value=colKey;
+  var txt=document.getElementById('ctm-text');
+  if(txt) txt.value=getColumnTooltip(moduleKey,colKey,'');
+}
+function onColTipModuleChange(){ renderColTips(); }
+function onColTipColumnChange(){
+  var modSel=document.getElementById('ctm-module');
+  var colSel=document.getElementById('ctm-column');
+  var txt=document.getElementById('ctm-text');
+  if(modSel&&colSel&&txt) txt.value=getColumnTooltip(modSel.value,colSel.value,'');
+}
+function saveColTip(){
+  var modSel=document.getElementById('ctm-module');
+  var colSel=document.getElementById('ctm-column');
+  var txt=document.getElementById('ctm-text');
+  if(!modSel||!colSel||!txt) return;
+  setColumnTooltip(modSel.value,colSel.value,txt.value);
+  sv();
+  renderColTips();
+  applyAllHeaderTooltips();
+  showSync(true,'Tooltip guardado');
+}
+function clearColTip(moduleKey,colKey){
+  if(!moduleKey){ var modSel=document.getElementById('ctm-module'); moduleKey=modSel&&modSel.value; }
+  if(!colKey){ var colSel=document.getElementById('ctm-column'); colKey=colSel&&colSel.value; }
+  if(!moduleKey||!colKey) return;
+  setColumnTooltip(moduleKey,colKey,'');
+  sv();
+  renderColTips();
+  applyAllHeaderTooltips();
+}
+function opsGroupKey(d){ return d && (d.cid!=null&&d.cid!=='') ? 'cid:'+String(d.cid) : 'nm:'+String(d&&d.c||'').trim().toLowerCase(); }
+function getOpsGroups(rows){
+  var map=new Map(), ordered=[];
+  rows.forEach(function(d){
+    var key=opsGroupKey(d);
+    if(!map.has(key)){
+      var cl=(d&&d.cid!=null)?cls.find(function(c){ return String(c.id)===String(d.cid); })||null:null;
+      var group={key:key, client:cl, rows:[], label:(cl&&cl.nm)||d.c||'—', pa:(cl&&cl.pa)||d.pa||'', ci:(cl&&cl.ci)||d.ci||'', fconf:(cl&&cl.fconf)||'', mods:(cl&&Array.isArray(cl.mo)?cl.mo.slice():Array.isArray(d.mo)?d.mo.slice():[])};
+      map.set(key,group); ordered.push(group);
+    }
+    map.get(key).rows.push(d);
+  });
+  return ordered;
+}
+function depOpsGroupHtml(group,rowNum){
+  var rowspan=group.rows.length||1;
+  return group.rows.map(function(d,idx){
+    var clientCell = idx===0 ? (
+      '<td rowspan="'+rowspan+'" class="dep-cell-id ops-client-cell" style="text-align:center;width:36px">'+String(rowNum).padStart(2,'0')+'</td>'+
+      '<td rowspan="'+rowspan+'" class="ops-client-cell">'+
+        '<div class="ops-client-name">'+esc(group.label||d.c||'—')+'</div>'+
+        '<div class="ops-client-meta">'+esc([group.pa,group.ci].filter(Boolean).join(' · ')||'Sin ubicación')+'</div>'+
+        '<div class="ops-client-badge">'+rowspan+' despliegue'+(rowspan===1?'':'s')+'</div>'+
+      '</td>'+
+      '<td rowspan="'+rowspan+'" class="ops-client-cell"><span class="dep-text">'+esc(group.pa||'—')+'</span></td>'+
+      '<td rowspan="'+rowspan+'" class="ops-client-cell"><span class="dep-text">'+esc(group.ci||'—')+'</span></td>'
+    ) : '';
+    var modulesCell = idx===0 ? '<td rowspan="'+rowspan+'" class="ops-client-cell">'+depModulesClientRead(group.mods||[])+'</td>' : '';
+    var fconfCell = idx===0 ? '<td rowspan="'+rowspan+'" class="ops-client-cell dep-col-fconf"><span class="dep-date">'+fmtD(group.fconf||'')+'</span></td>' : '';
+    return '<tr class="'+(idx>0?'ops-subrow':'')+'">'+
+      clientCell+
+      '<td><span class="dep-text">'+esc(d.tp||'—')+'</span></td>'+
+      '<td><div class="dep-status-wrap">'+esChip(d.es)+'</div></td>'+
+      '<td><div class="dep-phase-wrap">'+phaseBadge(d)+'</div></td>'+
+      '<td>'+complexBadge(d)+'</td>'+
+      modulesCell+
+      '<td><span class="dep-text">'+esc(d.ln||'—')+'</span></td>'+
+      '<td><span class="dep-text">'+esc(d.vd||'—')+'</span></td>'+
+      fconfCell+
+      '<td><span class="dep-date">'+fmtD(d.fi||'')+'</span></td>'+
+      '<td><span class="dep-date">'+fmtD(calcFIdeal(d)||d.fd||'')+'</span></td>'+
+      '<td><span class="dep-date">'+fmtD(d.fe||'')+'</span></td>'+
+      '<td class="dep-num">'+diasBadge(d)+'</td>'+
+      '<td class="dep-num">'+diasIdealBadge(d)+'</td>'+
+      '<td class="dep-num">'+diasDifBadge(d)+'</td>'+
+      '<td>'+depPendingRead(d)+'</td>'+
+      '<td class="dep-num">'+((d.hrsOp===''||d.hrsOp==null)?'<span class="dep-text muted">—</span>':esc(d.hrsOp))+'</td>'+
+      '<td class="dep-num">'+((d.hrsNew===''||d.hrsNew==null)?'<span class="dep-text muted">—</span>':esc(d.hrsNew))+'</td>'+
+      '<td>'+depNotesRead(d.no)+'</td>'+
+      '<td>'+depLinkCell(d.lk)+'</td>'+
+      '<td class="dep-actions"><button class="icon-btn edit" title="Editar despliegue" onclick="openDfem('+d.id+',\'ops\')">✏️</button><button class="icon-btn del" title="Eliminar despliegue" onclick="confDel(\'dep\','+d.id+',\''+esc(d.c)+'\')">🗑</button></td>'+
+    '</tr>';
+  }).join('');
+}
 
 // ═══ SAVE ════════════════════════════════════════════
 let _saving=false;
@@ -2243,7 +3243,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.34'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.50'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -2276,6 +3276,7 @@ function setV(v){
     usuarios:renderUsuarios
   };
   if(actions[v])actions[v]();
+  setTimeout(function(){ applyAllHeaderTooltips(); }, 80);
 }
 
 
@@ -2377,6 +3378,7 @@ function renderAfterSave(){
     case 'usuarios':     renderUsuarios(); break;
   }
   updBadges();
+  setTimeout(function(){ applyAllHeaderTooltips(); }, 80);
 }
 
 // ═══ SORT UNIVERSAL ══════════════════════════════════════════════════════
@@ -2505,8 +3507,8 @@ function updBadges(){
   // Despliegues: todos los que NO son Listo (en seguimiento)
   const depsActivos=deps.filter(d=>d.es!==EL);
   sb('bd',depsActivos.length);
-  // Operativos: deps con estado Listo
-  sb('bo',deps.filter(d=>d.es===EL).length);
+  // Operativos: clientes únicos con al menos un despliegue listo
+  sb('bo',getOpsGroups(deps.filter(d=>d.es===EL)).length);
   // Clientes inactivos: cls deshabilitados + perdidos
   sb('bi',cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido').length);
   // Clientes: solo activos
@@ -2821,8 +3823,16 @@ function renderDash(){
   barB('ch-status',[['✅ Operativos',li],['🔧 En Proceso',pr],['🆕 Por Iniciar',ini],['📚 Capacitación',cap]]);
   const bL={};allF.forEach(d=>{bL[d.ln||'Sin launcher']=(bL[d.ln||'Sin launcher']||0)+1;});barB('ch-launcher',Object.entries(bL).sort((a,b)=>b[1]-a[1]));
   const bC={};allF.forEach(d=>{bC[d.pa||'?']=(bC[d.pa||'?']||0)+1;});barB('ch-country',Object.entries(bC).sort((a,b)=>b[1]-a[1]));
-  const bCi={};allF.forEach(d=>{const k=(d.ci||'Sin ciudad').trim();bCi[k]=(bCi[k]||0)+1;});barB('ch-city',Object.entries(bCi).sort((a,b)=>b[1]-a[1]));
-  const bTp={};allF.forEach(d=>{const k=(d.tp||'Sin tipo').replace(/[🆕🔄⚙️]/g,'').trim();bTp[k]=(bTp[k]||0)+1;});barB('ch-type',Object.entries(bTp).sort((a,b)=>b[1]-a[1]));
+  const bCi={};allF.forEach(d=>{const _city=(d.ci||'Sin ciudad').trim();const _country=(d.pa||'Sin país').trim();const k=_city+' ('+_country+')';bCi[k]=(bCi[k]||0)+1;});barB('ch-city',Object.entries(bCi).sort((a,b)=>b[1]-a[1]));
+  const configuredTypes=((cats.modal||[]).map(function(m){return (m&&m.name?m.name:'').trim();}).filter(Boolean));
+  const bTp={};
+  configuredTypes.forEach(function(name){bTp[name]=0;});
+  allF.forEach(function(d){
+    const k=(d.tp||'Sin tipo').replace(/[🆕🔄⚙️]/g,'').trim()||'Sin tipo';
+    if(!(k in bTp)) bTp[k]=0;
+    bTp[k]=(bTp[k]||0)+1;
+  });
+  barB('ch-type',Object.entries(bTp).sort((a,b)=>b[1]-a[1]));
   updBadges();
   renderDashAlerts();
 }
@@ -2832,34 +3842,35 @@ function clearDashF(){['sf','st','sf-ln'].forEach(id=>{const e=document.getEleme
 
 function depTH(headerId){
   const el=document.getElementById(headerId);if(!el)return;
-  const isActive = headerId==='th-d' || headerId==='th-o';
+  const moduleKey = headerId==='th-o' ? 'operativos' : 'despliegues';
   const cols = [
-    ['#','dep-col-id'],
-    ['Cliente','dep-col-client'],
-    ['País','dep-col-country'],
-    ['Ciudad','dep-col-city'],
-    ['Modalidad','dep-col-modalidad'],
-    ['Estado','dep-col-estado'],
-    ['Fase','dep-col-fase'],
-    ['Complejidad','dep-col-cx'],
-    ['Módulos','dep-col-mods'],
-    ['Launcher','dep-col-launcher'],
-    ['Vendedor','dep-col-vendor'],
-    ['F. Confirm.','dep-col-fconf'],
-    ['F. Inicio','dep-col-date'],
-    ['F. Ideal','dep-col-date'],
-    ['F. Entrega','dep-col-date'],
-    ['Días desp.','dep-col-days'],
-    ['Días ideal','dep-col-days'],
-    ['Diferencia','dep-col-days'],
-    ['Pendientes','dep-col-pending'],
-    ['Hrs Sop.','dep-col-hours'],
-    ['Hrs Desp.','dep-col-hours'],
-    ['Notas','dep-col-notes'],
-    ['Link','dep-col-link'],
-    ['Acciones','dep-col-actions']
+    ['numero','#','dep-col-id'],
+    ['cliente','Cliente','dep-col-client'],
+    ['pais','País','dep-col-country'],
+    ['ciudad','Ciudad','dep-col-city'],
+    ['modalidad','Modalidad','dep-col-modalidad'],
+    ['estado','Estado','dep-col-estado'],
+    ['fase','Fase','dep-col-fase'],
+    ['complejidad','Complejidad','dep-col-cx'],
+    ['modulos','Módulos','dep-col-mods'],
+    ['launcher','Launcher','dep-col-launcher'],
+    ['vendedor','Vendedor','dep-col-vendor'],
+    ['f_confirm','F. Confirm.','dep-col-fconf'],
+    ['f_inicio','F. Inicio','dep-col-date'],
+    ['f_ideal','F. Ideal','dep-col-date'],
+    ['f_entrega','F. Entrega','dep-col-date'],
+    ['dias_desp','Días desp.','dep-col-days'],
+    ['dias_ideal','Días ideal','dep-col-days'],
+    ['diferencia','Diferencia','dep-col-days'],
+    ['pendientes','Pendientes','dep-col-pending'],
+    ['hrs_sop','Hrs Sop.','dep-col-hours'],
+    ['hrs_desp','Hrs Desp.','dep-col-hours'],
+    ['notas','Notas','dep-col-notes'],
+    ['link','Link','dep-col-link'],
+    ['acciones','Acciones','dep-col-actions']
   ];
-  el.innerHTML = cols.map(([label,cls])=>{
+  el.innerHTML = cols.map(function(col){
+    const key=col[0], label=col[1], cls=col[2];
     const w = cls==='dep-col-vendor'?'style="width:110px;max-width:110px;min-width:110px"'
             : cls==='dep-col-fconf'?'style="width:115px;max-width:115px;min-width:115px"'
             : cls==='dep-col-date'?'style="width:100px;max-width:100px;min-width:100px"'
@@ -2867,18 +3878,8 @@ function depTH(headerId){
             : cls==='dep-col-days'?'style="width:60px"'
             : cls==='dep-col-hours'?'style="width:60px"'
             : cls==='dep-col-actions'?'style="width:64px"' : '';
-    return `<th class="${isActive?cls:''}" ${w}>${label}</th>`;
+    return buildHeaderCell(moduleKey,key,label,cls,w);
   }).join('');
-  if(!isActive){
-    el.querySelectorAll('th').forEach(th=>{
-      if(!th.querySelector('.col-r')){
-        const r=document.createElement('span');
-        r.className='col-r';
-        r.addEventListener('mousedown',initColResize);
-        th.appendChild(r);
-      }
-    });
-  }
 }
 
 function togDep(){
@@ -3398,20 +4399,16 @@ function renderOps(){
     function(d){return d.es||'';},
     function(d){return d.fase||0;},
     function(d){return getIdealDays(d)||0;},
-    function(d){return (d.mo||[]).join(', ');},
+    function(d){return (cls.find(function(c){return String(c.id)===String(d.cid);})?.mo||d.mo||[]).join(', ');},
     function(d){return d.ln||'';},
     function(d){return d.vd||'';},
-    function(d){var _cl=cls.find(function(c){return c.id===d.cid;});return _cl&&_cl.fconf||'';},
+    function(d){var _cl=cls.find(function(c){return String(c.id)===String(d.cid);});return _cl&&_cl.fconf||'';},
     function(d){return d.fi||'';},
     function(d){return calcFIdeal(d)||d.fd||'';},
     function(d){return d.fe||'';},
     function(d){if(!d.fi||!d.fe)return 99999;return Math.round((new Date(d.fe+'T12:00:00')-new Date(d.fi+'T12:00:00'))/86400000);},
     function(d){return getIdealDays(d)||99999;},
-    function(d){
-      var ideal=calcFIdeal(d)||d.fd||'';
-      if(!ideal||!d.fe)return 99999;
-      return Math.round((new Date(d.fe+'T12:00:00')-new Date(ideal+'T12:00:00'))/86400000);
-    },
+    function(d){var ideal=calcFIdeal(d)||d.fd||''; if(!ideal||!d.fe)return 99999; return Math.round((new Date(d.fe+'T12:00:00')-new Date(ideal+'T12:00:00'))/86400000);},
     function(d){return Array.isArray(d.pe)?d.pe.join(' '):(d.pe||'');},
     function(d){return +d.hrsOp||0;},
     function(d){return +d.hrsNew||0;},
@@ -3419,7 +4416,7 @@ function renderOps(){
     function(d){return d.lk||'';},
     null
   ];
-  const f=deps.filter(d=>{
+  const filtered=deps.filter(function(d){
     if(d.es!==EL)return false;
     if(s && !String(d.c||'').toLowerCase().includes(s) && !String(d.ci||'').toLowerCase().includes(s) && !String(d.pa||'').toLowerCase().includes(s)) return false;
     if(fL && d.ln!==fL) return false;
@@ -3428,21 +4425,20 @@ function renderOps(){
     if(_dfOps.to&&d.fi&&d.fi>_dfOps.to)return false;
     return true;
   });
-  const fS=applySort(f,'tbl-o',sortGetters);
-  var _pgOps=paginateRows(fS,'tbl-o');
-  var fP=_pgOps.rows;
-
-  const total=deps.filter(d=>d.es===EL).length;
-  const co=document.getElementById('co');if(co)co.textContent=`${f.length} de ${total}`;
-  const tb=document.getElementById('otb');
-  if(!tb) return;
-
-  if(!fP.length&&!_pgOps.total){
+  const sorted=applySort(filtered,'tbl-o',sortGetters);
+  const groups=getOpsGroups(sorted);
+  const totalClients=getOpsGroups(deps.filter(function(d){ return d.es===EL; })).length;
+  const pg=paginateRows(groups,'tbl-o');
+  const rows=pg.rows;
+  const co=document.getElementById('co');if(co)co.textContent=`${groups.length} clientes · ${filtered.length} despliegues (de ${totalClients} clientes)`;
+  const tb=document.getElementById('otb'); if(!tb) return;
+  if(!rows.length && !pg.total){
     tb.innerHTML='<tr><td colspan="24" class="dep-empty"><div style="font-size:34px">✅</div><div class="dep-empty-title">Sin clientes operativos</div><div style="font-size:12px">No hay registros que coincidan con los filtros actuales.</div></td></tr>';
   } else {
-    tb.innerHTML=fP.map(function(d,i){return depRowViewOps(d,i+1);}).join('')+paginationFooter('tbl-o',_pgOps,20);
+    const start=(getPage('tbl-o')-1)*_PAGE_SIZE;
+    tb.innerHTML=rows.map(function(group,idx){ return depOpsGroupHtml(group,start+idx+1); }).join('')+paginationFooter('tbl-o',pg,24);
   }
-  setTimeout(function(){initSortHeaders(document.getElementById('tbl-o'),sortGetters);},20);
+  setTimeout(function(){ initSortHeaders(document.getElementById('tbl-o'),sortGetters); applyAllHeaderTooltips(document.getElementById('view-operativos')); },20);
 }
 function renderInact(){
   const s=(document.getElementById('si')?.value||'').toLowerCase();
@@ -3472,6 +4468,7 @@ function renderInact(){
     return true;
   });
   const fS=applySort(f,'tbl-i',sortGetters);
+  window.__inactFiltered=fS.slice();
   var _pgInact=paginateRows(fS,'tbl-i');
   var fPage=_pgInact.rows;
   const cnt=document.getElementById('ci-cnt');if(cnt)cnt.textContent=`${f.length} de ${cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido').length}`;
@@ -3496,6 +4493,7 @@ function renderInact(){
     </td>
   </tr>`; }).join('')+paginationFooter('tbl-i',_pgInact,12):`<tr><td colspan="12" style="text-align:center;padding:30px;color:var(--subtle)">Sin clientes inactivos</td></tr>`;
   initSortHeaders(document.getElementById('tbl-i'),sortGetters);
+  applyAllHeaderTooltips(document.getElementById('view-inactivos'));
 }
 
 
@@ -3555,6 +4553,7 @@ function renderCls(){
   const _tot=fEs?cls.filter(c=>c.es===fEs).length:cls.length;const ccl=document.getElementById('ccl');if(ccl)ccl.textContent=`${f.length} de ${_tot}`;
   const tb=document.getElementById('ctb');if(!tb)return;
   const fSorted=applySort(f,'tbl-c',[null,function(d){return d.nm||'';},function(d){return d.pa||'';},function(d){return d.ci||'';},function(d){return d.ap||'';},function(d){return d.tp||'';},function(d){return Array.isArray(d.bot)?d.bot.join(', '):(d.bot||'');},function(d){return d.es||'';},function(d){return d.fconf||'';},null,null,function(d){return d.co||'';},function(d){return d.ph||'';},null,function(d){return d.no||'';},null]);
+  window.__clientesFiltered=fSorted.slice();
   var _pgCls=paginateRows(fSorted,'tbl-c');
   var fPage=_pgCls.rows;
 
@@ -3585,6 +4584,7 @@ function renderCls(){
     </tr>`;
   }).join(''):`<tr><td colspan="14" style="text-align:center;padding:30px;color:var(--subtle)">Sin clientes. Prueba cambiar los filtros.</td></tr>`;
   initSortHeaders(document.getElementById('tbl-c'),[null,function(d){return d.nm||'';},function(d){return d.pa||'';},function(d){return d.ci||'';},function(d){return d.ap||'';},function(d){return d.tp||'';},function(d){return Array.isArray(d.bot)?d.bot.join(', '):(d.bot||'');},function(d){return d.es||'';},function(d){return d.fconf||'';},null,null,function(d){return d.co||'';},function(d){return d.ph||'';},null,function(d){return d.no||'';},null]);
+  applyAllHeaderTooltips(document.getElementById('view-clientes'));
 }
 
 // ─── CLIENT MODAL ─────────────────────────────────────
@@ -4676,7 +5676,7 @@ function setCatTab(t){
     modulos:'⚙️ Módulos', categorias:'🏷 Categorías de Módulos', aplicativos:'🖥 Aplicativos',
     tipos:'🏷 Tipos de Cliente', modalidades:'🚀 Modalidades de Despliegue', launchers:'👤 Launchers',
     complejidad:'🎯 Complejidad', fases:'📍 Fases de Implementación', implTimes:'⏱ Tiempos de Implementación',
-    billingTypes:'💰 Tipos de Cobro', riesgos:'🚦 Estados de Riesgo'
+    billingTypes:'💰 Tipos de Cobro', tooltips:'ℹ️ Tooltips de Columnas', riesgos:'🚦 Estados de Riesgo'
   };
   const targetLabel=map[t];
   const sections=[...document.querySelectorAll('#view-catalogos .cat-section')];
@@ -4694,7 +5694,11 @@ function reloadCatsFromSupabase(){
   supabase.from('ops_data').select('key,value').eq('key','cats').then(function(res){
     if(res.data&&res.data[0]&&res.data[0].value){
       const rc=res.data[0].value||{};
-      Object.keys(rc).forEach(k=>{if(Array.isArray(rc[k])&&rc[k].length>0)cats[k]=rc[k];});
+      Object.keys(rc).forEach(k=>{
+        if(Array.isArray(rc[k])) cats[k]=rc[k];
+        else if(k==='colTips' && rc[k] && typeof rc[k]==='object' && !Array.isArray(rc[k])) cats[k]=rc[k];
+      });
+      ensureColTips();
       localStorage.setItem('ct27',JSON.stringify(cats));
     }
     renderCats();
@@ -4720,13 +5724,17 @@ function renderCats(){
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
   if(!cats.vendors||!cats.vendors.length)cats.vendors=BASE_VENDORS.map(x=>Object.assign({},x));
   if(!cats.tp)cats.tp=[];
+  ensureColTips();
+  ensureColTips();
+  ensureColTips();
   const sections=[...document.querySelectorAll('#view-catalogos .cat-section')];
   if(!sections.length){ showCatalogError('No hay secciones renderizables dentro de Catálogos.'); return; }
   if(!sections.some(s=>s.classList.contains('open'))) sections[0].classList.add('open');
-  const renderers=[['Módulos',renderMds],['Categorías',renderCatMods],['Aplicativos',renderAps],['Tipos de Cliente',renderTps],['Modalidades',renderModDeps],['Launchers',renderLaunchers],['Complejidad',renderCxs],['Fases',renderPhases],['Tipos de Cobro',renderBTs],['Estados de Riesgo',renderRisks]];
+  const renderers=[['Módulos',renderMds],['Categorías',renderCatMods],['Aplicativos',renderAps],['Tipos de Cliente',renderTps],['Modalidades',renderModDeps],['Launchers',renderLaunchers],['Complejidad',renderCxs],['Fases',renderPhases],['Tipos de Cobro',renderBTs],['Tooltips de Columnas',renderColTips],['Estados de Riesgo',renderRisks]];
   const failed=[];
   renderers.forEach(([name,fn])=>{ try{fn();}catch(err){failed.push(name);console.error('Render catálogo falló:',name,err);} });
   if(failed.length) showCatalogError('Se cargó Catálogos, pero fallaron estas secciones: '+failed.join(', ')+'. Revisa la consola para el detalle.');
+  setTimeout(function(){ applyAllHeaderTooltips(view); }, 50);
 }
 function renderMds(){
   const el=document.getElementById('md-tbody');if(!el)return;
@@ -5181,9 +6189,7 @@ function safeStartApp(){
     }
   }
 }
-function enterDemo(){
-  try{
-    _currentUser={email:'demo@clipp.com',id:'demo-user',user_metadata:{name:'Demo'}};
+};
     sessionStorage.setItem('clipp_authed','1');
     sessionStorage.setItem('clipp_demo','1');
     safeStartApp();
@@ -6817,6 +7823,7 @@ function bootApp(){
   if(!cats.launchers||!cats.launchers.length)cats.launchers=BASE_LAUNCHERS.map(x=>Object.assign({},x));
   if(!cats.vendors||!cats.vendors.length)cats.vendors=BASE_VENDORS.map(x=>Object.assign({},x));
   if(!cats.tp)cats.tp=[];
+  ensureColTips();
 
   // Load roles
   try{bootRoles();}catch(e){console.warn('bootRoles:',e);}
@@ -7111,5 +8118,479 @@ if(location.search.includes('demo=1')){
     </div>
   </div>
 </div>
+
+<script>
+(function(){
+  function applySavedTheme(){
+    try{
+      var saved = localStorage.getItem('ops_theme') || 'light';
+      document.body.classList.toggle('dark', saved === 'dark');
+      var btn = document.getElementById('btn-theme');
+      if(btn) btn.innerHTML = saved === 'dark' ? '☀️ Claro' : '🌙 Oscuro';
+    }catch(e){}
+  }
+  window.toggleTheme = function(){
+    try{
+      var nextDark = !document.body.classList.contains('dark');
+      document.body.classList.toggle('dark', nextDark);
+      localStorage.setItem('ops_theme', nextDark ? 'dark' : 'light');
+      var btn = document.getElementById('btn-theme');
+      if(btn) btn.innerHTML = nextDark ? '☀️ Claro' : '🌙 Oscuro';
+    }catch(e){}
+  };
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', applySavedTheme);
+  }else{
+    applySavedTheme();
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function patchCityChart(){
+    try{
+      if(typeof renderBars !== 'function' || typeof cityAgg === 'undefined') return;
+    }catch(e){}
+  }
+
+  function enrichCityChartLabels(){
+    try{
+      var ch = document.getElementById('ch-city');
+      if(!ch) return;
+      var items = ch.querySelectorAll('.bar-item');
+      items.forEach(function(item){
+        var lbl = item.querySelector('.bar-lbl');
+        if(!lbl || lbl.dataset.countryDone === '1') return;
+        var raw = (lbl.textContent || '').trim();
+        if(!raw) return;
+        var source = [];
+        try{
+          if(typeof deps !== 'undefined' && Array.isArray(deps)) source = source.concat(deps);
+          if(typeof ops !== 'undefined' && Array.isArray(ops)) source = source.concat(ops);
+          if(typeof inact !== 'undefined' && Array.isArray(inact)) source = source.concat(inact);
+        }catch(e){}
+        var found = source.find(function(r){
+          return ((r.city||'').trim().toLowerCase() === raw.toLowerCase());
+        });
+        if(found && (found.country||'').trim()){
+          lbl.innerHTML = '<span>'+ raw +'</span><span class="city-country-sub">'+ found.country +'</span>';
+          lbl.dataset.countryDone = '1';
+        }
+      });
+    }catch(e){}
+  }
+
+  function installCityPatch(){
+    enrichCityChartLabels();
+    var target = document.getElementById('ch-city');
+    if(!target || target.dataset.countryObserver==='1') return;
+    target.dataset.countryObserver='1';
+    try{
+      var mo = new MutationObserver(function(){ enrichCityChartLabels(); });
+      mo.observe(target,{childList:true,subtree:true});
+    }catch(e){}
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', installCityPatch);
+  }else{
+    installCityPatch();
+  }
+  window.addEventListener('load', function(){ setTimeout(installCityPatch, 300); setTimeout(installCityPatch, 1000); });
+})();
+</script>
+
+
+<script>
+(function(){
+  const PAGE_OPTIONS = [20,50,100,200];
+  const pageState = {
+    deps:{page:1,size:50},
+    ops:{page:1,size:50},
+    inact:{page:1,size:50},
+    clientes:{page:1,size:50}
+  };
+
+  function ensureArray(name){
+    try{
+      const v = window[name];
+      return Array.isArray(v) ? v : [];
+    }catch(e){ return []; }
+  }
+
+  function getFilteredRows(key){
+    // try to reuse existing filtered arrays if page-aware render already sets them
+    try{
+      if(key==='deps'){
+        if(Array.isArray(window.__depsFiltered)) return window.__depsFiltered;
+        return ensureArray('deps');
+      }
+      if(key==='ops'){
+        if(Array.isArray(window.__opsFiltered)) return window.__opsFiltered;
+        return ensureArray('ops');
+      }
+      if(key==='inact'){
+        if(Array.isArray(window.__inactFiltered)) return window.__inactFiltered;
+        return ensureArray('inact');
+      }
+      if(key==='clientes'){
+        if(Array.isArray(window.__clientesFiltered)) return window.__clientesFiltered;
+        return ensureArray('clients').length ? ensureArray('clients') : ensureArray('clientes');
+      }
+    }catch(e){}
+    return [];
+  }
+
+  function sliceForPage(rows,key){
+    const st = pageState[key];
+    const totalPages = Math.max(1, Math.ceil(rows.length / st.size));
+    if(st.page > totalPages) st.page = totalPages;
+    const start = (st.page - 1) * st.size;
+    return {
+      rows: rows.slice(start, start + st.size),
+      totalPages,
+      start: rows.length ? start + 1 : 0,
+      end: Math.min(start + st.size, rows.length),
+      total: rows.length
+    };
+  }
+
+  function renderPager(key, targetId){
+    const target = document.getElementById(targetId);
+    if(!target) return;
+    const rows = getFilteredRows(key);
+    const st = pageState[key];
+    const meta = sliceForPage(rows,key);
+    target.innerHTML = `
+      <div class="pg-toolbar">
+        <div class="pg-left">
+          <label>Items por página</label>
+          <select class="pg-select" data-key="${key}" data-role="size">
+            ${PAGE_OPTIONS.map(v => `<option value="${v}" ${v===st.size?'selected':''}>${v}</option>`).join('')}
+          </select>
+          <span class="pg-status">${meta.start}-${meta.end} de ${meta.total}</span>
+        </div>
+        <div class="pg-right">
+          <button class="pg-btn" data-key="${key}" data-role="first" ${st.page<=1?'disabled':''}>«</button>
+          <button class="pg-btn" data-key="${key}" data-role="prev" ${st.page<=1?'disabled':''}>‹</button>
+          <span class="pg-status">Página ${st.page} / ${meta.totalPages}</span>
+          <button class="pg-btn" data-key="${key}" data-role="next" ${st.page>=meta.totalPages?'disabled':''}>›</button>
+          <button class="pg-btn" data-key="${key}" data-role="last" ${st.page>=meta.totalPages?'disabled':''}>»</button>
+        </div>
+      </div>
+    `;
+  }
+
+  document.addEventListener('change', function(e){
+    const el = e.target;
+    if(el && el.matches('.pg-select[data-role="size"]')){
+      const key = el.dataset.key;
+      pageState[key].size = parseInt(el.value,10) || 50;
+      pageState[key].page = 1;
+      rerenderPaged(key);
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.pg-btn');
+    if(!btn) return;
+    const key = btn.dataset.key;
+    const rows = getFilteredRows(key);
+    const totalPages = Math.max(1, Math.ceil(rows.length / pageState[key].size));
+    const role = btn.dataset.role;
+    if(role==='first') pageState[key].page = 1;
+    if(role==='prev') pageState[key].page = Math.max(1, pageState[key].page - 1);
+    if(role==='next') pageState[key].page = Math.min(totalPages, pageState[key].page + 1);
+    if(role==='last') pageState[key].page = totalPages;
+    rerenderPaged(key);
+  });
+
+  function patchRender(name,key,targetId,bodyId){
+    const original = window[name];
+    if(typeof original !== 'function') return;
+    window[name] = function(){
+      const result = original.apply(this, arguments);
+      try{
+        // detect current filtered visible rows from tbody if app didn't expose filtered array
+        const tbody = document.getElementById(bodyId);
+        // if app has its own filtered array, preserve it; otherwise array fallback remains source array
+        renderPager(key,targetId);
+      }catch(e){}
+      return result;
+    };
+  }
+
+  function rerenderPaged(key){
+    // best effort: rely on app original render functions to rebuild current filtered set
+    try{
+      if(key==='deps' && typeof window.renderDeps==='function') window.renderDeps();
+      if(key==='ops' && typeof window.renderOps==='function') window.renderOps();
+      if(key==='inact' && typeof window.renderInact==='function') window.renderInact();
+      if(key==='clientes' && typeof window.renderClients==='function') window.renderClients();
+      renderPager(key, key==='deps'?'pg-deps':key==='ops'?'pg-ops':key==='inact'?'pg-inact':'pg-clientes');
+    }catch(e){}
+  }
+
+  function install(){
+    // expose filtered arrays by wrapping common filter functions if they return arrays into tbody later is not available
+    patchRender('renderDeps','deps','pg-deps','dtb');
+    patchRender('renderOps','ops','pg-ops','otb');
+    patchRender('renderInact','inact','pg-inact','itb');
+    patchRender('renderClients','clientes','pg-clientes','ctb');
+
+    // initial pagers
+    setTimeout(function(){
+      renderPager('deps','pg-deps');
+      renderPager('ops','pg-ops');
+      renderPager('inact','pg-inact');
+      renderPager('clientes','pg-clientes');
+    },400);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', install);
+  }else{
+    install();
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function getDashFilteredRows(){
+    try{
+      var _df = (typeof getDateRange==='function') ? getDateRange('dfd2') : {from:'',to:''};
+      var from = (_df && _df.from) || '';
+      var to = (_df && _df.to) || '';
+      var fLn = ((document.getElementById('sf-ln')||{}).value || '').trim();
+      return (Array.isArray(window.deps)?window.deps:[]).filter(function(d){
+        if(fLn && d.ln !== fLn) return false;
+        if(from && d.fi && d.fi < from) return false;
+        if(to && d.fi && d.fi > to) return false;
+        return true;
+      });
+    }catch(e){
+      return Array.isArray(window.deps)?window.deps:[];
+    }
+  }
+
+  function cityCountryMap(rows){
+    var map = {};
+    (rows || []).forEach(function(d){
+      var city = String(d.ci || '').trim();
+      var country = String(d.pa || '').trim();
+      if(city && country && !map[city.toLowerCase()]) map[city.toLowerCase()] = country;
+    });
+    return map;
+  }
+
+  function enhanceCityChart(rows){
+    try{
+      var map = cityCountryMap(rows);
+      var labels = document.querySelectorAll('#ch-city .bar-lbl');
+      labels.forEach(function(lbl){
+        var raw = (lbl.textContent || '').trim();
+        if(!raw) return;
+        var city = raw.replace(/\s*\([^)]*\)\s*$/,'').trim();
+        var country = map[city.toLowerCase()];
+        if(country){
+          lbl.textContent = city + ' (' + country + ')';
+        }
+      });
+    }catch(e){}
+  }
+
+  function renderModalityChart(rows){
+    try{
+      var target = document.getElementById('ch-modality');
+      var note = document.getElementById('ch-modality-note');
+      if(!target || !note) return;
+
+      var counts = {};
+      (rows || []).forEach(function(d){
+        var key = String(d.tp || '').replace(/[🆕🔄⚙️]/g,'').trim();
+        if(!key) key = 'Sin modalidad';
+        counts[key] = (counts[key] || 0) + 1;
+      });
+
+      var data = Object.entries(counts).sort(function(a,b){ return b[1]-a[1]; });
+      if(typeof barB === 'function'){
+        barB('ch-modality', data);
+      }else{
+        target.innerHTML = data.length ? data.map(function(x){
+          return '<div style="font-size:12px;padding:4px 0">'+x[0]+': <strong>'+x[1]+'</strong></div>';
+        }).join('') : '<p style="color:var(--subtle);font-size:12px;padding:8px 0">Sin datos para el período</p>';
+      }
+
+      var total = rows.length || 0;
+      var conModalidad = rows.filter(function(d){ return String(d.tp || '').trim(); }).length;
+      note.innerHTML = '<div><div class="big">'+ conModalidad +'</div><div class="sub">registros con modalidad</div><div class="sub">sobre '+ total +' registros filtrados</div></div>';
+    }catch(e){}
+  }
+
+  function wrapRenderDash(){
+    if(typeof window.renderDash !== 'function' || window.renderDash.__wrapped49) return;
+    var original = window.renderDash;
+    var wrapped = function(){
+      var res = original.apply(this, arguments);
+      try{
+        var rows = getDashFilteredRows();
+        enhanceCityChart(rows);
+        renderModalityChart(rows);
+      }catch(e){}
+      return res;
+    };
+    wrapped.__wrapped49 = true;
+    window.renderDash = wrapped;
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){
+      wrapRenderDash();
+      try{ if(typeof renderDash === 'function') renderDash(); }catch(e){}
+    });
+  }else{
+    wrapRenderDash();
+    try{ if(typeof renderDash === 'function') renderDash(); }catch(e){}
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  // aliases needed by pagination toolbar
+  if(typeof window.renderCls === 'function' && !window.renderClients) window.renderClients = window.renderCls;
+
+  // real paging using toolbar state for clients/inactivos
+  var __origPaginateRows = window.paginateRows;
+  if(typeof __origPaginateRows === 'function'){
+    window.paginateRows = function(rows, tblId){
+      if(tblId === 'tbl-c' || tblId === 'tbl-i'){
+        var map = {'tbl-c':'clientes','tbl-i':'inact'};
+        var key = map[tblId];
+        var st = (window.pageState && window.pageState[key]) ? window.pageState[key] : null;
+        if(st){
+          var total = rows.length;
+          var size = parseInt(st.size || 50, 10);
+          var totalPages = Math.max(1, Math.ceil(total / size));
+          if(st.page > totalPages) st.page = totalPages;
+          if(st.page < 1) st.page = 1;
+          var start = (st.page - 1) * size;
+          var slice = rows.slice(start, start + size);
+          return { rows: slice, total: total, shown: slice.length, hasMore: false };
+        }
+      }
+      return __origPaginateRows(rows, tblId);
+    };
+  }
+
+  // remove old "cargar más" row for clientes/inactivos
+  var __origPaginationFooter = window.paginationFooter;
+  if(typeof __origPaginationFooter === 'function'){
+    window.paginationFooter = function(tblId, result, colSpan){
+      if(tblId === 'tbl-c' || tblId === 'tbl-i') return '';
+      return __origPaginationFooter(tblId, result, colSpan);
+    };
+  }
+
+  // expose pageState globally if not already
+  if(typeof window.pageState === 'undefined' && typeof pageState !== 'undefined'){
+    window.pageState = pageState;
+  }
+
+  // rerender helpers
+  function refreshDashboardSafe(){
+    try{
+      if(typeof renderDash === 'function'){
+        renderDash._lastHash = null;
+        renderDash._rendered = false;
+        renderDash();
+      }
+    }catch(e){}
+  }
+
+  // refresh dashboard on module access
+  if(typeof window.setV === 'function' && !window.setV.__wrapped50){
+    var _setV = window.setV;
+    window.setV = function(v){
+      var r = _setV.apply(this, arguments);
+      if(v === 'dashboard'){
+        setTimeout(refreshDashboardSafe, 30);
+      }
+      return r;
+    };
+    window.setV.__wrapped50 = true;
+  }
+
+  // refresh dashboard on any filter/control change relevant to dashboard
+  document.addEventListener('change', function(e){
+    var t = e.target;
+    if(!t) return;
+    if(t.id === 'sf' || t.id === 'st' || t.id === 'sf-ln' || (t.closest && t.closest('#df-dash'))){
+      refreshDashboardSafe();
+    }
+  });
+  document.addEventListener('input', function(e){
+    var t = e.target;
+    if(!t) return;
+    if(t.id === 'sf' || t.id === 'st' || t.id === 'sf-ln' || (t.closest && t.closest('#df-dash'))){
+      refreshDashboardSafe();
+    }
+  });
+
+  // refresh dashboard after saves/deletes if central function exists
+  if(typeof window.renderAfterSave === 'function' && !window.renderAfterSave.__wrapped50){
+    var _ras = window.renderAfterSave;
+    window.renderAfterSave = function(){
+      var r = _ras.apply(this, arguments);
+      setTimeout(refreshDashboardSafe, 30);
+      return r;
+    };
+    window.renderAfterSave.__wrapped50 = true;
+  }
+
+  // ensure dashboard updates when page loads
+  window.addEventListener('load', function(){
+    setTimeout(refreshDashboardSafe, 120);
+  });
+
+  // make toolbar pagination rerender clients/inactivos correctly
+  if(!window.__pgToolbarFix50){
+    window.__pgToolbarFix50 = true;
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.pg-btn');
+      if(!btn) return;
+      var key = btn.dataset.key;
+      if(key === 'clientes' || key === 'inact'){
+        setTimeout(function(){
+          try{
+            if(key === 'clientes' && typeof renderCls === 'function') renderCls();
+            if(key === 'inact' && typeof renderInact === 'function') renderInact();
+          }catch(err){}
+        }, 0);
+      }
+    });
+    document.addEventListener('change', function(e){
+      var sel = e.target;
+      if(sel && sel.matches('.pg-select[data-role="size"]')){
+        var key = sel.dataset.key;
+        if(key === 'clientes' || key === 'inact'){
+          setTimeout(function(){
+            try{
+              if(key === 'clientes' && typeof renderCls === 'function') renderCls();
+              if(key === 'inact' && typeof renderInact === 'function') renderInact();
+            }catch(err){}
+          }, 0);
+        }
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
