@@ -101,6 +101,16 @@ b.acc{color:var(--accent);font-weight:600;}
 .uz-text{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.6;}
 .uz-text b{color:var(--accent);}
 
+/* MULTI-MONTH */
+.mm-upload{border:2px dashed rgba(45,125,210,.3);border-radius:8px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:rgba(45,125,210,.02);margin-bottom:14px;}
+.mm-upload:hover,.mm-upload.drag{border-color:var(--blue);background:rgba(45,125,210,.06);}
+.mm-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.mm-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.mm-chip{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:4px;font-family:var(--mono);font-size:10px;font-weight:600;border:1px solid var(--border);background:var(--surface);}
+.mm-chip .mm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mm-chip .mm-x{cursor:pointer;color:var(--accent3);font-size:11px;margin-left:4px;opacity:.5;transition:opacity .15s;}
+.mm-chip .mm-x:hover{opacity:1;}
+
 /* LINE CHART */
 .line-chart-wrap{position:relative;}
 .line-chart-wrap svg{width:100%;display:block;}
@@ -142,6 +152,10 @@ b.acc{color:var(--accent);font-weight:600;}
   <div class="nav-item" onclick="scrollEl('#section-table')">
     <div class="nav-icon">📋</div>
     <div><div>Tabla Comparativa</div><div class="nav-desc">Todos los días</div></div>
+  </div>
+  <div class="nav-item" onclick="scrollEl('#section-multi')">
+    <div class="nav-icon">📆</div>
+    <div><div>Multi-Mes</div><div class="nav-desc">Hasta 12 archivos</div></div>
   </div>
   <div class="nav-group" style="margin-top:16px;" id="sb-days-label" style="display:none;">Días</div>
   <div id="sidebar-days"></div>
@@ -269,6 +283,93 @@ b.acc{color:var(--accent);font-weight:600;}
       </div>
     </div>
     <div style="text-align:center;padding:30px 0;font-family:var(--mono);font-size:9px;color:var(--muted);" id="dash-footer"></div>
+  </div>
+
+  <!-- ============== MULTI-MONTH SECTION ============== -->
+  <div id="section-multi"></div>
+  <div style="height:1px;background:var(--border);margin:30px 0;"></div>
+  <div>
+    <div class="tag" style="background:rgba(45,125,210,.08);border-color:rgba(45,125,210,.25);color:var(--blue);">Comparativo Multi-Mes</div>
+    <h2 style="font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;">Análisis <span style="color:var(--blue)">Multi-Mes</span> — Todos los días de corrido</h2>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:16px;">// Sube hasta 12 archivos XML para ver la tendencia continua y comparar meses</p>
+
+    <div class="mm-upload" id="mm-upload-zone">
+      <input type="file" id="mm-file-input" accept=".xml" multiple>
+      <span style="font-size:24px;">📂</span>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px;">Arrastra <b style="color:var(--blue);">varios .xml</b> aquí o haz click · Hasta 12 archivos</div>
+    </div>
+    <div class="mm-chips" id="mm-chips"></div>
+
+    <div id="mm-dashboard" style="display:none;">
+      <!-- KPIs globales multi -->
+      <div class="kgrid" id="mm-kpis"></div>
+
+      <!-- Línea continua: todos los días de corrido -->
+      <div class="stitle">Línea continua — Todos los días de corrido</div>
+      <div class="card full">
+        <div class="ctitle">Viajes · Exitosas · Errores — Serie completa</div>
+        <div class="csub">Cada punto = 1 día · Los meses se separan con línea vertical</div>
+        <div class="line-chart-wrap" id="mm-lc-viajes"></div>
+        <div class="lc-legend">
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--blue);"></div>Viajes</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Exitosas</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent3);"></div>Errores</div>
+        </div>
+      </div>
+      <div class="card full">
+        <div class="ctitle">Ingresos — Serie completa</div>
+        <div class="csub">Total · Efectivo · Digital a lo largo de todos los meses</div>
+        <div class="line-chart-wrap" id="mm-lc-ingresos"></div>
+        <div class="lc-legend">
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Total</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent2);"></div>Efectivo</div>
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--purple);"></div>Digital</div>
+        </div>
+      </div>
+      <div class="card full">
+        <div class="ctitle">Tasa de Éxito — Serie completa</div>
+        <div class="line-chart-wrap" id="mm-lc-tasa"></div>
+        <div class="lc-legend">
+          <div class="lc-leg-item"><div class="lc-leg-line" style="background:var(--accent);"></div>Tasa %</div>
+        </div>
+      </div>
+
+      <!-- Comparación por día del mes -->
+      <div class="stitle">Comparación por día del mes — Meses superpuestos</div>
+      <div class="card full">
+        <div class="ctitle">Viajes por día del mes — Cada mes una línea</div>
+        <div class="csub">Eje X = día 1..31 · Cada color = un mes diferente</div>
+        <div class="line-chart-wrap" id="mm-lc-compare-viajes"></div>
+        <div id="mm-legend-compare-viajes" class="lc-legend"></div>
+      </div>
+      <div class="two">
+        <div class="card">
+          <div class="ctitle">Ingresos por día del mes</div>
+          <div class="line-chart-wrap" id="mm-lc-compare-ingresos"></div>
+          <div id="mm-legend-compare-ingresos" class="lc-legend"></div>
+        </div>
+        <div class="card">
+          <div class="ctitle">Tasa de Éxito por día del mes</div>
+          <div class="line-chart-wrap" id="mm-lc-compare-tasa"></div>
+          <div id="mm-legend-compare-tasa" class="lc-legend"></div>
+        </div>
+      </div>
+
+      <!-- Tabla resumen por mes -->
+      <div class="stitle">Resumen por mes</div>
+      <div class="card full">
+        <div style="overflow-x:auto;">
+          <table class="tbl" id="mm-table">
+            <thead><tr><th>Mes</th><th class="r">Días</th><th class="r">Viajes</th><th class="r">Éxito</th><th class="r">Tasa</th><th class="r">Ingreso</th><th class="r">Efectivo</th><th class="r">Digital</th><th class="r">Viajes/día</th><th class="r">Clipp 4%</th></tr></thead>
+            <tbody id="mm-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:30px 0;font-family:var(--mono);font-size:9px;color:var(--muted);">
+    Clipp B2B · Roaming Quito · Dashboard Diario + Multi-Mes
   </div>
 </div>
 </div>
@@ -652,6 +753,273 @@ function renderComparisonTable(){
 
 function selectDay(d){selectedDay=selectedDay===d?null:d;renderAll();if(selectedDay)document.getElementById('detail-panel').scrollIntoView({behavior:'smooth',block:'start'});}
 function scrollEl(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth'});}
+
+// ================================================================
+// MULTI-MONTH SECTION
+// ================================================================
+const MM_COLORS = ['#2d7dd2','#00b89c','#e09600','#8b44d4','#d63447','#f472b6','#06b6d4','#84cc16','#f59e0b','#6366f1','#ec4899','#14b8a6'];
+const MM_MONTHS = []; // {id, label, color, data:{byDay, dates, totals}}
+
+// Upload handling
+const mmUpload = document.getElementById('mm-upload-zone');
+const mmInput = document.getElementById('mm-file-input');
+mmUpload.addEventListener('dragover',e=>{e.preventDefault();mmUpload.classList.add('drag');});
+mmUpload.addEventListener('dragleave',()=>mmUpload.classList.remove('drag'));
+mmUpload.addEventListener('drop',e=>{e.preventDefault();mmUpload.classList.remove('drag');mmHandleFiles(e.dataTransfer.files);});
+mmInput.addEventListener('change',e=>{mmHandleFiles(e.target.files);e.target.value='';});
+
+function mmHandleFiles(files){
+  for(const f of files){
+    if(MM_MONTHS.length>=12){alert('Máximo 12 archivos');break;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const raw=parseXML(e.target.result);
+      if(!raw||!raw.length){alert('No se pudo parsear: '+f.name);return;}
+      const data=processData(raw);
+      const [y,m]=data.dates[0].split('-').map(Number);
+      const label=MONTHS_ES[m]+' '+y;
+      // Replace if same month
+      const existing=MM_MONTHS.findIndex(x=>x.label===label);
+      if(existing>=0) MM_MONTHS.splice(existing,1);
+      MM_MONTHS.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5), label, data, filename:f.name});
+      // Sort by first date
+      MM_MONTHS.sort((a,b)=>a.data.dates[0].localeCompare(b.data.dates[0]));
+      // Reassign colors
+      MM_MONTHS.forEach((m,i)=>m.color=MM_COLORS[i%MM_COLORS.length]);
+      mmRender();
+    };
+    reader.readAsText(f);
+  }
+}
+
+function mmRemove(id){
+  const idx=MM_MONTHS.findIndex(m=>m.id===id);
+  if(idx>=0)MM_MONTHS.splice(idx,1);
+  MM_MONTHS.forEach((m,i)=>m.color=MM_COLORS[i%MM_COLORS.length]);
+  mmRender();
+}
+
+function mmRender(){
+  // Chips
+  const chips=document.getElementById('mm-chips');
+  chips.innerHTML=MM_MONTHS.map(m=>
+    `<div class="mm-chip"><div class="mm-dot" style="background:${m.color}"></div>${m.label}<span class="mm-x" onclick="mmRemove('${m.id}')">✕</span></div>`
+  ).join('');
+
+  const dash=document.getElementById('mm-dashboard');
+  if(MM_MONTHS.length===0){dash.style.display='none';return;}
+  dash.style.display='block';
+
+  // Compute grand totals
+  let gV=0,gS=0,gD=0,gE=0,gDias=0;
+  MM_MONTHS.forEach(m=>{const t=m.data.totals;gV+=t.viajes;gS+=t.success;gD+=t.digital;gE+=t.efectivo;gDias+=t.dias;});
+  const gR=gD+gE, gT=gV>0?(gS/gV*100):0;
+
+  // KPIs
+  document.getElementById('mm-kpis').innerHTML=`
+    <div class="kpi cg"><div class="klabel">Ingreso Total</div><div class="kval">$${gR.toFixed(0)}</div><div class="ksub">${MM_MONTHS.length} mes(es)</div></div>
+    <div class="kpi cb"><div class="klabel">Viajes Totales</div><div class="kval">${gV}</div><div class="ksub">${gDias} días</div></div>
+    <div class="kpi cy"><div class="klabel">Tasa de Éxito</div><div class="kval">${gT.toFixed(1)}%</div><div class="ksub">${gS} correctos</div></div>
+    <div class="kpi cp"><div class="klabel">Viajes/día</div><div class="kval">${gDias>0?(gV/gDias).toFixed(1):'0'}</div><div class="ksub">Promedio</div></div>
+    <div class="kpi cg"><div class="klabel">Clipp 4%</div><div class="kval">$${(gR*.04).toFixed(2)}</div><div class="ksub">Comisión total</div></div>`;
+
+  // ---- CONTINUOUS LINE CHARTS (all days in sequence) ----
+  const allDates=[], allByDay={};
+  // Also track month boundaries for vertical separators
+  const monthBounds=[]; // indices where a new month starts
+  let idx=0;
+  MM_MONTHS.forEach(m=>{
+    monthBounds.push({idx, label:m.label, color:m.color});
+    m.data.dates.forEach(d=>{
+      allDates.push(d);
+      allByDay[d]=m.data.byDay[d];
+      idx++;
+    });
+  });
+
+  if(allDates.length>=2){
+    // Override lineChart to support month separators via opts.separators
+    mmLineChart('mm-lc-viajes',[
+      {values:allDates.map(d=>allByDay[d].viajes),color:'var(--blue)',label:'Viajes',fill:true},
+      {values:allDates.map(d=>allByDay[d].success),color:'var(--accent)',label:'Exitosas'},
+      {values:allDates.map(d=>allByDay[d].viajes-allByDay[d].success),color:'var(--accent3)',label:'Errores'},
+    ],allDates,{height:220,fmtTip:v=>Math.round(v),separators:monthBounds});
+
+    mmLineChart('mm-lc-ingresos',[
+      {values:allDates.map(d=>allByDay[d].rev),color:'var(--accent)',label:'Total',fill:true},
+      {values:allDates.map(d=>allByDay[d].efectivo),color:'var(--accent2)',label:'Efectivo'},
+      {values:allDates.map(d=>allByDay[d].digital),color:'var(--purple)',label:'Digital',dashed:true},
+    ],allDates,{height:200,fmtY:v=>'$'+Math.round(v),fmtTip:v=>'$'+v.toFixed(2),separators:monthBounds});
+
+    mmLineChart('mm-lc-tasa',[
+      {values:allDates.map(d=>allByDay[d].tasa),color:'var(--accent)',label:'Tasa',fill:true},
+    ],allDates,{height:180,minY:0,maxY:100,zones:true,fmtY:v=>v+'%',fmtTip:v=>v.toFixed(1)+'%',separators:monthBounds});
+  }
+
+  // ---- COMPARISON BY DAY-OF-MONTH (overlaid) ----
+  const maxDay=Math.max(...MM_MONTHS.map(m=>Math.max(...m.data.dates.map(d=>parseInt(d.split('-')[2])))));
+  const dayNums=Array.from({length:maxDay},(_,i)=>i+1);
+  const dayLabels=dayNums.map(d=>String(d));
+
+  // Viajes comparison
+  const vSeries=MM_MONTHS.map(m=>{
+    const vals=dayNums.map(dn=>{
+      const dk=m.data.dates.find(d=>parseInt(d.split('-')[2])===dn);
+      return dk?m.data.byDay[dk].viajes:null;
+    });
+    return {values:vals,color:m.color,label:m.label};
+  });
+  mmCompareChart('mm-lc-compare-viajes',vSeries,dayLabels,{height:200,fmtTip:v=>v===null?'—':Math.round(v)});
+  document.getElementById('mm-legend-compare-viajes').innerHTML=MM_MONTHS.map(m=>
+    `<div class="lc-leg-item"><div class="lc-leg-line" style="background:${m.color};"></div>${m.label}</div>`).join('');
+
+  // Ingresos comparison
+  const iSeries=MM_MONTHS.map(m=>{
+    const vals=dayNums.map(dn=>{
+      const dk=m.data.dates.find(d=>parseInt(d.split('-')[2])===dn);
+      return dk?m.data.byDay[dk].rev:null;
+    });
+    return {values:vals,color:m.color,label:m.label};
+  });
+  mmCompareChart('mm-lc-compare-ingresos',iSeries,dayLabels,{height:170,fmtY:v=>'$'+Math.round(v),fmtTip:v=>v===null?'—':'$'+v.toFixed(0)});
+  document.getElementById('mm-legend-compare-ingresos').innerHTML=MM_MONTHS.map(m=>
+    `<div class="lc-leg-item"><div class="lc-leg-line" style="background:${m.color};"></div>${m.label}</div>`).join('');
+
+  // Tasa comparison
+  const tSeries=MM_MONTHS.map(m=>{
+    const vals=dayNums.map(dn=>{
+      const dk=m.data.dates.find(d=>parseInt(d.split('-')[2])===dn);
+      return dk?m.data.byDay[dk].tasa:null;
+    });
+    return {values:vals,color:m.color,label:m.label};
+  });
+  mmCompareChart('mm-lc-compare-tasa',tSeries,dayLabels,{height:170,minY:0,maxY:100,zones:true,fmtY:v=>v+'%',fmtTip:v=>v===null?'—':v.toFixed(1)+'%'});
+  document.getElementById('mm-legend-compare-tasa').innerHTML=MM_MONTHS.map(m=>
+    `<div class="lc-leg-item"><div class="lc-leg-line" style="background:${m.color};"></div>${m.label}</div>`).join('');
+
+  // Summary table
+  const tb=document.getElementById('mm-table-body');
+  tb.innerHTML=MM_MONTHS.map(m=>{
+    const t=m.data.totals;
+    return`<tr>
+      <td style="font-weight:700;"><span style="color:${m.color};">⬤</span> ${m.label}</td>
+      <td class="r">${t.dias}</td><td class="r">${t.viajes}</td><td class="r">${t.success}</td>
+      <td class="r">${chipHtml(t.tasa)}</td>
+      <td class="r" style="color:var(--accent);font-weight:600;">$${t.rev.toFixed(0)}</td>
+      <td class="r">$${t.efectivo.toFixed(0)}</td><td class="r" style="color:var(--accent2);">$${t.digital.toFixed(0)}</td>
+      <td class="r">${t.dias>0?(t.viajes/t.dias).toFixed(1):'0'}</td>
+      <td class="r" style="color:var(--accent);">$${(t.rev*.04).toFixed(2)}</td></tr>`;
+  }).join('');
+  // Total row
+  tb.innerHTML+=`<tr style="border-top:2px solid rgba(0,184,156,.3);font-weight:700;">
+    <td style="color:var(--accent);">TOTAL</td><td class="r">${gDias}</td><td class="r" style="color:var(--accent);">${gV}</td><td class="r">${gS}</td>
+    <td class="r">${chipHtml(gT)}</td><td class="r" style="color:var(--accent);">$${gR.toFixed(0)}</td>
+    <td class="r">$${gE.toFixed(0)}</td><td class="r" style="color:var(--accent2);">$${gD.toFixed(0)}</td>
+    <td class="r">${gDias>0?(gV/gDias).toFixed(1):'0'}</td><td class="r" style="color:var(--accent);">$${(gR*.04).toFixed(2)}</td></tr>`;
+}
+
+// ---- MULTI-MONTH LINE CHART (continuous, with month separators) ----
+function mmLineChart(containerId,series,dates,opts={}){
+  const W=900,H=opts.height||200,P={t:20,r:50,b:34,l:48};
+  const cW=W-P.l-P.r,cH=H-P.t-P.b,n=dates.length;
+  if(n<2)return;
+  _chartMeta[containerId]={series,dates,opts,W};
+  let allV=[];series.forEach(s=>allV.push(...s.values));
+  let maxV=Math.max(...allV)*1.1||1,minV=opts.minY!==undefined?opts.minY:0;
+  if(opts.maxY!==undefined)maxV=opts.maxY;
+  const x=i=>P.l+(i/(n-1))*cW, y=v=>P.t+cH-(((v-minV)/(maxV-minV))*cH);
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">`;
+  // Grid
+  for(let i=0;i<=5;i++){const val=minV+(maxV-minV)*(i/5);const yy=y(val);
+    svg+=`<line x1="${P.l}" y1="${yy}" x2="${W-P.r}" y2="${yy}" stroke="rgba(0,0,0,.05)" stroke-width="1"/>`;
+    svg+=`<text x="${P.l-6}" y="${yy+3}" text-anchor="end" fill="#7a8399" font-family="DM Mono" font-size="7">${opts.fmtY?opts.fmtY(val):Math.round(val)}</text>`;}
+  // Zones
+  if(opts.zones){
+    svg+=`<rect x="${P.l}" y="${y(100)}" width="${cW}" height="${y(75)-y(100)}" fill="rgba(0,184,156,.03)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(75)}" width="${cW}" height="${y(60)-y(75)}" fill="rgba(224,150,0,.03)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(60)}" width="${cW}" height="${y(minV)-y(60)}" fill="rgba(214,52,71,.03)"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(75)}" x2="${W-P.r}" y2="${y(75)}" stroke="rgba(0,184,156,.15)" stroke-dasharray="4,3" stroke-width="1"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(60)}" x2="${W-P.r}" y2="${y(60)}" stroke="rgba(214,52,71,.15)" stroke-dasharray="4,3" stroke-width="1"/>`;}
+  // Month separators
+  if(opts.separators){opts.separators.forEach(s=>{
+    if(s.idx>0){const xx=x(s.idx);svg+=`<line x1="${xx}" y1="${P.t}" x2="${xx}" y2="${H-P.b}" stroke="${s.color}" stroke-width="1.5" stroke-dasharray="5,3" opacity=".4"/>`;}
+    const xx2=x(s.idx);svg+=`<text x="${xx2+4}" y="${P.t-5}" fill="${s.color}" font-family="DM Mono" font-size="7" font-weight="600">${s.label}</text>`;
+  });}
+  // X labels (show every nth)
+  const step=Math.max(1,Math.floor(n/25));
+  dates.forEach((d,i)=>{if(i%step===0||i===n-1)svg+=`<text x="${x(i)}" y="${H-4}" text-anchor="middle" fill="#7a8399" font-family="DM Mono" font-size="6">${parseInt(d.split('-')[2])}/${parseInt(d.split('-')[1])}</text>`;});
+  // Lines + dots
+  series.forEach(s=>{const pts=s.values.map((v,i)=>`${x(i)},${y(v)}`);
+    if(s.fill)svg+=`<polygon points="${x(0)},${y(minV)} ${pts.join(' ')} ${x(n-1)},${y(minV)}" fill="${s.color}" opacity=".05"/>`;
+    svg+=`<polyline points="${pts.join(' ')}" fill="none" stroke="${s.color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" ${s.dashed?'stroke-dasharray="5,3"':''}/>`;
+    s.values.forEach((v,i)=>{svg+=`<circle cx="${x(i)}" cy="${y(v)}" r="2.5" fill="${s.color}" stroke="white" stroke-width="1"/>`;});});
+  // Hover
+  svg+=`<line class="lc-guide" x1="0" y1="${P.t}" x2="0" y2="${H-P.b}" stroke="rgba(0,0,0,.12)" stroke-width="1" stroke-dasharray="3,2" visibility="hidden"/>`;
+  dates.forEach((d,i)=>{svg+=`<rect class="lc-hover" data-chart="${containerId}" data-idx="${i}" data-xpos="${x(i)}" x="${x(i)-cW/n/2}" y="${P.t}" width="${cW/n}" height="${cH}" fill="transparent" style="cursor:crosshair;"/>`;});
+  svg+=`</svg><div class="svg-tip"></div>`;
+  const el=document.getElementById(containerId);el.innerHTML=svg;
+  el.querySelectorAll('.lc-hover').forEach(r=>{r.addEventListener('mouseenter',handleChartHover);r.addEventListener('mouseleave',handleChartLeave);});
+}
+
+// ---- COMPARE CHART (day-of-month, nulls for missing days) ----
+function mmCompareChart(containerId,series,labels,opts={}){
+  const W=720,H=opts.height||180,P={t:20,r:30,b:30,l:45};
+  const cW=W-P.l-P.r,cH=H-P.t-P.b,n=labels.length;
+  if(n<2)return;
+  _chartMeta[containerId]={series,dates:labels,opts,W};
+  let allV=[];series.forEach(s=>s.values.forEach(v=>{if(v!==null)allV.push(v);}));
+  let maxV=Math.max(...allV)*1.1||1,minV=opts.minY!==undefined?opts.minY:0;
+  if(opts.maxY!==undefined)maxV=opts.maxY;
+  const x=i=>P.l+(i/(n-1))*cW, y=v=>P.t+cH-(((v-minV)/(maxV-minV))*cH);
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">`;
+  for(let i=0;i<=5;i++){const val=minV+(maxV-minV)*(i/5);const yy=y(val);
+    svg+=`<line x1="${P.l}" y1="${yy}" x2="${W-P.r}" y2="${yy}" stroke="rgba(0,0,0,.05)" stroke-width="1"/>`;
+    svg+=`<text x="${P.l-6}" y="${yy+3}" text-anchor="end" fill="#7a8399" font-family="DM Mono" font-size="8">${opts.fmtY?opts.fmtY(val):Math.round(val)}</text>`;}
+  if(opts.zones){
+    svg+=`<rect x="${P.l}" y="${y(100)}" width="${cW}" height="${y(75)-y(100)}" fill="rgba(0,184,156,.03)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(75)}" width="${cW}" height="${y(60)-y(75)}" fill="rgba(224,150,0,.03)"/>`;
+    svg+=`<rect x="${P.l}" y="${y(60)}" width="${cW}" height="${y(minV)-y(60)}" fill="rgba(214,52,71,.03)"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(75)}" x2="${W-P.r}" y2="${y(75)}" stroke="rgba(0,184,156,.15)" stroke-dasharray="4,3" stroke-width="1"/>`;
+    svg+=`<line x1="${P.l}" y1="${y(60)}" x2="${W-P.r}" y2="${y(60)}" stroke="rgba(214,52,71,.15)" stroke-dasharray="4,3" stroke-width="1"/>`;}
+  // X labels
+  labels.forEach((l,i)=>{svg+=`<text x="${x(i)}" y="${H-4}" text-anchor="middle" fill="#7a8399" font-family="DM Mono" font-size="8">${l}</text>`;});
+  // Lines (skip nulls)
+  series.forEach(s=>{
+    // Build segments (break on null)
+    let segs=[],cur=[];
+    s.values.forEach((v,i)=>{if(v!==null){cur.push({x:x(i),y:y(v),i});}else{if(cur.length)segs.push(cur);cur=[];}});
+    if(cur.length)segs.push(cur);
+    segs.forEach(seg=>{
+      const pts=seg.map(p=>`${p.x},${p.y}`).join(' ');
+      svg+=`<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+      seg.forEach(p=>{svg+=`<circle cx="${p.x}" cy="${p.y}" r="3" fill="${s.color}" stroke="white" stroke-width="1.5"/>`;});
+    });
+  });
+  // Hover
+  svg+=`<line class="lc-guide" x1="0" y1="${P.t}" x2="0" y2="${H-P.b}" stroke="rgba(0,0,0,.12)" stroke-width="1" stroke-dasharray="3,2" visibility="hidden"/>`;
+  labels.forEach((l,i)=>{svg+=`<rect class="lc-hover" data-chart="${containerId}" data-idx="${i}" data-xpos="${x(i)}" x="${x(i)-cW/n/2}" y="${P.t}" width="${cW/n}" height="${cH}" fill="transparent" style="cursor:crosshair;"/>`;});
+  svg+=`</svg><div class="svg-tip"></div>`;
+  const el=document.getElementById(containerId);el.innerHTML=svg;
+  el.querySelectorAll('.lc-hover').forEach(r=>{r.addEventListener('mouseenter',handleCompareHover);r.addEventListener('mouseleave',handleChartLeave);});
+}
+
+function handleCompareHover(e){
+  const rect=e.target,chartId=rect.getAttribute('data-chart'),idx=parseInt(rect.getAttribute('data-idx')),xPos=parseFloat(rect.getAttribute('data-xpos'));
+  const meta=_chartMeta[chartId];if(!meta)return;
+  const wrap=rect.closest('.line-chart-wrap'),tip=wrap.querySelector('.svg-tip'),guide=wrap.querySelector('.lc-guide');
+  let html='<b>Día '+meta.dates[idx]+'</b>';
+  meta.series.forEach(s=>{
+    const v=s.values[idx];
+    const val=v===null?'—':(meta.opts.fmtTip?meta.opts.fmtTip(v):v.toFixed(1));
+    html+='<br><span style="color:'+s.color+'">● '+s.label+': '+val+'</span>';
+  });
+  tip.innerHTML=html;tip.classList.add('on');
+  const svgW=wrap.querySelector('svg').getBoundingClientRect().width;
+  tip.style.left=Math.min(xPos*(svgW/meta.W),svgW-180)+'px';tip.style.top='10px';
+  if(guide){guide.setAttribute('x1',xPos);guide.setAttribute('x2',xPos);guide.setAttribute('visibility','visible');}
+}
 </script>
 </body>
 </html>
