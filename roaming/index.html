@@ -145,6 +145,19 @@ b.acc{color:var(--accent);font-weight:600;} b.acc2{color:var(--accent2);font-wei
 .delta-flat{color:var(--muted);font-weight:700;}
 .small-kpi{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;}
 
+.unify-toggle{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface);cursor:pointer;user-select:none;transition:all .2s;}
+.unify-toggle:hover{border-color:rgba(0,184,156,.35);box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.unify-toggle input{display:none;}
+.unify-switch{width:40px;height:22px;border-radius:999px;background:rgba(0,0,0,.15);position:relative;transition:all .2s;flex-shrink:0;}
+.unify-switch::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:all .2s;}
+.unify-toggle.active{border-color:rgba(0,184,156,.45);background:rgba(0,184,156,.08);}
+.unify-toggle.active .unify-switch{background:var(--accent);}
+.unify-toggle.active .unify-switch::after{left:21px;}
+.unify-copy{display:flex;flex-direction:column;line-height:1.15}
+.unify-copy strong{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text);}
+.unify-copy span{font-family:var(--mono);font-size:8px;color:var(--muted);}
+
+
 </style>
 </head>
 <body>
@@ -1145,11 +1158,35 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
 (function(){
   const DEFAULT_DIGITAL_BREAKDOWN = {"Unitaxi":494,"Taxi JJ":89};
   let DATASETS = {};
-  let CURRENT_DATASET_KEY = 'feb-2026';
+  let CURRENT_DATASET_KEY = '';
   let CURRENT_COMPARE_KEY = '';
-  let ACTIVE_META = {label:'Febrero 2026', source:'embebido', days:16, city:'Quito'};
+  let ACTIVE_META = {label:'', source:'', days:0, city:''};
   let RAW_ROWS = [];
-  let PAYMENT_BREAKDOWN = {digital:583, efectivo:2566, byConductora: DEFAULT_DIGITAL_BREAKDOWN};
+  let PAYMENT_BREAKDOWN = {digital:0, efectivo:0, byConductora:{}};
+  let UNIFY_COMPANIES = false;
+
+  function unifiedCompanyName(v){
+    const name=normalizeName(v);
+    const clean=name.toLowerCase();
+    if(!clean) return name;
+    if(clean.includes('clipp')) return 'Clipp';
+    if(clean.includes('unitaxi')) return 'Unitaxi';
+    if(clean.includes('ktaxi')) return 'Ktaxi';
+    if(clean.includes('taxi jj')) return 'Taxi JJ';
+    if(clean.includes('azutaxi')) return 'Azutaxi';
+    if(clean.includes('v&m')) return 'V&M';
+    if(clean.includes('express taxilan') || clean.includes('expresstaxilan')) return 'Express Taxilan';
+    if(clean.includes('taxmonteserin')) return 'TaxMonteserin';
+    if(clean.includes('ecutaxi')) return 'Ecutaxi';
+    if(clean.includes('31 de mayo')) return '31 de Mayo';
+    if(clean.includes('pradospeed') || clean.includes('prado speed')) return 'OK Prado Speed';
+    if(clean.includes('cityejecutiv')) return 'Cityexecutiv';
+    return name;
+  }
+  function mappedCompanyName(v){
+    const base=normalizeName(v);
+    return UNIFY_COMPANIES ? unifiedCompanyName(base) : base;
+  }
 
   function slugify(v){return String(v||'dataset').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||('dataset-'+Date.now());}
   function sum(arr, fn){return arr.reduce((a,b)=>a+(fn?fn(b):b),0);}
@@ -1175,22 +1212,10 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
   }
   function normalizeName(v){
     if(v===null||v===undefined) return '';
-    let s=String(v).trim();
-    if(!s) return '';
-    s=s.replace(/^(APP|BOT)\s+/i,'').replace(/^Bot\s+/i,'').trim();
-    s=s.replace(/\s+/g,' ');
-    const lower=s.toLowerCase();
-    const mapping={
-      'unitaxi':'Unitaxi','app unitaxi':'Unitaxi','bot unitaxi':'Unitaxi','taxi jj':'Taxi JJ','clipp':'Clipp','azutaxi':'Azutaxi','ktaxi':'Ktaxi',
-      'v&m':'V&M','taxmonteserin':'TaxMonteserin','tax monteserin':'TaxMonteserin','31 de mayo':'31 de Mayo','ok prado speed':'OK Prado Speed',
-      'express taxilan':'Expresstaxilan','expresstaxilan':'Expresstaxilan','taxi sos':'Taxi SOS','ecutaxi':'Ecutaxi'
-    };
-    if(mapping[lower]) return mapping[lower];
-    if(lower.startsWith('bot ')) return normalizeName(s.slice(4));
-    if(lower.startsWith('app ')) return normalizeName(s.slice(4));
-    return s.replace(/\b\w/g, m=>m.toUpperCase());
+    return String(v).replace(/\s+/g,' ').trim();
   }
-  function inferCompanyOrder(flows){
+  
+function inferCompanyOrder(flows){
     const set=new Set();
     flows.forEach(f=>{if(f.src) set.add(f.src); if(f.tgt) set.add(f.tgt);});
     const names=[...set];
@@ -1205,8 +1230,8 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
     const pay={digital:0,efectivo:0,byConductora:{}};
     const cleanRows=[];
     for(const row of rows){
-      const src=normalizeName(row.application_cliente || row.generadora || row.src || row.origen || row.emisora);
-      const tgt=normalizeName(row.empresa || row.conductora || row.application_clipper || row.tgt || row.destino || row.receptora);
+      const src=mappedCompanyName(row.application_cliente || row.generadora || row.src || row.origen || row.emisora);
+      const tgt=mappedCompanyName(row.empresa || row.conductora || row.application_clipper || row.tgt || row.destino || row.receptora);
       const v=Number(row.total ?? row.viajes ?? row.v ?? 0) || 0;
       if(!src || !tgt || !v) continue;
       const ok=Number(row.succes ?? row.success ?? row.correctos ?? row.ok ?? 0) || 0;
@@ -1251,6 +1276,17 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
     ];
     return `<div class="card full"><div class="ctitle">Comparativo rápido</div><div class="csub">${esc(ACTIVE_META.label)} vs ${esc((DATASETS[CURRENT_COMPARE_KEY]||{}).meta?.label||'')}</div><div class="compare-grid">${deltas.map(([label,val,suf])=>{const cls=val>0?'delta-up':val<0?'delta-down':'delta-flat'; const sign=val>0?'+':''; const txt=suf==='pp'?`${sign}${val.toFixed(1)} pp`:suf==='$'?`${sign}${money2(val)}`:`${sign}${Math.round(val)}`; return `<div class="card"><div class="plabel">${label}</div><div style="font-size:24px" class="${cls}">${txt}</div></div>`;}).join('')}</div></div>`;
   }
+  function buildUnifyToggle(){
+    return `<label class="unify-toggle ${UNIFY_COMPANIES?'active':''}" id="unify-toggle">
+      <input type="checkbox" id="unify-checkbox" ${UNIFY_COMPANIES?'checked':''}>
+      <span class="unify-switch"></span>
+      <span class="unify-copy">
+        <strong>Vista unificada</strong>
+        <span>${UNIFY_COMPANIES?'APP + BOT consolidados':'Mostrar nombres exactos del archivo'}</span>
+      </span>
+    </label>`;
+  }
+
   function buildDashboard(meta, flows, pay){
     const stats=getStats(flows); COMPANIES=stats.companies; FLOWS=flows;
     const gen=groupByRole(flows,'src'); const cond=groupByRole(flows,'tgt');
@@ -1265,7 +1301,7 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
     const clipp4 = stats.totalIngreso*0.04;
     const companyCount = stats.companies.length;
     const monthRange = meta.label || 'Periodo cargado';
-    const compareHtml = CURRENT_COMPARE_KEY && DATASETS[CURRENT_COMPARE_KEY] ? compareStats(stats, getStats(DATASETS[CURRENT_COMPARE_KEY].flows)) : '';
+    const compareHtml = CURRENT_COMPARE_KEY && DATASETS[CURRENT_COMPARE_KEY] ? compareStats(stats, getStats(aggregateFromRows(DATASETS[CURRENT_COMPARE_KEY].originalRows||DATASETS[CURRENT_COMPARE_KEY].rawRows||[]).flows)) : '';
 
     function colorClass(rate,v,ing){
       if(v===0) return 'me';
@@ -1306,7 +1342,7 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
           <input class="import-input" id="xlsx-loader" type="file" accept=".xlsx,.xls" multiple>
           <select class="mini-select" id="dataset-selector"></select>
           <select class="mini-select" id="compare-selector"></select>
-          <button class="ghost-btn" id="reset-default-btn" type="button">Volver a febrero base</button>
+          <button class="ghost-btn" id="reset-default-btn" type="button">Limpiar datos</button>${buildUnifyToggle()}
         </div>
       </div>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -1352,28 +1388,111 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
   }
   function populateSelectors(){
     const ds=document.getElementById('dataset-selector'), cs=document.getElementById('compare-selector');
+    const resetBtn=document.getElementById('reset-default-btn');
+    const input=document.getElementById('xlsx-loader');
+    const unifyToggle=document.getElementById('unify-toggle');
+    const unifyCheckbox=document.getElementById('unify-checkbox');
+    if(input && !input.dataset.bound){ input.dataset.bound='1'; input.addEventListener('change', handleFiles); }
+    if(unifyToggle && !unifyToggle.dataset.bound){
+      unifyToggle.dataset.bound='1';
+      unifyToggle.addEventListener('click', (ev)=>{
+        if(ev.target && ev.target.tagName==='INPUT') return;
+        ev.preventDefault();
+        UNIFY_COMPANIES = !UNIFY_COMPANIES;
+        applyDataset();
+      });
+    }
+    if(unifyCheckbox && !unifyCheckbox.dataset.bound){
+      unifyCheckbox.dataset.bound='1';
+      unifyCheckbox.addEventListener('change', ()=>{
+        UNIFY_COMPANIES = !!unifyCheckbox.checked;
+        applyDataset();
+      });
+    }
     if(!ds||!cs) return;
     const keys=Object.keys(DATASETS);
+    if(!keys.length){
+      ds.innerHTML='<option value="">Sin archivos cargados</option>';
+      cs.innerHTML='<option value="">Comparar con...</option>';
+      ds.disabled=true;
+      cs.disabled=true;
+      if(resetBtn) resetBtn.onclick=()=>clearAllData();
+      return;
+    }
+    ds.disabled=false;
+    cs.disabled=false;
     ds.innerHTML=keys.map(k=>`<option value="${esc(k)}" ${k===CURRENT_DATASET_KEY?'selected':''}>${esc(DATASETS[k].meta.label)}</option>`).join('');
     cs.innerHTML='<option value="">Comparar con...</option>'+keys.filter(k=>k!==CURRENT_DATASET_KEY).map(k=>`<option value="${esc(k)}" ${k===CURRENT_COMPARE_KEY?'selected':''}>${esc(DATASETS[k].meta.label)}</option>`).join('');
     ds.onchange=(e)=>{CURRENT_DATASET_KEY=e.target.value; CURRENT_COMPARE_KEY=''; applyDataset();};
     cs.onchange=(e)=>{CURRENT_COMPARE_KEY=e.target.value; applyDataset();};
-    const resetBtn=document.getElementById('reset-default-btn');
-    if(resetBtn) resetBtn.onclick=()=>{CURRENT_DATASET_KEY='feb-2026'; CURRENT_COMPARE_KEY=''; applyDataset();};
-    const input=document.getElementById('xlsx-loader');
-    if(input && !input.dataset.bound){ input.dataset.bound='1'; input.addEventListener('change', handleFiles); }
+    if(resetBtn) resetBtn.onclick=()=>clearAllData();
   }
   function clearVisuals(){
     ['sankey-box','chord-box','heatmap-box','treemap-box','butterfly-box','scatter-box','waterfall-box'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML='';});
     Object.keys(drawn).forEach(k=>delete drawn[k]);
   }
-  function applyDataset(){
-    const ds=DATASETS[CURRENT_DATASET_KEY]; if(!ds) return;
-    ACTIVE_META=ds.meta; RAW_ROWS=ds.rawRows||[]; PAYMENT_BREAKDOWN=ds.pay||{digital:0,efectivo:0,byConductora:{}};
+  function buildEmptyDashboard(){
+    return `
+      <div class="import-card">
+        <div>
+          <div class="tag">Clipp B2B · Proyecto Roaming</div>
+          <div style="font-size:18px;font-weight:800;margin-bottom:4px;">Carga un archivo XLSX para ver el dashboard</div>
+          <div class="import-note">No se muestran datos base ni datos guardados. El dashboard solo se llena cuando subes un archivo. Mapeo usado sin renombrar ni agrupar: <b>Generadora = application_cliente</b> y <b>Conductora = empresa</b>. Cuando cargues datos puedes activar una <b>Vista unificada</b> para consolidar APP + BOT por empresa sin alterar la data original.</div>
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="import-pill">Estado: esperando archivo</span>
+            <span class="import-pill">Datos visibles: 0</span>
+          </div>
+        </div>
+        <div class="import-actions">
+          <label class="import-btn" for="xlsx-loader">Subir XLSX</label>
+          <input class="import-input" id="xlsx-loader" type="file" accept=".xlsx,.xls" multiple>
+          <select class="mini-select" id="dataset-selector"></select>
+          <select class="mini-select" id="compare-selector"></select>
+          <button class="ghost-btn" id="reset-default-btn" type="button">Limpiar datos</button>${buildUnifyToggle()}
+        </div>
+      </div>
+      <div class="card full" style="padding:28px;min-height:320px;display:flex;align-items:center;justify-content:center;text-align:center;">
+        <div>
+          <div style="font-size:42px;line-height:1;margin-bottom:12px;">📂</div>
+          <div style="font-size:22px;font-weight:800;margin-bottom:8px;">No hay archivos cargados</div>
+          <div class="csub" style="max-width:720px;margin:0 auto;">Sube un archivo para calcular KPIs, matriz, Sankey, heatmap y el resto de visualizaciones. Mientras no cargues un archivo, todo queda vacío.</div>
+        </div>
+      </div>
+    `;
+  }
+  function applyEmptyState(){
+    FLOWS=[];
+    COMPANIES=[];
+    RAW_ROWS=[];
+    PAYMENT_BREAKDOWN={digital:0, efectivo:0, byConductora:{}};
+    ACTIVE_META={label:'', source:'', days:0, city:''};
     const dash=document.querySelector('#panel-dashboard .dash-scroll');
-    dash.innerHTML=buildDashboard(ds.meta, ds.flows, PAYMENT_BREAKDOWN);
+    dash.innerHTML=buildEmptyDashboard();
     const side=document.querySelector('.sidebar-footer');
-    const st=getStats(ds.flows); side.innerHTML=`<span>${Math.round(st.totalViajes).toLocaleString('en-US')}</span> viajes · <span>${money(st.totalIngreso)}</span><br>${st.companies.length} empresas · ${ACTIVE_META.days||daysFromLabel(ACTIVE_META.label)} días<br>Éxito: <span>${(st.tasaExito*100).toFixed(1)}%</span><br>Clipp 4%: <span>${money2(st.totalIngreso*0.04)}</span>`;
+    side.innerHTML=`<span>0</span> viajes · <span>$0.00</span><br>0 empresas · 0 días<br>Éxito: <span>0.0%</span><br>Clipp 4%: <span>$0.00</span>`;
+    clearVisuals();
+    populateSelectors();
+  }
+  function clearAllData(){
+    DATASETS={};
+    CURRENT_DATASET_KEY='';
+    CURRENT_COMPARE_KEY='';
+    applyEmptyState();
+  }
+  function applyDataset(){
+    const ds=DATASETS[CURRENT_DATASET_KEY];
+    if(!ds){
+      applyEmptyState();
+      return;
+    }
+    ACTIVE_META=ds.meta;
+    RAW_ROWS=ds.originalRows||ds.rawRows||[];
+    const recalculated=aggregateFromRows(RAW_ROWS);
+    PAYMENT_BREAKDOWN=recalculated.pay||{digital:0,efectivo:0,byConductora:{}};
+    const dash=document.querySelector('#panel-dashboard .dash-scroll');
+    dash.innerHTML=buildDashboard(ds.meta, recalculated.flows, PAYMENT_BREAKDOWN);
+    const side=document.querySelector('.sidebar-footer');
+    const st=getStats(recalculated.flows); side.innerHTML=`<span>${Math.round(st.totalViajes).toLocaleString('en-US')}</span> viajes · <span>${money(st.totalIngreso)}</span><br>${st.companies.length} empresas · ${ACTIVE_META.days||daysFromLabel(ACTIVE_META.label)} días<br>Éxito: <span>${(st.tasaExito*100).toFixed(1)}%</span><br>Clipp 4%: <span>${money2(st.totalIngreso*0.04)}</span>`;
     clearVisuals();
     populateSelectors();
     const activePanel=document.querySelector('.panel.active');
@@ -1393,7 +1512,7 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
       const parsed=aggregateFromRows(json);
       const label=monthFromFilename(file.name);
       const key=slugify(label);
-      DATASETS[key]={flows:parsed.flows, rawRows:parsed.rawRows, pay:parsed.pay, meta:{label, source:file.name, days:daysFromLabel(label), city:(parsed.rawRows[0]&&parsed.rawRows[0].city)||'Quito'}};
+      DATASETS[key]={flows:parsed.flows, rawRows:parsed.rawRows, originalRows:json, pay:parsed.pay, meta:{label, source:file.name, days:daysFromLabel(label), city:(parsed.rawRows[0]&&parsed.rawRows[0].city)||'Quito'}};
       CURRENT_DATASET_KEY=key;
     }
     ev.target.value='';
@@ -1468,10 +1587,8 @@ window.addEventListener('resize',()=>{Object.keys(drawn).forEach(k=>{drawn[k]=fa
     rightNodes.forEach(node=>{const col=COL[node.name]||'#888'; svg.append('rect').attr('x',xR).attr('y',node.y).attr('width',nodeW).attr('height',node.h).attr('fill',col).attr('rx',2); svg.append('text').attr('x',xR+nodeW+10).attr('y',node.y+node.h/2).attr('text-anchor','start').attr('dominant-baseline','middle').attr('font-family',"'Syne',sans-serif").attr('font-weight','700').attr('font-size',10).attr('fill',col).text(node.name);});
   };
 
-  // seed default dataset from embedded file
-  DATASETS['feb-2026'] = {flows: FLOWS.map(f=>({...f})), rawRows: [], pay: {digital:583, efectivo:2566, byConductora: DEFAULT_DIGITAL_BREAKDOWN}, meta: {label:'Febrero 2026', source:'embebido', days:16, city:'Quito'}};
-  CURRENT_DATASET_KEY='feb-2026';
-  applyDataset();
+  // start empty: no embedded dataset visible until a file is uploaded
+  applyEmptyState();
 })();
 </script>
 
