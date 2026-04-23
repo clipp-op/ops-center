@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard Operativo — Carreras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root[data-theme="dark"]{
+    --bg:#0d0e12;--bg-soft:#14161c;--panel:#191b23;--panel-2:#1f222c;
+    --border:#2a2e3a;--border-soft:#23262f;
+    --ink:#ecedef;--ink-2:#b9bcc4;--ink-3:#7a7e8a;
+    --grid-2:rgba(255,255,255,0.04);
+    --shadow:0 1px 2px rgba(0,0,0,0.3);
+    --halo-a:rgba(255,209,102,0.08);--halo-b:rgba(6,214,160,0.06);
+    --tooltip-bg:#14161c;--accent-bg:rgba(255,209,102,0.12);
+    --accent:#ffd166;--accent-2:#06d6a0;--danger:#ef476f;--warn:#f78c6b;--info:#5eb3ff;--violet:#b48cff;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f1;--bg-soft:#ecebe4;--panel:#ffffff;--panel-2:#faf9f4;
+    --border:#d9d6cc;--border-soft:#e7e4da;
+    --ink:#14161c;--ink-2:#4a4e5a;--ink-3:#8a8e98;
+    --grid-2:rgba(0,0,0,0.04);
+    --shadow:0 1px 3px rgba(60,50,20,0.06);
+    --halo-a:rgba(210,150,40,0.08);--halo-b:rgba(6,140,110,0.05);
+    --tooltip-bg:#ffffff;--accent-bg:rgba(230,170,50,0.12);
+    --accent:#d29628;--accent-2:#068c6e;--danger:#d14263;--warn:#e08159;--info:#3a8cd6;--violet:#8a6bd4;
+  }
+  :root{--serif:'Fraunces', Georgia, serif;--sans:'Inter Tight', system-ui, sans-serif;--mono:'JetBrains Mono', monospace;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;transition:background 0.3s ease, color 0.3s ease}
+  body{background-image:radial-gradient(1200px 600px at 90% -10%, var(--halo-a), transparent 60%),radial-gradient(900px 500px at -10% 10%, var(--halo-b), transparent 60%);min-height:100vh;}
+  button{font-family:inherit}
+  .wrap{max-width:1480px;margin:0 auto;padding:28px 32px 80px}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:14px}
+  .brand h1{font-family:var(--serif);font-weight:600;font-size:34px;margin:0;letter-spacing:-0.02em}
+  .brand h1 em{font-style:italic;color:var(--accent);font-weight:400}
+  .brand .sub{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.15em}
+  .toprights{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+  .btn{background:var(--panel);border:1px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s ease;display:inline-flex;align-items:center;gap:8px;box-shadow:var(--shadow)}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.primary{background:var(--accent);color:#1a1408;border-color:var(--accent);font-weight:600}
+  .btn.ghost{background:transparent;box-shadow:none}
+
+  .theme-toggle{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px}
+  .theme-toggle button{background:transparent;border:0;padding:6px 10px;border-radius:7px;cursor:pointer;color:var(--ink-3);font-size:14px;font-family:var(--sans);transition:all .15s ease;display:flex;align-items:center;gap:5px}
+  .theme-toggle button.active{background:var(--bg-soft);color:var(--ink)}
+  .theme-toggle button:hover{color:var(--ink)}
+
+  .uploader{border:1.5px dashed var(--border);border-radius:16px;padding:22px;background:linear-gradient(180deg, var(--panel-2), transparent);margin-bottom:24px;transition:all .2s ease}
+  .uploader.drag{border-color:var(--accent);background:var(--accent-bg)}
+  .uploader .row{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .uploader h3{font-family:var(--serif);font-weight:600;margin:0 0 4px;font-size:18px}
+  .uploader p{margin:0;color:var(--ink-2);font-size:13px}
+  .uploader .loaded{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:8px}
+  #fileInput{display:none}
+
+  /* Empresa primary selector */
+  .app-selector{
+    background:linear-gradient(135deg, var(--accent-bg), transparent);
+    border:1px solid var(--accent);border-radius:16px;padding:18px 22px;
+    margin-bottom:16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap
+  }
+  .app-selector .lbl{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--ink);white-space:nowrap}
+  .app-selector .lbl small{display:block;font-family:var(--mono);font-size:10px;font-weight:400;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.12em;margin-top:3px}
+  .app-selector select{flex:1;min-width:240px;background:var(--panel);border:1px solid var(--accent);color:var(--ink);padding:11px 14px;border-radius:10px;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer}
+  .app-selector .desc{color:var(--ink-2);font-size:12.5px;max-width:380px;line-height:1.5}
+
+  .month-shortcuts{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:16px}
+  .month-shortcuts .lbl{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .month-shortcuts .lbl .hint{color:var(--ink-2);text-transform:none;letter-spacing:0;font-size:11px;font-family:var(--sans)}
+  .chip-row{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:var(--bg-soft);border:1px solid var(--border-soft);color:var(--ink-2);padding:7px 12px;border-radius:99px;cursor:pointer;font-size:12px;font-family:var(--mono);transition:all .15s ease;white-space:nowrap}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.active{background:var(--accent);color:#1a1408;border-color:var(--accent);font-weight:600}
+  .chip.special{border-style:dashed}
+
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:24px;}
+  .filter-group label{display:block;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .filter-group label .mini{font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:10px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:0;padding:0}
+  .filter-group label .mini:hover{text-decoration:underline}
+  .multi{background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:10px;max-height:150px;overflow-y:auto;padding:6px}
+  .multi::-webkit-scrollbar{width:6px}
+  .multi::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  .opt{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink-2)}
+  .opt:hover{background:var(--panel-2);color:var(--ink)}
+  .opt input{accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+  .opt span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  select, input[type="date"]{width:100%;background:var(--bg-soft);border:1px solid var(--border-soft);color:var(--ink);padding:9px 10px;border-radius:10px;font-family:var(--sans);font-size:13px;cursor:pointer}
+  select:focus, input:focus{outline:none;border-color:var(--accent)}
+  .date-row{display:flex;gap:6px;align-items:center}
+  .date-row input{flex:1}
+
+  .role-explain{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  @media (max-width:768px){.role-explain{grid-template-columns:1fr}}
+  .role-card{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:12px;padding:14px 16px;position:relative}
+  .role-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;border-radius:12px 0 0 12px}
+  .role-card.gen::before{background:var(--violet)}
+  .role-card.con::before{background:var(--info)}
+  .role-card h4{font-family:var(--serif);font-weight:600;font-size:14px;margin:0 0 4px;color:var(--ink)}
+  .role-card p{margin:0;font-size:12px;color:var(--ink-3);line-height:1.5}
+  .role-card .rule{font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--bg-soft);padding:6px 9px;border-radius:6px;margin-top:8px;display:inline-block}
+  .role-card .count{float:right;font-family:var(--mono);font-size:18px;color:var(--ink);font-weight:600}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:26px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+  .kpi::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--accent)}
+  .kpi.mint::before{background:var(--accent-2)}
+  .kpi.danger::before{background:var(--danger)}
+  .kpi.info::before{background:var(--info)}
+  .kpi.violet::before{background:var(--violet)}
+  .kpi.warn::before{background:var(--warn)}
+  .kpi .label{font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:10px}
+  .kpi .val{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1;letter-spacing:-0.02em}
+  .kpi .val small{font-family:var(--sans);font-size:14px;color:var(--ink-3);font-weight:400;margin-left:4px}
+
+  .section{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:22px;box-shadow:var(--shadow)}
+  .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:16px;flex-wrap:wrap}
+  .section-head h2{font-family:var(--serif);font-weight:600;font-size:22px;margin:0;letter-spacing:-0.01em;display:flex;align-items:center;gap:12px}
+  .section-head h2 .num{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-bg);padding:4px 9px;border-radius:6px;letter-spacing:0.08em}
+  .section-head .hint{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+  @media (max-width:960px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+  .card{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:14px;padding:16px;position:relative}
+  .card h3{font-family:var(--serif);font-weight:600;font-size:15px;margin:0 0 14px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-right:30px}
+  .card h3 .tag{font-family:var(--mono);font-size:10px;font-weight:400;color:var(--ink-3);margin-left:auto;text-transform:uppercase;letter-spacing:0.1em}
+  .chart-wrap{position:relative;height:290px}
+  .chart-wrap.tall{height:360px}
+
+  /* Info tooltip icon */
+  .info-i{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;
+    background:var(--bg-soft);border:1px solid var(--border);
+    color:var(--ink-3);font-family:var(--serif);font-style:italic;font-weight:600;
+    font-size:11px;cursor:help;flex-shrink:0;
+    transition:all .15s ease;position:relative;
+    margin-left:2px;
+  }
+  .info-i:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-bg)}
+  .info-i .tip{
+    visibility:hidden;opacity:0;
+    position:absolute;top:calc(100% + 8px);right:-4px;
+    background:var(--tooltip-bg);border:1px solid var(--border);border-radius:10px;
+    padding:11px 13px;width:280px;
+    font-family:var(--sans);font-style:normal;font-weight:400;font-size:12px;
+    color:var(--ink-2);line-height:1.5;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    z-index:50;
+    transition:opacity .15s ease;
+    pointer-events:none;text-align:left
+  }
+  .info-i .tip::before{content:"";position:absolute;top:-5px;right:10px;width:8px;height:8px;background:var(--tooltip-bg);border-left:1px solid var(--border);border-top:1px solid var(--border);transform:rotate(45deg)}
+  .info-i:hover .tip{visibility:visible;opacity:1}
+  .info-i .tip strong{color:var(--ink);font-weight:600}
+  .info-i .tip code{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--bg-soft);padding:1px 5px;border-radius:4px}
+  .info-i .tip .formula{background:var(--bg-soft);padding:6px 8px;border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--ink);margin-top:6px;display:block}
+
+  .heatmap{overflow-x:auto}
+  .heatmap table{border-collapse:separate;border-spacing:2px;font-family:var(--mono);font-size:11px}
+  .heatmap th{color:var(--ink-3);font-weight:500;padding:4px 6px;text-align:center}
+  .heatmap td{width:32px;height:26px;text-align:center;color:var(--ink);border-radius:4px;transition:transform .1s ease;cursor:default}
+  .heatmap td:hover{transform:scale(1.18);outline:1px solid var(--accent);z-index:2;position:relative}
+  .heatmap .row-label{color:var(--ink-2);text-align:right;padding-right:8px;min-width:42px}
+
+  table.data{width:100%;border-collapse:collapse;font-size:13px}
+  table.data th{text-align:left;padding:10px 8px;font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--panel-2);z-index:1}
+  table.data td{padding:10px 8px;border-bottom:1px solid var(--border-soft);color:var(--ink-2)}
+  table.data tr:hover td{background:var(--accent-bg);color:var(--ink)}
+  table.data td.num{font-family:var(--mono);text-align:right}
+  .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-family:var(--mono);background:var(--bg-soft);color:var(--ink-2);border:1px solid var(--border-soft)}
+  .pill.ok{color:var(--accent-2);border-color:var(--accent-2)}
+  .pill.bad{color:var(--danger);border-color:var(--danger)}
+  .pill.warn{color:var(--warn);border-color:var(--warn)}
+  .pill.gen{color:var(--violet);border-color:var(--violet)}
+  .pill.con{color:var(--info);border-color:var(--info)}
+
+  /* Scroll containers for tops with many items — fixed height so grafica no crece */
+  .scroll-chart{max-height:400px;overflow-y:auto;border-radius:8px;border:1px solid var(--border-soft);padding:4px;background:var(--bg-soft)}
+  .scroll-chart::-webkit-scrollbar{width:8px}
+  .scroll-chart::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  .scroll-chart .inner{position:relative}
+
+  .alerts{display:grid;gap:10px}
+  .alert{display:flex;gap:12px;padding:14px;border-radius:12px;border:1px solid var(--border-soft);background:var(--panel-2);align-items:flex-start}
+  .alert .dot{width:10px;height:10px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .alert.critical{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 8%, transparent)}
+  .alert.critical .dot{background:var(--danger)}
+  .alert.warning{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 8%, transparent)}
+  .alert.warning .dot{background:var(--warn)}
+  .alert.info{border-color:var(--info);background:color-mix(in srgb, var(--info) 8%, transparent)}
+  .alert.info .dot{background:var(--info)}
+  .alert.ok{border-color:var(--accent-2);background:color-mix(in srgb, var(--accent-2) 8%, transparent)}
+  .alert.ok .dot{background:var(--accent-2)}
+  .alert .t{font-weight:600;font-size:13.5px;margin-bottom:3px;color:var(--ink)}
+  .alert .d{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+
+  .empty{text-align:center;padding:80px 20px;color:var(--ink-3)}
+  .empty h2{font-family:var(--serif);font-weight:400;font-size:28px;margin:0 0 10px;color:var(--ink-2);font-style:italic}
+  .empty p{max-width:520px;margin:0 auto;font-size:14px;line-height:1.6}
+
+  .loading{position:fixed;inset:0;background:color-mix(in srgb, var(--bg) 85%, transparent);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+  .loading.show{display:flex}
+  .loading .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .hide{display:none !important}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:5px}
+  .foot{text-align:center;color:var(--ink-3);font-size:11px;font-family:var(--mono);margin-top:30px;letter-spacing:0.1em}
+
+  /* Day-of-month big stats cards */
+  .day-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
+  .day-stat{background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:10px;padding:12px 14px}
+  .day-stat .lbl{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-3);margin-bottom:5px}
+  .day-stat .val{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);line-height:1}
+  .day-stat .sub{font-size:11px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <h1>Ops <em>/ Dashboard</em></h1>
+      <div class="sub">Análisis de carreras · Movilidad</div>
+    </div>
+    <div class="toprights">
+      <div class="theme-toggle" role="tablist">
+        <button id="themeDark" class="active" title="Modo oscuro">◐ Oscuro</button>
+        <button id="themeLight" title="Modo claro">☀ Claro</button>
+      </div>
+      <button class="btn ghost" id="clearBtn">↺ Reset</button>
+      <button class="btn" id="exportBtn">⇩ Exportar CSV</button>
+    </div>
+  </div>
+
+  <div class="uploader" id="uploader">
+    <div class="row">
+      <div>
+        <h3>Cargar archivos CSV</h3>
+        <p>Arrastra o selecciona archivos de cualquier empresa. Hasta 12 meses o más. Separador: <code style="color:var(--accent);font-family:var(--mono)">;</code></p>
+        <div class="loaded" id="loadedFiles">Ningún archivo cargado todavía.</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn primary" onclick="document.getElementById('fileInput').click()">＋ Seleccionar archivos</button>
+      </div>
+    </div>
+    <input type="file" id="fileInput" multiple accept=".csv" />
+  </div>
+
+  <div id="emptyState" class="empty">
+    <h2>Sin datos cargados</h2>
+    <p>Sube uno o varios archivos CSV de cualquier empresa. El dashboard detecta automáticamente los establecimientos, permite filtrar por cada uno, y aplica las reglas de <strong style="color:var(--violet)">roaming generadora</strong> y <strong style="color:var(--info)">roaming conductora</strong>. Los acentos mal codificados se corrigen en carga y exportación.</p>
+    <br>
+    <button class="btn primary" onclick="document.getElementById('fileInput').click()">＋ Empezar</button>
+  </div>
+
+  <div id="dashContent" class="hide">
+
+    <!-- EMPRESA primary selector -->
+    <div class="app-selector">
+      <div class="lbl">Empresa<small>Reporte analizado</small></div>
+      <select id="appPrimary"></select>
+      <div class="desc">Selecciona la empresa (Establecimiento) que actúa como dueño del reporte. Se recalculan las métricas de roaming generadora y conductora según esta empresa.</div>
+    </div>
+
+    <div class="month-shortcuts" id="monthShortcuts">
+      <div class="lbl">
+        <span>Acceso rápido por mes</span>
+        <span class="hint">Clic en un mes para filtrar al mes cerrado</span>
+      </div>
+      <div class="chip-row" id="chipRow"></div>
+    </div>
+
+    <div class="role-explain">
+      <div class="role-card gen">
+        <span class="count" id="genCount">—</span>
+        <h4>Como Generadora — Envía viajes a otras conductoras</h4>
+        <p>App del pasajero genera el pedido, se enruta a otra empresa.</p>
+        <span class="rule" id="genRule">Aplicativo = empresa · Aplicativo_Clipper ≠ Aplicativo_Cliente</span>
+      </div>
+      <div class="role-card con">
+        <span class="count" id="conCount">—</span>
+        <h4>Como Conductora — Recibe y ejecuta viajes</h4>
+        <p>Empresa que tiene los taxis y atiende la solicitud de roaming.</p>
+        <span class="rule" id="conRule">Aplicativo ≠ Aplicativo_Cliente (viaje viene de afuera)</span>
+      </div>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label><span>Agrupación temporal</span></label>
+        <select id="timeGrain">
+          <option value="day">Por día</option>
+          <option value="week">Por semana</option>
+          <option value="month" selected>Por mes</option>
+          <option value="year">Por año</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><span>Rango de fechas</span></label>
+        <div class="date-row">
+          <input type="date" id="dateFrom" />
+          <input type="date" id="dateTo" />
+        </div>
+      </div>
+      <div class="filter-group">
+        <label><span>Tipo de viaje (por rol)</span></label>
+        <select id="fRoamRole">
+          <option value="">Todos los viajes</option>
+          <option value="local">Solo locales (sin roaming)</option>
+          <option value="gen">Solo roaming generadora (sale)</option>
+          <option value="con">Solo roaming conductora (entra)</option>
+          <option value="any">Solo roaming (cualquiera)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label><span>Estado</span><button class="mini" data-target="fEstado" data-action="all">Todos</button></label>
+        <div class="multi" id="fEstado"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Canal</span><button class="mini" data-target="fCanal" data-action="all">Todos</button></label>
+        <div class="multi" id="fCanal"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Plataforma</span><button class="mini" data-target="fPlataforma" data-action="all">Todos</button></label>
+        <div class="multi" id="fPlataforma"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Estado del pedido</span><button class="mini" data-target="fEstadoPedido" data-action="all">Todos</button></label>
+        <div class="multi" id="fEstadoPedido"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Aplicativo</span><button class="mini" data-target="fApp" data-action="all">Todos</button></label>
+        <div class="multi" id="fApp"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Aplicativo Cliente</span><button class="mini" data-target="fAppCli" data-action="all">Todos</button></label>
+        <div class="multi" id="fAppCli"></div>
+      </div>
+      <div class="filter-group">
+        <label><span>Aplicativo Clipper</span><button class="mini" data-target="fAppClip" data-action="all">Todos</button></label>
+        <div class="multi" id="fAppClip"></div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">01</span>Línea de tiempo — Horas × Estados</h2>
+        <div class="hint">Densidad y distribución horaria</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Heatmap — Volumen por hora y día de la semana
+            <span class="info-i" data-tip="title:Heatmap horario|body:Cada celda muestra el número total de carreras registradas en esa combinación día-de-semana × hora. La intensidad del color indica el volumen relativo al máximo.|formula:intensidad = volumen_celda / max(volumen_todas_las_celdas)">i</span>
+            <span class="tag">Intensidad</span>
+          </h3>
+          <div class="heatmap" id="heatmapHour"></div>
+        </div>
+        <div class="card">
+          <h3>Distribución por hora
+            <span class="info-i" data-tip="title:Distribución horaria|body:Volumen total de carreras por hora del día, apilado según el estado final de cada carrera. Permite identificar picos de demanda y franjas con problemas.">i</span>
+            <span class="tag">Apilado por estado</span>
+          </h3>
+          <div class="chart-wrap tall"><canvas id="chartHourStates"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NUEVA SECCIÓN: Análisis diario -->
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">02</span>Análisis diario</h2>
+        <div class="hint">Comportamiento día a día</div>
+      </div>
+
+      <div class="day-stats" id="dayStats"></div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h3>Línea de tiempo por día (todo el rango)
+          <span class="info-i" data-tip="title:Línea temporal diaria|body:Volumen total de carreras por cada día calendario del rango filtrado. Cada punto es un día. Muestra tendencia general, picos, valles y eventos anómalos.|formula:eje_X = fecha · eje_Y = total de carreras del día">i</span>
+          <span class="tag">Serie temporal completa</span>
+        </h3>
+        <div class="chart-wrap tall"><canvas id="chartDaily"></canvas></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Promedio por día del mes (acumulado)
+            <span class="info-i" data-tip="title:Patrón mensual|body:Agrupa TODOS los meses del rango y promedia las carreras por cada día del mes (1 al 31). Revela patrones recurrentes: quincenas, inicios/fines de mes, feriados.|formula:promedio_día_N = total_carreras_día_N / número_de_meses_con_ese_día">i</span>
+            <span class="tag">Agrupa todos los meses</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartDayOfMonth"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Línea de tiempo por día de la semana
+            <span class="info-i" data-tip="title:Evolución semanal|body:Para cada día del rango, muestra el volumen coloreado según el día de la semana que le corresponde. Permite ver si ciertos días de semana se están consolidando como más fuertes o cayendo.|formula:eje_X = fecha · eje_Y = carreras · color = día de la semana">i</span>
+            <span class="tag">Colores por día</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartWeekdayTimeline"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">03</span>Línea de tiempo — Canal y Plataforma</h2>
+        <div class="hint">Adopción y canal origen</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Evolución por canal
+            <span class="info-i" data-tip="title:Canal de origen|body:Por cuál canal entra el pedido: Cliente (app móvil) o Call Center (operador telefónico). Alta dependencia del Call Center sugiere necesidad de impulsar la app.">i</span>
+            <span class="tag">Área apilada</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartCanal"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Evolución por plataforma
+            <span class="info-i" data-tip="title:Plataforma técnica|body:Qué dispositivo/plataforma se usa: Android, iOS, Web Admin, WhatsApp, etc. Mide adopción tecnológica.">i</span>
+            <span class="tag">Área apilada</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartPlataforma"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">04</span>Roaming — Generadora & Conductora</h2>
+        <div class="hint">Flujos cruzados entre aplicativos</div>
+      </div>
+      <div class="grid-2" style="margin-bottom:18px">
+        <div class="card">
+          <h3>Flujo — Aplicativo_Cliente → Aplicativo_Clipper
+            <span class="info-i" data-tip="title:Matriz de flujos|body:Cruce entre el aplicativo del cliente (origen del pedido) y el aplicativo del conductor (quien atendió). Las celdas fuera de la diagonal son roaming.|formula:conteo = viajes donde cliente=fila AND clipper=columna">i</span>
+            <span class="tag">Matriz</span>
+          </h3>
+          <div id="roamingMatrix" style="max-height:380px;overflow:auto"></div>
+        </div>
+        <div class="card">
+          <h3>Balance roaming de la empresa
+            <span class="info-i" data-tip="title:Distribución de roles|body:Distribución de los viajes de la empresa seleccionada entre: Local (todo dentro), Generadora (envía afuera), Conductora (recibe de afuera) y Pendiente (sin clipper asignado aún).">i</span>
+            <span class="tag">Generadora vs Conductora</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartRoamBalance"></canvas></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Evolución de roaming
+            <span class="info-i" data-tip="title:Tendencia de roaming|body:Cómo evoluciona en el tiempo el volumen de viajes locales vs roaming generadora vs roaming conductora. Revela si la empresa se vuelve más dependiente de otras o al revés.">i</span>
+            <span class="tag">Tendencia temporal</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartRoamTime"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Top contrapartes
+            <span class="info-i" data-tip="title:Contrapartes|body:Otras empresas/aplicativos con los que existe flujo. 'Enviados' = esta empresa generó y ellos atendieron (gen). 'Recibidos' = ellos generaron y esta empresa atendió (con). El balance muestra la asimetría.">i</span>
+            <span class="tag">Otros aplicativos · Top 10</span>
+          </h3>
+          <div style="max-height:300px;overflow:auto">
+            <table class="data" id="contrapartesTable">
+              <thead><tr><th>Aplicativo contraparte</th><th class="num">Enviados</th><th class="num">Recibidos</th><th>Balance</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">05</span>Demanda — Usuarios</h2>
+        <div class="hint">Comportamiento y fidelidad</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Top 100 clientes por volumen
+            <span class="info-i" data-tip="title:Top clientes|body:Ranking de los 100 clientes con más carreras en el rango filtrado. Útil para identificar cuentas clave, clientes VIP y concentración de la demanda.">i</span>
+            <span class="tag">Scroll — 100 registros</span>
+          </h3>
+          <div class="scroll-chart"><div class="inner" id="chartTopClientsWrap"><canvas id="chartTopClients"></canvas></div></div>
+        </div>
+        <div class="card">
+          <h3>Frecuencia de clientes
+            <span class="info-i" data-tip="title:Segmentación de fidelidad|body:Cuántos clientes únicos caen en cada segmento según el número de viajes realizados. Permite medir la base de clientes VIP vs clientes de única vez.|formula:conteo por segmento, con identificador = Celular_Cliente">i</span>
+            <span class="tag">Segmentación</span>
+          </h3>
+          <div class="chart-wrap tall"><canvas id="chartFreq"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">06</span>Oferta — Conductores (Clippers)</h2>
+        <div class="hint">Actividad y distribución</div>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Top 100 conductores
+            <span class="info-i" data-tip="title:Top conductores|body:Ranking de los 100 conductores con más carreras atendidas. Las barras están apiladas: verde = éxitos, rojo = otros estados (cancelado/error/procesando).">i</span>
+            <span class="tag">Scroll · 100 registros</span>
+          </h3>
+          <div class="scroll-chart"><div class="inner" id="chartTopDriversWrap"><canvas id="chartTopDrivers"></canvas></div></div>
+        </div>
+        <div class="card">
+          <h3>Ranking de desempeño — todos los conductores
+            <span class="info-i" data-tip="title:Health Score|body:Puntuación 0-100 que combina tres dimensiones del desempeño de cada conductor: éxito, volumen y baja cancelación.|formula:Score = 0.5×%éxito + 0.3×(min(total,50)/50)×100 + 0.2×(100−%cancelación)">i</span>
+            <span class="tag">Score 0-100</span>
+          </h3>
+          <div style="max-height:420px;overflow-y:auto">
+            <table class="data" id="driversTable">
+              <thead><tr><th>#</th><th>Conductor</th><th class="num">Carreras</th><th class="num">% Éxito</th><th class="num">Score</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">07</span>Eficiencia operativa</h2>
+        <div class="hint">Conversión, cancelaciones, ratios</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Tasa de conversión diaria
+            <span class="info-i" data-tip="title:Conversión diaria|body:Porcentaje de carreras que terminan en estado Éxito en cada día del rango.|formula:% éxito = (carreras con Estado=Éxito) / total carreras del día × 100">i</span>
+            <span class="tag">% Éxito sobre total</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartConversion"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Quién cancela — desglose
+            <span class="info-i" data-tip="title:Responsabilidad de cancelación|body:Entre las carreras canceladas, quién disparó la cancelación según el Estado_Pedido: Cliente Cancela, Clipper Cancela, u otro estado.">i</span>
+            <span class="tag">Cliente vs Clipper</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartCancelacion"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">08</span>Análisis por zonas (Origen)</h2>
+        <div class="hint">Dónde está la demanda</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Top 100 orígenes
+            <span class="info-i" data-tip="title:Orígenes de viaje|body:Los 100 puntos de origen más solicitados. Útil para identificar hubs de demanda, barrios con más carreras y oportunidades de posicionamiento.">i</span>
+            <span class="tag">Scroll · 100 registros</span>
+          </h3>
+          <div class="scroll-chart"><div class="inner" id="chartOrigenesWrap"><canvas id="chartOrigenes"></canvas></div></div>
+        </div>
+        <div class="card">
+          <h3>Tasa de éxito por origen
+            <span class="info-i" data-tip="title:Salud por origen|body:Para los orígenes con al menos 10 carreras, qué porcentaje termina en éxito. Orígenes con % bajo indican problemas operativos (cobertura, aceptación, etc.).|formula:% éxito origen = éxitos_del_origen / total_origen × 100">i</span>
+            <span class="tag">Top 20 · mínimo 10 carreras</span>
+          </h3>
+          <div style="max-height:360px;overflow-y:auto">
+            <table class="data" id="originsTable">
+              <thead><tr><th>Origen</th><th class="num">Total</th><th class="num">% Éxito</th><th>Estado</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">09</span>Análisis por días y horas</h2>
+        <div class="hint">Patrones temporales</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Volumen por día de la semana
+            <span class="info-i" data-tip="title:Volumen semanal|body:Suma total de carreras por cada día de la semana en todo el rango. Identifica el día más fuerte (típicamente Vie/Sáb) y el más débil.">i</span>
+            <span class="tag">Total</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartWeekday"></canvas></div>
+        </div>
+        <div class="card">
+          <h3>Ratio oferta / demanda por hora
+            <span class="info-i" data-tip="title:Índice de saturación|body:Cuántas carreras recibe en promedio cada conductor activo en una hora determinada. Valores altos indican saturación (pocos conductores para mucha demanda).|formula:ratio_hora = carreras_hora / conductores_únicos_activos_hora">i</span>
+            <span class="tag">Saturación relativa</span>
+          </h3>
+          <div class="chart-wrap"><canvas id="chartSaturacion"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2><span class="num">10</span>Alertas inteligentes</h2>
+        <div class="hint">Señales que requieren atención</div>
+      </div>
+      <div class="alerts" id="alertsBox"></div>
+    </div>
+
+    <div class="foot">
+      Ops Dashboard · <span id="rowCount"></span>
+    </div>
+  </div>
+</div>
+
+<div class="loading" id="loader"><div class="spinner"></div></div>
+
+<script>
+/* ===================================================================
+   THEME
+=================================================================== */
+const THEME_KEY = 'ops_theme';
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('themeDark').classList.toggle('active', t==='dark');
+  document.getElementById('themeLight').classList.toggle('active', t==='light');
+  try{ localStorage.setItem(THEME_KEY, t); }catch(e){}
+  if(S.raw.length) renderAll();
+}
+(function initTheme(){
+  let t = 'dark';
+  try{ t = localStorage.getItem(THEME_KEY) || 'dark'; }catch(e){}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+document.getElementById('themeDark').onclick = ()=>setTheme('dark');
+document.getElementById('themeLight').onclick = ()=>setTheme('light');
+
+/* ===================================================================
+   INFO TOOLTIPS — render ahora desde data-tip
+=================================================================== */
+function bindInfoTooltips(){
+  document.querySelectorAll('.info-i[data-tip]').forEach(el=>{
+    if(el._tipBound) return;
+    const raw = el.getAttribute('data-tip');
+    // raw: "title:...|body:...|formula:..."
+    const parts = raw.split('|').reduce((acc, p)=>{
+      const idx = p.indexOf(':');
+      if(idx>0){ acc[p.slice(0,idx).trim()] = p.slice(idx+1).trim(); }
+      return acc;
+    }, {});
+    const tip = document.createElement('div');
+    tip.className = 'tip';
+    let html = '';
+    if(parts.title) html += `<strong>${parts.title}</strong><br>`;
+    if(parts.body) html += `${parts.body}`;
+    if(parts.formula) html += `<span class="formula">${parts.formula}</span>`;
+    tip.innerHTML = html;
+    el.appendChild(tip);
+    el._tipBound = true;
+  });
+}
+
+/* ===================================================================
+   STATE
+=================================================================== */
+const S = {
+  raw: [], filtered: [], files: [], charts: {},
+  activeMonth: null,
+  primaryEmpresa: null,
+  filters: { grain: 'month' }
+};
+const WEEKDAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const WEEKDAYS_LONG = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES_ABREV = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+/* ===================================================================
+   MOJIBAKE & PARSE
+=================================================================== */
+function fixMojibake(s){
+  if(typeof s!=='string') return s;
+  if(!/[ÃÂ]/.test(s)) return s;
+  try{
+    const bytes = new Uint8Array(s.length);
+    for(let i=0;i<s.length;i++) bytes[i]=s.charCodeAt(i) & 0xff;
+    const decoded = new TextDecoder('utf-8').decode(bytes);
+    if(!decoded.includes('\uFFFD')) return decoded;
+    return s;
+  }catch(e){ return s; }
+}
+function parseDate(str){
+  if(!str) return null;
+  const d = new Date(String(str).replace(' ','T'));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/* ===================================================================
+   LOAD
+=================================================================== */
+function loadFiles(files){
+  if(!files || !files.length) return;
+  showLoader(true);
+  const arr = Array.from(files);
+  let done = 0;
+  arr.forEach(file=>{
+    Papa.parse(file, {
+      header:true,delimiter:';',skipEmptyLines:true,encoding:'utf-8',
+      complete: (res)=>{
+        const rows = res.data.map(r=>{
+          const fixed = {};
+          for(const k in r){
+            const kk = fixMojibake(k).trim();
+            fixed[kk] = fixMojibake(r[k]);
+          }
+          fixed._date = parseDate(fixed.Fecha_Registro);
+          return fixed;
+        }).filter(r=>r._date);
+        S.raw = S.raw.concat(rows);
+        if(!S.files.includes(file.name)) S.files.push(file.name);
+        done++;
+        if(done===arr.length){
+          dedupeRaw();
+          onDataLoaded();
+          showLoader(false);
+        }
+      },
+      error: ()=>{ done++; if(done===arr.length){ onDataLoaded(); showLoader(false); } }
+    });
+  });
+}
+function dedupeRaw(){
+  const seen = new Set();
+  S.raw = S.raw.filter(r=>{
+    const k = `${r.Fecha_Registro}|${r.Cliente||''}|${r.Origen||''}|${r.Estado||''}|${r.Clipper||''}|${r.Establecimiento||''}`;
+    if(seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+
+/* ===================================================================
+   ROAMING LOGIC — nueva regla basada en EMPRESA (Establecimiento)
+=================================================================== */
+/*
+  EMPRESA = Establecimiento (ej. "CC 31 de mayo" → empresa "31 de Mayo")
+  La EMPRESA está asociada a un Aplicativo "dueño" (ej. APP 31 de Mayo)
+  Para esto: cuando se selecciona EMPRESA, inferimos su/s Aplicativos asociados
+  mirando los valores de Aplicativo más comunes para esa empresa.
+
+  Reglas:
+  - Conductora: la empresa atendió el viaje (Establecimiento = empresa),
+    pero el viaje lo generó otro aplicativo:
+      Aplicativo ≠ AppsDeEmpresa (el viaje viene de fuera)
+    → es roaming conductora
+
+  - Generadora: el viaje lo generó un aplicativo de la empresa (Aplicativo ∈ AppsDeEmpresa),
+    identificando su Aplicativo_Cliente, y fue atendido por una app distinta
+    al Aplicativo_Cliente:
+      Aplicativo ∈ AppsDeEmpresa AND Aplicativo_Clipper ≠ Aplicativo_Cliente
+    → es roaming generadora
+
+  - Local: Aplicativo ∈ AppsDeEmpresa AND Aplicativo_Clipper = Aplicativo_Cliente
+  - Pending: sin clipper asignado (no se sabe aún)
+*/
+function inferAppsOfEmpresa(empresa){
+  // Mirar qué Aplicativos aparecen cuando Establecimiento = empresa
+  const counts = {};
+  S.raw.forEach(r=>{
+    if((r.Establecimiento||'').trim() === empresa){
+      const a = (r.Aplicativo||'').trim();
+      if(a) counts[a] = (counts[a]||0)+1;
+      const ac = (r.Aplicativo_Cliente||'').trim();
+      if(ac) counts[ac] = (counts[ac]||0)+1;
+      const acp = (r.Aplicativo_Clipper||'').trim();
+      if(acp) counts[acp] = (counts[acp]||0)+1;
+    }
+  });
+  // Se consideran "apps de la empresa" aquellos que aparecen de forma significativa
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  if(!total) return new Set();
+  return new Set(Object.entries(counts)
+    .filter(([_,c])=>c/total >= 0.02)  // al menos 2% de presencia
+    .map(([k])=>k));
+}
+
+let APPS_OF_EMPRESA = new Set();
+
+function classifyRoaming(row){
+  const empresa = S.primaryEmpresa;
+  if(!empresa) return null;
+
+  const est = (row.Establecimiento||'').trim();
+  const app = (row.Aplicativo||'').trim();
+  const appCli = (row.Aplicativo_Cliente||'').trim();
+  const appClip = (row.Aplicativo_Clipper||'').trim();
+
+  // El registro debe estar asociado a la empresa:
+  // bien porque lo atendió (est=empresa) o bien porque el Aplicativo es de la empresa
+  const atendidoPorEmpresa = (est === empresa);
+  const generadoPorEmpresa = APPS_OF_EMPRESA.has(app);
+
+  if(!atendidoPorEmpresa && !generadoPorEmpresa) return null;
+
+  // Conductora: la empresa atendió pero el viaje lo generó otra app (no de la empresa)
+  if(atendidoPorEmpresa && app && !APPS_OF_EMPRESA.has(app)) return 'con';
+
+  // Generadora: la empresa generó (Aplicativo es app de la empresa),
+  // y el clipper es distinto al aplicativo del cliente
+  if(generadoPorEmpresa && appClip && appCli && appClip !== appCli) return 'gen';
+
+  // Si no hay clipper asignado
+  if(generadoPorEmpresa && !appClip) return 'pending';
+
+  // Local: generó la empresa y clipper == cliente (todo dentro)
+  if(generadoPorEmpresa && appClip === appCli) return 'local';
+
+  // Si atendió la empresa y generó la empresa: local
+  if(atendidoPorEmpresa && generadoPorEmpresa) return 'local';
+
+  return 'other';
+}
+
+/* ===================================================================
+   SETUP AFTER LOAD
+=================================================================== */
+function onDataLoaded(){
+  if(!S.raw.length){ alert('No se pudieron leer registros válidos.'); return; }
+  document.getElementById('emptyState').classList.add('hide');
+  document.getElementById('dashContent').classList.remove('hide');
+  document.getElementById('loadedFiles').textContent =
+    `${S.files.length} archivo(s) — ${fmt(S.raw.length)} registros · Rango: ${fmtDate(minDate())} → ${fmtDate(maxDate())}`;
+  setupPrimaryEmpresa();
+  setupMonthShortcuts();
+  setupFilters();
+  applyFilters();
+  bindInfoTooltips();
+}
+function minDate(){ return new Date(Math.min(...S.raw.map(r=>r._date))) }
+function maxDate(){ return new Date(Math.max(...S.raw.map(r=>r._date))) }
+
+function setupPrimaryEmpresa(){
+  const counts = {};
+  S.raw.forEach(r=>{
+    const e = (r.Establecimiento||'').trim();
+    if(e) counts[e] = (counts[e]||0)+1;
+  });
+  const list = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+  const sel = document.getElementById('appPrimary');
+  if(!list.length){
+    sel.innerHTML = `<option value="">(sin establecimientos)</option>`;
+    S.primaryEmpresa = null;
+    return;
+  }
+  sel.innerHTML = list.map(a=>`<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+  S.primaryEmpresa = list[0];
+  sel.value = S.primaryEmpresa;
+  APPS_OF_EMPRESA = inferAppsOfEmpresa(S.primaryEmpresa);
+  updateRoleRules();
+  sel.onchange = ()=>{
+    S.primaryEmpresa = sel.value;
+    APPS_OF_EMPRESA = inferAppsOfEmpresa(S.primaryEmpresa);
+    updateRoleRules();
+    applyFilters();
+  };
+}
+
+function updateRoleRules(){
+  const apps = Array.from(APPS_OF_EMPRESA).join(', ') || '—';
+  document.getElementById('genRule').textContent =
+    `Aplicativo ∈ {${apps}} · Aplicativo_Clipper ≠ Aplicativo_Cliente`;
+  document.getElementById('conRule').textContent =
+    `Establecimiento = ${S.primaryEmpresa || '—'} · Aplicativo ∉ apps de la empresa`;
+}
+
+/* ===================================================================
+   MONTH SHORTCUTS
+=================================================================== */
+function setupMonthShortcuts(){
+  const set = new Set();
+  S.raw.forEach(r=>{
+    const d = r._date;
+    set.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+  });
+  const months = Array.from(set).sort();
+  const chipRow = document.getElementById('chipRow');
+  const today = new Date();
+  const currentMonKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+
+  let html = `<button class="chip special active" data-mon="all">Todo el rango</button>`;
+  months.forEach(mk=>{
+    const [y,m] = mk.split('-');
+    const label = `${MESES_ABREV[parseInt(m,10)-1]} ${y}`;
+    const tooltip = mk < currentMonKey ? 'Mes cerrado' : (mk===currentMonKey?'Mes en curso':'Mes futuro');
+    html += `<button class="chip" data-mon="${mk}" title="${tooltip}">${label}</button>`;
+  });
+  const closedMonths = months.filter(mk=>mk<currentMonKey);
+  if(closedMonths.length){
+    const last = closedMonths[closedMonths.length-1];
+    html += `<button class="chip special" data-mon="${last}" title="Último mes cerrado">Último cerrado</button>`;
+  }
+  chipRow.innerHTML = html;
+  chipRow.querySelectorAll('.chip').forEach(b=>{
+    b.addEventListener('click', ()=>selectMonth(b.getAttribute('data-mon')));
+  });
+}
+
+function selectMonth(key){
+  S.activeMonth = key;
+  document.querySelectorAll('#chipRow .chip').forEach(c=>{
+    c.classList.toggle('active', c.getAttribute('data-mon')===key);
+  });
+  const dFrom = document.getElementById('dateFrom');
+  const dTo = document.getElementById('dateTo');
+  if(key === 'all'){
+    dFrom.value = isoDate(minDate());
+    dTo.value = isoDate(maxDate());
+  } else {
+    const [y,m] = key.split('-').map(Number);
+    const start = new Date(y, m-1, 1);
+    const end = new Date(y, m, 0);
+    const mn = minDate(), mx = maxDate();
+    dFrom.value = isoDate(start < mn ? mn : start);
+    dTo.value = isoDate(end > mx ? mx : end);
+    document.getElementById('timeGrain').value = 'month';
+  }
+  applyFilters();
+}
+
+/* ===================================================================
+   FILTERS
+=================================================================== */
+function setupFilters(){
+  const dFrom = document.getElementById('dateFrom');
+  const dTo = document.getElementById('dateTo');
+  dFrom.value = isoDate(minDate());
+  dTo.value = isoDate(maxDate());
+  dFrom.min = dTo.min = isoDate(minDate());
+  dFrom.max = dTo.max = isoDate(maxDate());
+
+  fillMulti('fEstado','Estado');
+  fillMulti('fCanal','Canal');
+  fillMulti('fPlataforma','Plataforma');
+  fillMulti('fEstadoPedido','Estado_Pedido');
+  fillMulti('fApp','Aplicativo');
+  fillMulti('fAppCli','Aplicativo_Cliente');
+  fillMulti('fAppClip','Aplicativo_Clipper');
+
+  dFrom.onchange = dTo.onchange = ()=>{
+    S.activeMonth = null;
+    document.querySelectorAll('#chipRow .chip').forEach(c=>c.classList.remove('active'));
+    applyFilters();
+  };
+  document.getElementById('timeGrain').onchange = applyFilters;
+  document.getElementById('fRoamRole').onchange = applyFilters;
+
+  document.querySelectorAll('.mini[data-action="all"]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const id = btn.getAttribute('data-target');
+      const boxes = document.querySelectorAll(`#${id} input`);
+      const anyUnchecked = Array.from(boxes).some(b=>!b.checked);
+      boxes.forEach(b=>b.checked = anyUnchecked);
+      applyFilters();
+    };
+  });
+}
+
+function fillMulti(elId, col){
+  const box = document.getElementById(elId);
+  const counts = {};
+  S.raw.forEach(r=>{
+    const v = (r[col]||'').toString().trim();
+    if(!v) return;
+    counts[v] = (counts[v]||0)+1;
+  });
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  box.innerHTML = entries.map(([v])=>`
+    <label class="opt" title="${escapeHtml(v)}">
+      <input type="checkbox" value="${escapeHtml(v)}" checked />
+      <span>${escapeHtml(v)}</span>
+    </label>`).join('');
+  box.querySelectorAll('input').forEach(cb=>cb.addEventListener('change', applyFilters));
+}
+
+/* ===================================================================
+   APPLY FILTERS
+=================================================================== */
+function applyFilters(){
+  const dFrom = new Date(document.getElementById('dateFrom').value+'T00:00:00');
+  const dTo = new Date(document.getElementById('dateTo').value+'T23:59:59');
+  S.filters.grain = document.getElementById('timeGrain').value;
+
+  const sel = (elId)=>new Set(
+    Array.from(document.querySelectorAll(`#${elId} input:checked`)).map(e=>e.value)
+  );
+  const f = {
+    estado: sel('fEstado'), canal: sel('fCanal'), plataforma: sel('fPlataforma'),
+    estadoPedido: sel('fEstadoPedido'), app: sel('fApp'),
+    appCli: sel('fAppCli'), appClip: sel('fAppClip'),
+  };
+  const roamRole = document.getElementById('fRoamRole').value;
+
+  S.filtered = S.raw.filter(r=>{
+    r._roamRole = classifyRoaming(r);
+    if(!r._roamRole) return false;
+
+    if(r._date < dFrom || r._date > dTo) return false;
+    if(f.estado.size && !f.estado.has((r.Estado||'').trim())) return false;
+    if(f.canal.size && !f.canal.has((r.Canal||'').trim())) return false;
+    if(f.plataforma.size && !f.plataforma.has((r.Plataforma||'').trim())) return false;
+    if(f.estadoPedido.size && !f.estadoPedido.has((r.Estado_Pedido||'').trim())) return false;
+    if(f.app.size){
+      const v = (r.Aplicativo||'').trim();
+      if(!v || !f.app.has(v)) return false;
+    }
+    if(f.appCli.size){
+      const v = (r.Aplicativo_Cliente||'').trim();
+      if(!v || !f.appCli.has(v)) return false;
+    }
+    if(f.appClip.size){
+      const v = (r.Aplicativo_Clipper||'').trim();
+      if(!v || !f.appClip.has(v)) return false;
+    }
+
+    if(roamRole==='local' && r._roamRole!=='local') return false;
+    if(roamRole==='gen' && r._roamRole!=='gen') return false;
+    if(roamRole==='con' && r._roamRole!=='con') return false;
+    if(roamRole==='any' && r._roamRole!=='gen' && r._roamRole!=='con') return false;
+    return true;
+  });
+
+  document.getElementById('rowCount').textContent = `${fmt(S.filtered.length)} registros · Empresa: ${S.primaryEmpresa || '—'}`;
+  renderAll();
+}
+
+function renderAll(){
+  renderRoleCounts();
+  renderKPIs();
+  renderHeatmap();
+  renderHourStates();
+  renderDayStats();
+  renderDailyTimeline();
+  renderDayOfMonth();
+  renderWeekdayTimeline();
+  renderCanal();
+  renderPlataforma();
+  renderRoamingMatrix();
+  renderRoamBalance();
+  renderRoamTime();
+  renderContrapartes();
+  renderTopClients();
+  renderFreq();
+  renderTopDrivers();
+  renderDriversTable();
+  renderConversion();
+  renderCancelacion();
+  renderOrigenes();
+  renderOriginsTable();
+  renderWeekday();
+  renderSaturacion();
+  renderAlerts();
+}
+
+/* ===================================================================
+   ROLE COUNTS
+=================================================================== */
+function renderRoleCounts(){
+  const gen = S.filtered.filter(r=>r._roamRole==='gen').length;
+  const con = S.filtered.filter(r=>r._roamRole==='con').length;
+  document.getElementById('genCount').textContent = fmt(gen);
+  document.getElementById('conCount').textContent = fmt(con);
+}
+
+/* ===================================================================
+   KPIs
+=================================================================== */
+function renderKPIs(){
+  const d = S.filtered;
+  const total = d.length;
+  const exito = d.filter(r=>r.Estado==='Éxito').length;
+  const cancel = d.filter(r=>r.Estado==='Cancelado').length;
+  const err = d.filter(r=>r.Estado==='Error').length;
+  const tasaExito = total? (exito/total*100):0;
+  const tasaCancel = total? (cancel/total*100):0;
+  const conductores = new Set(d.filter(r=>r.Clipper).map(r=>r.Clipper.trim())).size;
+  const clientes = new Set(d.filter(r=>r.Celular_Cliente).map(r=>r.Celular_Cliente.trim())).size;
+  const dias = new Set(d.map(r=>isoDate(r._date))).size;
+  const carrerasDia = dias? total/dias : 0;
+  const callCenter = d.filter(r=>r.Canal==='Call center').length;
+  const ratioCC = total? (callCenter/total*100) : 0;
+  const gen = d.filter(r=>r._roamRole==='gen').length;
+  const con = d.filter(r=>r._roamRole==='con').length;
+  const local = d.filter(r=>r._roamRole==='local').length;
+
+  const kpis = [
+    {label:'Total carreras', val:fmt(total), cls:''},
+    {label:'Tasa de éxito', val:tasaExito.toFixed(1), unit:'%', cls:'mint'},
+    {label:'Cancelaciones', val:fmt(cancel), unit:`(${tasaCancel.toFixed(1)}%)`, cls:'danger'},
+    {label:'Errores del sistema', val:fmt(err), cls:'warn'},
+    {label:'Viajes locales', val:fmt(local), cls:'mint'},
+    {label:'Roaming generadora', val:fmt(gen), unit:`(${total?(gen/total*100).toFixed(1):0}%)`, cls:'violet'},
+    {label:'Roaming conductora', val:fmt(con), unit:`(${total?(con/total*100).toFixed(1):0}%)`, cls:'info'},
+    {label:'Conductores activos', val:fmt(conductores), cls:'info'},
+    {label:'Clientes únicos', val:fmt(clientes), cls:'violet'},
+    {label:'Carreras / día', val:carrerasDia.toFixed(1), cls:''},
+    {label:'Dependencia Call Center', val:ratioCC.toFixed(1), unit:'%', cls:ratioCC>80?'danger':'warn'},
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="label">${k.label}</div>
+      <div class="val">${k.val}${k.unit?`<small>${k.unit}</small>`:''}</div>
+    </div>`).join('');
+}
+
+/* ===================================================================
+   HEATMAP
+=================================================================== */
+function renderHeatmap(){
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  const grid = Array.from({length:7},()=>Array(24).fill(0));
+  S.filtered.forEach(r=>{ const d = r._date; grid[d.getDay()][d.getHours()]++; });
+  const max = Math.max(...grid.flat(),1);
+  let html = '<table><thead><tr><th></th>';
+  for(let h=0;h<24;h++) html+=`<th>${String(h).padStart(2,'0')}</th>`;
+  html += '</tr></thead><tbody>';
+  for(let d=0;d<7;d++){
+    html += `<tr><td class="row-label">${WEEKDAYS[d]}</td>`;
+    for(let h=0;h<24;h++){
+      const v = grid[d][h];
+      const intensity = v/max;
+      const baseColor = isDark ? '255,209,102' : '210,150,40';
+      const bg = intensity===0 ? 'var(--bg-soft)' : `rgba(${baseColor},${0.08 + intensity*0.82})`;
+      const color = intensity>0.5 ? (isDark?'#1a1408':'#fff') : 'var(--ink-2)';
+      html += `<td style="background:${bg};color:${color}" title="${WEEKDAYS_LONG[d]} ${String(h).padStart(2,'0')}:00 — ${v} carreras">${v||''}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('heatmapHour').innerHTML = html;
+}
+
+function renderHourStates(){
+  const estados = ['Éxito','Cancelado','Error','Procesando'];
+  const colors = paletteStates();
+  const buckets = Array.from({length:24},()=>({}));
+  S.filtered.forEach(r=>{
+    const h = r._date.getHours();
+    const e = r.Estado||'Otro';
+    buckets[h][e] = (buckets[h][e]||0)+1;
+  });
+  const labels = Array.from({length:24},(_,h)=>`${String(h).padStart(2,'0')}h`);
+  const datasets = estados.map(e=>({
+    label:e, backgroundColor:colors[e]||'#888',
+    data: buckets.map(b=>b[e]||0), stack:'s', borderRadius:3
+  }));
+  drawChart('chartHourStates','bar',{labels,datasets},{
+    scales:{x:{stacked:true},y:{stacked:true}},
+    plugins:{legend:{position:'bottom'}}
+  });
+}
+
+/* ===================================================================
+   NEW: DAILY ANALYSIS
+=================================================================== */
+function renderDayStats(){
+  const byDay = {};
+  S.filtered.forEach(r=>{
+    const k = isoDate(r._date);
+    byDay[k] = (byDay[k]||0)+1;
+  });
+  const days = Object.keys(byDay).sort();
+  const vals = Object.values(byDay);
+  if(!vals.length){
+    document.getElementById('dayStats').innerHTML = '';
+    return;
+  }
+  const total = vals.reduce((a,b)=>a+b,0);
+  const avg = total/vals.length;
+  const max = Math.max(...vals);
+  const min = Math.min(...vals);
+  const maxDay = days.find(d=>byDay[d]===max);
+  const minDay = days.find(d=>byDay[d]===min);
+  // std dev
+  const variance = vals.reduce((s,v)=>s+Math.pow(v-avg,2),0)/vals.length;
+  const sd = Math.sqrt(variance);
+
+  document.getElementById('dayStats').innerHTML = `
+    <div class="day-stat"><div class="lbl">Días con actividad</div><div class="val">${fmt(days.length)}</div><div class="sub">en el rango</div></div>
+    <div class="day-stat"><div class="lbl">Promedio diario</div><div class="val">${avg.toFixed(1)}</div><div class="sub">carreras/día</div></div>
+    <div class="day-stat"><div class="lbl">Día pico ↑</div><div class="val">${fmt(max)}</div><div class="sub">${fmtDate(new Date(maxDay+'T00:00:00'))}</div></div>
+    <div class="day-stat"><div class="lbl">Día valle ↓</div><div class="val">${fmt(min)}</div><div class="sub">${fmtDate(new Date(minDay+'T00:00:00'))}</div></div>
+    <div class="day-stat"><div class="lbl">Desviación estándar</div><div class="val">${sd.toFixed(1)}</div><div class="sub">volatilidad diaria</div></div>
+  `;
+}
+
+function renderDailyTimeline(){
+  // Línea de tiempo por día (todo el rango), con áreas por estado
+  const byDay = {};
+  S.filtered.forEach(r=>{
+    const k = isoDate(r._date);
+    if(!byDay[k]) byDay[k] = {'Éxito':0,'Cancelado':0,'Error':0,'Procesando':0};
+    const e = r.Estado || 'Otro';
+    if(byDay[k][e]!==undefined) byDay[k][e]++;
+  });
+  const labels = Object.keys(byDay).sort();
+  const colors = paletteStates();
+  const datasets = ['Éxito','Cancelado','Error','Procesando'].map(e=>({
+    label:e,
+    data: labels.map(l=>byDay[l][e]),
+    borderColor: colors[e],
+    backgroundColor: colors[e]+'55',
+    fill:true, tension:0.25, pointRadius: labels.length<=90? 2 : 0, stack:'s'
+  }));
+  drawChart('chartDaily','line',{labels, datasets},{
+    scales:{y:{stacked:true}, x:{ticks:{maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:20}}},
+    plugins:{legend:{position:'bottom'}, tooltip:{mode:'index',intersect:false}},
+    interaction:{mode:'index',intersect:false}
+  });
+}
+
+function renderDayOfMonth(){
+  // Para cada día del mes (1..31), promediamos las carreras sobre los meses donde aparece
+  const byDOM = {}; // day_of_month -> {total: n, months: Set}
+  S.filtered.forEach(r=>{
+    const d = r._date;
+    const dom = d.getDate();
+    const monKey = `${d.getFullYear()}-${d.getMonth()}`;
+    if(!byDOM[dom]) byDOM[dom]={total:0,months:new Set()};
+    byDOM[dom].total++;
+    byDOM[dom].months.add(monKey);
+  });
+  const labels = Array.from({length:31},(_,i)=>String(i+1));
+  const data = labels.map(dom=>{
+    const v = byDOM[dom];
+    if(!v || !v.months.size) return 0;
+    return v.total / v.months.size;
+  });
+  drawChart('chartDayOfMonth','bar',{
+    labels,
+    datasets:[{label:'Promedio', data, backgroundColor: cssVar('--accent'), borderRadius:3}]
+  },{
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>`Día ${ctx.label}: ${ctx.raw.toFixed(1)} carreras/mes en promedio`}}}
+  });
+}
+
+function renderWeekdayTimeline(){
+  // Para cada día del rango, muestra barra coloreada por día de la semana
+  const byDay = {};
+  S.filtered.forEach(r=>{
+    const k = isoDate(r._date);
+    if(!byDay[k]) byDay[k] = {total:0, dow: r._date.getDay()};
+    byDay[k].total++;
+  });
+  const labels = Object.keys(byDay).sort();
+  const weekdayColors = [
+    cssVar('--danger'),   // Dom
+    cssVar('--info'),     // Lun
+    cssVar('--info'),     // Mar
+    cssVar('--info'),     // Mié
+    cssVar('--info'),     // Jue
+    cssVar('--accent'),   // Vie
+    cssVar('--warn')      // Sáb
+  ];
+  const data = labels.map(k=>byDay[k].total);
+  const bgColors = labels.map(k=>weekdayColors[byDay[k].dow]);
+  drawChart('chartWeekdayTimeline','bar',{
+    labels,
+    datasets:[{data, backgroundColor:bgColors, borderRadius:2}]
+  },{
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:(ctx)=>{
+          const k = labels[ctx.dataIndex];
+          return `${WEEKDAYS_LONG[byDay[k].dow]} ${k} — ${fmt(byDay[k].total)} carreras`;
+        }
+      }}
+    },
+    scales:{x:{ticks:{maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:20}}}
+  });
+}
+
+/* ===================================================================
+   TIMELINES
+=================================================================== */
+function renderCanal(){ renderStackedTimeline('chartCanal','Canal'); }
+function renderPlataforma(){ renderStackedTimeline('chartPlataforma','Plataforma'); }
+function renderStackedTimeline(canvasId, col){
+  const {labels, series} = bucketTimeline(S.filtered, col, S.filters.grain);
+  const palette = palette8();
+  const datasets = Object.entries(series).map(([k,v],i)=>({
+    label:k, data:v, borderColor:palette[i%palette.length],
+    backgroundColor:palette[i%palette.length]+'55', fill:true, tension:0.3, pointRadius:2, stack:'s'
+  }));
+  drawChart(canvasId,'line',{labels,datasets},{
+    scales:{y:{stacked:true}},
+    plugins:{legend:{position:'bottom'}},
+    interaction:{mode:'index',intersect:false}
+  });
+}
+
+/* ===================================================================
+   ROAMING
+=================================================================== */
+function renderRoamingMatrix(){
+  const rowApps = new Set(), colApps = new Set();
+  S.filtered.forEach(r=>{
+    const ac = (r.Aplicativo_Cliente||'').trim();
+    const ap = (r.Aplicativo_Clipper||'').trim();
+    if(ac) rowApps.add(ac);
+    if(ap) colApps.add(ap);
+  });
+  const rowList = Array.from(rowApps).sort();
+  const colList = Array.from(colApps).sort();
+  if(!rowList.length || !colList.length){
+    document.getElementById('roamingMatrix').innerHTML = '<div style="color:var(--ink-3);padding:20px;text-align:center;font-size:13px">Sin datos suficientes para la matriz</div>';
+    return;
+  }
+  const matrix = {};
+  rowList.forEach(a=>{ matrix[a]={}; colList.forEach(c=>matrix[a][c]=0); });
+  S.filtered.forEach(r=>{
+    const ac = (r.Aplicativo_Cliente||'').trim();
+    const ap = (r.Aplicativo_Clipper||'').trim();
+    if(ac && ap && matrix[ac] && matrix[ac][ap]!==undefined) matrix[ac][ap]++;
+  });
+  let max = 0;
+  rowList.forEach(a=>colList.forEach(c=>{ if(matrix[a][c]>max) max=matrix[a][c] }));
+
+  let html = '<table class="data" style="font-size:12px"><thead><tr><th>Cliente ↓ / Clipper →</th>';
+  colList.forEach(c=>{
+    const isEmpresaApp = APPS_OF_EMPRESA.has(c);
+    html+=`<th class="num" ${isEmpresaApp?'style="color:var(--accent)"':''}>${escapeHtml(c)}${isEmpresaApp?' ★':''}</th>`;
+  });
+  html += '<th class="num">Total</th></tr></thead><tbody>';
+  rowList.forEach(a=>{
+    let rowTotal = 0;
+    const isEmpresaApp = APPS_OF_EMPRESA.has(a);
+    html += `<tr><td><strong ${isEmpresaApp?'style="color:var(--accent)"':''}>${escapeHtml(a)}${isEmpresaApp?' ★':''}</strong></td>`;
+    colList.forEach(c=>{
+      const v = matrix[a][c];
+      rowTotal += v;
+      const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+      let bg = 'transparent', mark = '';
+      if(v>0){
+        const intensity = max? v/max : 0;
+        let baseColor;
+        const aEmpresa = APPS_OF_EMPRESA.has(a);
+        const cEmpresa = APPS_OF_EMPRESA.has(c);
+        if(aEmpresa && cEmpresa && a===c){
+          baseColor = isDark?'6,214,160':'6,140,110';
+        } else if(aEmpresa && !cEmpresa){
+          baseColor = isDark?'180,140,255':'138,107,212';
+          mark = ' ↗';
+        } else if(!aEmpresa && cEmpresa){
+          baseColor = isDark?'94,179,255':'58,140,214';
+          mark = ' ↘';
+        } else if(aEmpresa && cEmpresa){
+          baseColor = isDark?'6,214,160':'6,140,110';
+        } else {
+          baseColor = isDark?'120,124,138':'140,144,158';
+        }
+        bg = `rgba(${baseColor},${0.1 + intensity*0.55})`;
+      }
+      html += `<td class="num" style="background:${bg}" title="${a} → ${c}: ${v}">${v?fmt(v)+mark:'—'}</td>`;
+    });
+    html += `<td class="num"><strong>${fmt(rowTotal)}</strong></td></tr>`;
+  });
+  html += '</tbody></table>';
+  html += `<div style="margin-top:12px;font-size:11px;color:var(--ink-3);font-family:var(--mono);line-height:1.7">
+    ★ App de la empresa actual &nbsp;·&nbsp;
+    <span style="color:var(--accent-2)">■</span> local &nbsp;·&nbsp;
+    <span style="color:var(--violet)">■</span> ↗ generadora &nbsp;·&nbsp;
+    <span style="color:var(--info)">■</span> ↘ conductora
+  </div>`;
+  document.getElementById('roamingMatrix').innerHTML = html;
+}
+
+function renderRoamBalance(){
+  const counts = {'Local':0, 'Generadora (sale)':0, 'Conductora (entra)':0, 'Pendiente':0};
+  S.filtered.forEach(r=>{
+    if(r._roamRole==='local') counts['Local']++;
+    else if(r._roamRole==='gen') counts['Generadora (sale)']++;
+    else if(r._roamRole==='con') counts['Conductora (entra)']++;
+    else if(r._roamRole==='pending') counts['Pendiente']++;
+  });
+  drawChart('chartRoamBalance','doughnut',{
+    labels: Object.keys(counts),
+    datasets:[{data: Object.values(counts),
+      backgroundColor:[cssVar('--accent-2'),cssVar('--violet'),cssVar('--info'),cssVar('--ink-3')]}]
+  },{ plugins:{legend:{position:'bottom'}}, cutout:'55%' });
+}
+
+function renderRoamTime(){
+  const byBucket = {};
+  S.filtered.forEach(r=>{
+    const k = bucketKey(r._date, S.filters.grain);
+    if(!byBucket[k]) byBucket[k]={local:0,gen:0,con:0};
+    if(r._roamRole==='local') byBucket[k].local++;
+    else if(r._roamRole==='gen') byBucket[k].gen++;
+    else if(r._roamRole==='con') byBucket[k].con++;
+  });
+  const labels = Object.keys(byBucket).sort();
+  drawChart('chartRoamTime','bar',{
+    labels,
+    datasets:[
+      {label:'Local', data:labels.map(k=>byBucket[k].local), backgroundColor:cssVar('--accent-2'), stack:'s', borderRadius:2},
+      {label:'Generadora', data:labels.map(k=>byBucket[k].gen), backgroundColor:cssVar('--violet'), stack:'s', borderRadius:2},
+      {label:'Conductora', data:labels.map(k=>byBucket[k].con), backgroundColor:cssVar('--info'), stack:'s', borderRadius:2}
+    ]
+  },{ scales:{x:{stacked:true},y:{stacked:true}}, plugins:{legend:{position:'bottom'}} });
+}
+
+function renderContrapartes(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    if(r._roamRole==='gen'){
+      const contra = (r.Aplicativo_Clipper||'').trim();
+      if(contra && !APPS_OF_EMPRESA.has(contra)){
+        if(!map[contra]) map[contra]={env:0,rec:0};
+        map[contra].env++;
+      }
+    } else if(r._roamRole==='con'){
+      const contra = (r.Aplicativo||'').trim();
+      if(contra && !APPS_OF_EMPRESA.has(contra)){
+        if(!map[contra]) map[contra]={env:0,rec:0};
+        map[contra].rec++;
+      }
+    }
+  });
+  const rows = Object.entries(map).map(([k,v])=>({k, ...v, total:v.env+v.rec}))
+    .sort((a,b)=>b.total-a.total).slice(0,10);
+  if(!rows.length){
+    document.querySelector('#contrapartesTable tbody').innerHTML =
+      `<tr><td colspan="4" style="text-align:center;color:var(--ink-3);padding:20px">Sin viajes roaming con otras aplicaciones en el rango filtrado</td></tr>`;
+    return;
+  }
+  document.querySelector('#contrapartesTable tbody').innerHTML = rows.map(r=>{
+    const bal = r.env - r.rec;
+    const balStr = bal>0?`+${bal} (envía más)`:bal<0?`${bal} (recibe más)`:`0 (equilibrado)`;
+    const pill = bal>0?'gen':bal<0?'con':'';
+    return `<tr>
+      <td>${escapeHtml(r.k)}</td>
+      <td class="num">${fmt(r.env)}</td>
+      <td class="num">${fmt(r.rec)}</td>
+      <td><span class="pill ${pill}">${balStr}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ===================================================================
+   TOP CLIENTS / DRIVERS / ORIGENES — TOP 100 en scroll
+=================================================================== */
+// Altura dinámica calculada a partir del número de items.
+// El canvas crece en altura pero el contenedor padre hace scroll.
+function setScrollCanvasHeight(canvasId, count, pxPerItem=22, minHeight=300){
+  const c = document.getElementById(canvasId);
+  if(!c) return;
+  const h = Math.max(minHeight, count * pxPerItem);
+  c.parentElement.style.height = h + 'px';
+}
+
+function renderTopClients(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const name = (r.Cliente||'').trim();
+    if(!name) return;
+    map[name] = (map[name]||0)+1;
+  });
+  const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,100).reverse();
+  setScrollCanvasHeight('chartTopClients', top.length);
+  drawChart('chartTopClients','bar',{
+    labels: top.map(x=>x[0].length>30?x[0].slice(0,28)+'…':x[0]),
+    datasets:[{data: top.map(x=>x[1]), backgroundColor: cssVar('--violet'), borderRadius:3}]
+  },{ indexAxis:'y', plugins:{legend:{display:false}}, maintainAspectRatio:false });
+}
+
+function renderFreq(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const k = (r.Celular_Cliente||'').trim();
+    if(!k) return;
+    map[k]=(map[k]||0)+1;
+  });
+  const vals = Object.values(map);
+  const segs = [
+    {label:'1 viaje (única vez)', min:1, max:1},
+    {label:'2–3 viajes', min:2, max:3},
+    {label:'4–9 viajes', min:4, max:9},
+    {label:'10–29 viajes (frecuente)', min:10, max:29},
+    {label:'30+ viajes (VIP)', min:30, max:Infinity}
+  ];
+  const data = segs.map(s=>vals.filter(v=>v>=s.min && v<=s.max).length);
+  drawChart('chartFreq','doughnut',{
+    labels: segs.map(s=>s.label),
+    datasets:[{data, backgroundColor:[cssVar('--danger'),cssVar('--warn'),cssVar('--accent'),cssVar('--accent-2'),cssVar('--violet')]}]
+  },{ plugins:{legend:{position:'bottom'}}, cutout:'55%' });
+}
+
+function renderTopDrivers(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const k = (r.Clipper||'').trim();
+    if(!k) return;
+    if(!map[k]) map[k]={total:0,exito:0};
+    map[k].total++;
+    if(r.Estado==='Éxito') map[k].exito++;
+  });
+  const top = Object.entries(map).sort((a,b)=>b[1].total-a[1].total).slice(0,100).reverse();
+  setScrollCanvasHeight('chartTopDrivers', top.length);
+  drawChart('chartTopDrivers','bar',{
+    labels: top.map(x=>(x[0].length>32?x[0].slice(0,30)+'…':x[0])),
+    datasets:[
+      {label:'Éxito', data: top.map(x=>x[1].exito), backgroundColor:cssVar('--accent-2'), stack:'s', borderRadius:3},
+      {label:'Otros', data: top.map(x=>x[1].total-x[1].exito), backgroundColor:cssVar('--danger')+'aa', stack:'s', borderRadius:3}
+    ]
+  },{
+    indexAxis:'y',
+    scales:{x:{stacked:true},y:{stacked:true}},
+    plugins:{legend:{position:'bottom'}},
+    maintainAspectRatio:false
+  });
+}
+
+function renderDriversTable(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const k = (r.Clipper||'').trim();
+    if(!k) return;
+    if(!map[k]) map[k]={total:0,exito:0,cancel:0};
+    map[k].total++;
+    if(r.Estado==='Éxito') map[k].exito++;
+    if(r.Estado==='Cancelado') map[k].cancel++;
+  });
+  // TODOS los conductores, no solo top
+  const rows = Object.entries(map).map(([name,v])=>{
+    const pctExito = v.total? v.exito/v.total*100 : 0;
+    const pctCancel = v.total? v.cancel/v.total*100 : 0;
+    const score = 0.5*pctExito + 0.3*Math.min(v.total,50)/50*100 + 0.2*(100-pctCancel);
+    return {name, total:v.total, pctExito, score};
+  }).sort((a,b)=>b.score-a.score);
+  document.querySelector('#driversTable tbody').innerHTML = rows.map((r,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${escapeHtml(r.name)}</td>
+      <td class="num">${fmt(r.total)}</td>
+      <td class="num">${r.pctExito.toFixed(1)}%</td>
+      <td class="num"><span class="pill ${r.score>=75?'ok':r.score>=55?'warn':'bad'}">${r.score.toFixed(1)}</span></td>
+    </tr>`).join('');
+}
+
+function renderConversion(){
+  const byDay = {};
+  S.filtered.forEach(r=>{
+    const k = isoDate(r._date);
+    if(!byDay[k]) byDay[k]={tot:0,ex:0};
+    byDay[k].tot++;
+    if(r.Estado==='Éxito') byDay[k].ex++;
+  });
+  const labels = Object.keys(byDay).sort();
+  const data = labels.map(k=>byDay[k].tot?byDay[k].ex/byDay[k].tot*100:0);
+  drawChart('chartConversion','line',{
+    labels,
+    datasets:[{label:'% Éxito', data, borderColor:cssVar('--accent-2'),
+      backgroundColor: withAlpha(cssVar('--accent-2'),0.15), fill:true, tension:0.35, pointRadius:0}]
+  },{ scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}, plugins:{legend:{display:false}} });
+}
+
+function renderCancelacion(){
+  const c = {'Cliente cancela':0,'Clipper cancela':0,'Otro estado de pedido':0};
+  S.filtered.filter(r=>r.Estado==='Cancelado').forEach(r=>{
+    const ep = (r.Estado_Pedido||'').trim().toLowerCase();
+    if(ep.includes('cliente cancela')) c['Cliente cancela']++;
+    else if(ep.includes('clipper cancela')) c['Clipper cancela']++;
+    else c['Otro estado de pedido']++;
+  });
+  drawChart('chartCancelacion','doughnut',{
+    labels: Object.keys(c),
+    datasets:[{data:Object.values(c),backgroundColor:[cssVar('--danger'),cssVar('--warn'),cssVar('--ink-3')]}]
+  },{ plugins:{legend:{position:'bottom'}}, cutout:'55%' });
+}
+
+function renderOrigenes(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const o = normalizeOrigen(r.Origen);
+    if(!o) return;
+    map[o] = (map[o]||0)+1;
+  });
+  const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,100).reverse();
+  setScrollCanvasHeight('chartOrigenes', top.length);
+  drawChart('chartOrigenes','bar',{
+    labels: top.map(x=>x[0].length>28?x[0].slice(0,26)+'…':x[0]),
+    datasets:[{data:top.map(x=>x[1]), backgroundColor:cssVar('--accent'), borderRadius:3}]
+  },{ indexAxis:'y', plugins:{legend:{display:false}}, maintainAspectRatio:false });
+}
+
+function renderOriginsTable(){
+  const map = {};
+  S.filtered.forEach(r=>{
+    const o = normalizeOrigen(r.Origen);
+    if(!o) return;
+    if(!map[o]) map[o]={tot:0,ex:0};
+    map[o].tot++;
+    if(r.Estado==='Éxito') map[o].ex++;
+  });
+  const rows = Object.entries(map).filter(([_,v])=>v.tot>=10)
+    .map(([o,v])=>({o,tot:v.tot,pct:v.ex/v.tot*100}))
+    .sort((a,b)=>b.tot-a.tot).slice(0,20);
+  document.querySelector('#originsTable tbody').innerHTML = rows.map(r=>{
+    const pill = r.pct>=80?'ok':(r.pct>=60?'warn':'bad');
+    const txt = r.pct>=80?'saludable':(r.pct>=60?'atención':'crítico');
+    return `<tr><td>${escapeHtml(r.o)}</td><td class="num">${fmt(r.tot)}</td><td class="num">${r.pct.toFixed(1)}%</td><td><span class="pill ${pill}">${txt}</span></td></tr>`;
+  }).join('');
+}
+
+function renderWeekday(){
+  const counts = Array(7).fill(0);
+  S.filtered.forEach(r=>counts[r._date.getDay()]++);
+  const order = [1,2,3,4,5,6,0];
+  drawChart('chartWeekday','bar',{
+    labels: order.map(i=>WEEKDAYS_LONG[i]),
+    datasets:[{data: order.map(i=>counts[i]),backgroundColor:cssVar('--info'),borderRadius:5}]
+  },{ plugins:{legend:{display:false}} });
+}
+
+function renderSaturacion(){
+  const hourData = Array.from({length:24},()=>({req:0, drivers:new Set()}));
+  S.filtered.forEach(r=>{
+    const h = r._date.getHours();
+    hourData[h].req++;
+    if(r.Clipper && r.Estado==='Éxito') hourData[h].drivers.add(r.Clipper.trim());
+  });
+  const labels = Array.from({length:24},(_,h)=>`${String(h).padStart(2,'0')}h`);
+  const ratios = hourData.map(d=>d.drivers.size? d.req/d.drivers.size : d.req>0? d.req : 0);
+  drawChart('chartSaturacion','line',{
+    labels,
+    datasets:[{label:'Carreras por conductor activo', data:ratios,
+      borderColor:cssVar('--warn'), backgroundColor:withAlpha(cssVar('--warn'),0.15),
+      fill:true, tension:0.35, pointRadius:3}]
+  },{ plugins:{legend:{display:false}, tooltip:{callbacks:{label:(ctx)=>`Ratio: ${ctx.raw.toFixed(2)}`}}} });
+}
+
+function renderAlerts(){
+  const alerts = [];
+  const d = S.filtered;
+  const total = d.length;
+  const empresa = S.primaryEmpresa;
+  if(!total){
+    document.getElementById('alertsBox').innerHTML = '<div class="alert info"><div class="dot"></div><div><div class="t">Sin datos en el rango</div><div class="d">Ajusta los filtros o la empresa para generar alertas.</div></div></div>';
+    return;
+  }
+  const tasaExito = d.filter(r=>r.Estado==='Éxito').length/total*100;
+  const tasaCancel = d.filter(r=>r.Estado==='Cancelado').length/total*100;
+  const callCenter = d.filter(r=>r.Canal==='Call center').length/total*100;
+  const gen = d.filter(r=>r._roamRole==='gen').length;
+  const con = d.filter(r=>r._roamRole==='con').length;
+  const pctGen = total? gen/total*100 : 0;
+  const pctCon = total? con/total*100 : 0;
+
+  if(tasaExito<70) alerts.push({type:'critical',t:'⚠ Tasa de éxito baja',d:`Solo ${tasaExito.toFixed(1)}% de carreras finalizan exitosamente. Benchmark: ≥ 80%.`});
+  else if(tasaExito<80) alerts.push({type:'warning',t:'Tasa de éxito bajo el ideal',d:`${tasaExito.toFixed(1)}%.`});
+  else alerts.push({type:'ok',t:'Tasa de éxito saludable',d:`${tasaExito.toFixed(1)}%.`});
+
+  if(tasaCancel>20) alerts.push({type:'critical',t:'⚠ Cancelaciones elevadas',d:`${tasaCancel.toFixed(1)}%.`});
+  else if(tasaCancel>10) alerts.push({type:'warning',t:'Cancelaciones a vigilar',d:`${tasaCancel.toFixed(1)}%.`});
+
+  if(callCenter>85) alerts.push({type:'warning',t:'Alta dependencia del Call Center',d:`${callCenter.toFixed(1)}% del volumen pasa por Call Center.`});
+
+  if(gen + con > 0){
+    if(gen > con*2){
+      alerts.push({type:'warning', t:`${empresa} actúa más como generadora (${pctGen.toFixed(1)}%)`,
+        d:`Envía ${fmt(gen)} viajes a otras apps vs ${fmt(con)} recibidos. Evaluar flota propia o acuerdos.`});
+    } else if(con > gen*2){
+      alerts.push({type:'info', t:`${empresa} actúa más como conductora (${pctCon.toFixed(1)}%)`,
+        d:`Recibe ${fmt(con)} vs ${fmt(gen)} enviados. Monetizar capacidad ociosa.`});
+    } else {
+      alerts.push({type:'info', t:`Balance equilibrado de roaming`,
+        d:`${fmt(gen)} generadora ↗ · ${fmt(con)} conductora ↘.`});
+    }
+  } else {
+    alerts.push({type:'info',t:'Sin viajes en roaming',d:`No hay cruces para ${empresa} en el rango.`});
+  }
+
+  const drivMap = {};
+  d.forEach(r=>{
+    const k = (r.Clipper||'').trim();
+    if(!k) return;
+    if(!drivMap[k]) drivMap[k]={tot:0,can:0};
+    drivMap[k].tot++;
+    if(r.Estado==='Cancelado') drivMap[k].can++;
+  });
+  const badDrivers = Object.entries(drivMap)
+    .filter(([_,v])=>v.tot>=20 && v.can/v.tot>0.3)
+    .sort((a,b)=>b[1].can/b[1].tot - a[1].can/a[1].tot);
+  if(badDrivers.length){
+    const top = badDrivers.slice(0,3).map(([n,v])=>`${n.split(' ').slice(0,2).join(' ')} (${(v.can/v.tot*100).toFixed(0)}%)`).join(', ');
+    alerts.push({type:'critical',t:`⚠ ${badDrivers.length} conductor(es) con alta cancelación`,d:`Cancelan >30%. Ej.: ${top}.`});
+  }
+
+  const mob = d.filter(r=>['Android','iOs','iOS'].includes((r.Plataforma||''))).length/total*100;
+  if(mob<10) alerts.push({type:'info',t:'Baja adopción de app móvil',d:`${mob.toFixed(1)}%.`});
+
+  const nullPrecio = d.filter(r=>!r.Precio || parseFloat(r.Precio)===0).length/total*100;
+  if(nullPrecio>90) alerts.push({type:'info',t:'Columna Precio sin datos',d:`${nullPrecio.toFixed(0)}% sin precio.`});
+
+  document.getElementById('alertsBox').innerHTML = alerts.map(a=>`
+    <div class="alert ${a.type}">
+      <div class="dot"></div>
+      <div><div class="t">${a.t}</div><div class="d">${a.d}</div></div>
+    </div>`).join('');
+}
+
+/* ===================================================================
+   UTILS
+=================================================================== */
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#888';
+}
+function withAlpha(hex, a){
+  if(!hex || !hex.startsWith('#')) return hex;
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function paletteStates(){
+  return {'Éxito':cssVar('--accent-2'),'Cancelado':cssVar('--danger'),'Error':cssVar('--warn'),'Procesando':cssVar('--info')};
+}
+function palette8(){
+  return [cssVar('--accent'),cssVar('--accent-2'),cssVar('--info'),cssVar('--violet'),
+          cssVar('--warn'),cssVar('--danger'),'#9ae6b4','#7a7e8a'];
+}
+
+function bucketTimeline(data, col, grain){
+  const buckets = {};
+  data.forEach(r=>{
+    const k = bucketKey(r._date, grain);
+    const v = (r[col]||'—').toString().trim() || '—';
+    if(!buckets[k]) buckets[k] = {};
+    buckets[k][v] = (buckets[k][v]||0)+1;
+  });
+  const labels = Object.keys(buckets).sort();
+  const seriesSet = new Set();
+  labels.forEach(l=>Object.keys(buckets[l]).forEach(k=>seriesSet.add(k)));
+  const series = {};
+  seriesSet.forEach(s=>{ series[s] = labels.map(l=>buckets[l][s]||0); });
+  return {labels, series};
+}
+function bucketKey(d, grain){
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  if(grain==='year') return `${y}`;
+  if(grain==='month') return `${y}-${m}`;
+  if(grain==='week'){
+    const onejan = new Date(y,0,1);
+    const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7);
+    return `${y}-W${String(week).padStart(2,'0')}`;
+  }
+  return `${y}-${m}-${day}`;
+}
+
+function drawChart(id, type, data, options){
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(S.charts[id]) S.charts[id].destroy();
+  const base = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:cssVar('--ink-2'),font:{family:'Inter Tight',size:11}}},
+      tooltip:{backgroundColor:cssVar('--tooltip-bg'), borderColor:cssVar('--border'), borderWidth:1,
+        titleColor:cssVar('--ink'), bodyColor:cssVar('--ink-2'), padding:10, cornerRadius:8,
+        titleFont:{family:'Inter Tight',weight:600}}
+    },
+    scales:{
+      x:{ticks:{color:cssVar('--ink-3'),font:{family:'JetBrains Mono',size:10}}, grid:{color:cssVar('--grid-2')}},
+      y:{ticks:{color:cssVar('--ink-3'),font:{family:'JetBrains Mono',size:10}}, grid:{color:cssVar('--grid-2')}}
+    }
+  };
+  const merged = deepMerge(base, options||{});
+  S.charts[id] = new Chart(ctx, {type, data, options:merged});
+}
+function deepMerge(a,b){
+  const out = {...a};
+  for(const k in b){
+    if(b[k] && typeof b[k]==='object' && !Array.isArray(b[k])) out[k] = deepMerge(a[k]||{},b[k]);
+    else out[k] = b[k];
+  }
+  return out;
+}
+
+function normalizeOrigen(o){
+  if(!o) return '';
+  return o.toString().trim().toUpperCase().replace(/\s+/g,' ').replace(/^"|"$/g,'');
+}
+function fmt(n){ return Number(n).toLocaleString('es-EC') }
+function fmtDate(d){ return d? d.toLocaleDateString('es-EC',{day:'2-digit',month:'short',year:'numeric'}) : '—' }
+function isoDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),da=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${da}`;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function showLoader(x){ document.getElementById('loader').classList.toggle('show',x) }
+
+/* ===================================================================
+   EXPORT
+=================================================================== */
+function exportCSV(){
+  if(!S.filtered.length){ alert('Sin datos para exportar.'); return; }
+  const cols = Object.keys(S.filtered[0]).filter(k=>!k.startsWith('_'));
+  cols.push('Rol_Roaming');
+  const roleLabels = {'local':'Local','gen':'Roaming Generadora','con':'Roaming Conductora','pending':'Pendiente','other':'Otro'};
+  const esc = v => {
+    if(v===null||v===undefined) return '';
+    const s = String(v);
+    return /[;"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+  };
+  const rows = [cols.join(';'), ...S.filtered.map(r=>{
+    return cols.map(c=>{
+      if(c==='Rol_Roaming') return roleLabels[r._roamRole] || '—';
+      return esc(r[c]);
+    }).join(';');
+  })];
+  const blob = new Blob(['\ufeff'+rows.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ops_export_${S.primaryEmpresa?S.primaryEmpresa.replace(/\s+/g,'_'):'all'}_${isoDate(new Date())}.csv`;
+  a.click();
+}
+
+/* ===================================================================
+   BINDING
+=================================================================== */
+document.getElementById('fileInput').addEventListener('change', e=>{
+  loadFiles(e.target.files);
+  e.target.value = '';
+});
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  if(!confirm('¿Limpiar todos los datos cargados?')) return;
+  S.raw = []; S.files = []; S.filtered = [];
+  Object.values(S.charts).forEach(c=>c.destroy());
+  S.charts = {};
+  document.getElementById('dashContent').classList.add('hide');
+  document.getElementById('emptyState').classList.remove('hide');
+  document.getElementById('loadedFiles').textContent = 'Ningún archivo cargado todavía.';
+});
+document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+const upl = document.getElementById('uploader');
+['dragenter','dragover'].forEach(ev=>upl.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();upl.classList.add('drag');}));
+['dragleave','drop'].forEach(ev=>upl.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();upl.classList.remove('drag');}));
+upl.addEventListener('drop',e=>{const fs = e.dataTransfer.files;if(fs && fs.length) loadFiles(fs);});
+
+bindInfoTooltips();
+</script>
+</body>
+</html>
