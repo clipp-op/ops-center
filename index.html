@@ -1426,6 +1426,27 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
 /* LOADER */
 .cv-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
 .cv-empty-ico{font-size:38px;margin-bottom:8px;opacity:.6}
+
+/* DOCUMENTOS */
+.cv-doc-drop{padding:24px;border:2px dashed var(--border);border-radius:10px;background:var(--bg2);text-align:center;cursor:pointer;transition:all .15s;color:var(--muted)}
+.cv-doc-drop:hover,.cv-doc-drop.over{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.cv-doc-card{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);margin-bottom:8px;transition:background .15s}
+.cv-doc-card:hover{background:var(--bg2)}
+.cv-doc-icon{width:42px;height:42px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cv-doc-icon.pdf{background:#fee2e2;color:#dc2626}
+.cv-doc-icon.img{background:#dcfce7;color:#16a34a}
+.cv-doc-icon.doc{background:#dbeafe;color:#2563eb}
+.cv-doc-icon.xls{background:#dcfce7;color:#15803d}
+.cv-doc-icon.zip{background:#fef3c7;color:#d97706}
+.cv-doc-icon.other{background:#f1f5f9;color:#64748b}
+.cv-doc-info{flex:1;min-width:0}
+.cv-doc-name{font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cv-doc-meta{font-size:11px;color:var(--muted);margin-top:2px;display:flex;flex-wrap:wrap;gap:8px}
+.cv-doc-actions{display:flex;gap:4px;flex-shrink:0}
+.cv-doc-actions button{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;color:var(--text)}
+.cv-doc-actions button:hover{background:var(--blue-l);color:var(--blue);border-color:var(--blue)}
+.cv-doc-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px}
+.cv-doc-progress > div{height:100%;background:var(--blue);transition:width .2s;width:0}
 </style>
 
 </head>
@@ -1485,7 +1506,7 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
     <div class="s-item" onclick="setV('usuarios')" id="nav-usuarios"><span>👤</span> Usuarios y Roles</div>
     <div class="s-item" onclick="openTrash()" id="nav-trash"><span>🗑</span> Papelera <span class="s-badge" id="trash-count" style="background:#DC2626;display:none">0</span></div>
   </nav>
-  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.29 · 16 Abr 2026</span></div>
+  <div class="s-foot">Ops Center · Clipp<br><span style="opacity:.5;font-size:9.5px">v5.53 + CV 1.3 · 28 Abr 2026</span></div>
 </aside>
 
 <!-- MAIN -->
@@ -1534,6 +1555,13 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
     <!-- ══ DESPLIEGUES ══ -->
     <div id="view-despliegues" class="view">
       <div class="sec-hdr"><div><div class="sec-title">Despliegues Activos</div><div class="sec-sub">Campos editables · ✅ Listo → pasa a Clientes Operativos automáticamente</div></div></div>
+
+      <!-- AVISO MIGRACIÓN -->
+      <div style="margin:8px 0 14px;padding:11px 14px;background:linear-gradient(90deg,#dbeafe,#ede9fe);border:1px solid #c7d2fe;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#1e3a8a">
+        <span style="font-size:18px">💡</span>
+        <div style="flex:1;min-width:200px"><b>Este módulo sigue activo</b> · Para nuevos clientes te recomendamos <a onclick="setV('cadena')" style="color:#1B4FD8;cursor:pointer;text-decoration:underline;font-weight:600">🔗 Cadena de Valor</a> que tiene plantillas, motor de reglas, Gantt visual y checklists detallados. Despliegues queda como track simple de seguimiento.</div>
+        <button class="btn btn-p btn-sm" onclick="setV('cadena')" style="background:#1B4FD8;color:#fff;border:none;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11.5px">Ir a Cadena de Valor →</button>
+      </div>
 
       <div class="deploy-subnav-wrap">
         <div class="deploy-subnav" aria-label="Menú horizontal de despliegue">
@@ -1960,7 +1988,24 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
 
     <!-- ══ MANUAL DE USO ══ -->
     <div id="view-manual" class="view">
-      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.29</div><div class="sec-sub">Guía de referencia · Clipp Operations</div></div></div>
+      <div class="sec-hdr"><div><div class="sec-title">📖 Manual de Uso — Ops Center v5.53 + Cadena de Valor 1.3</div><div class="sec-sub">Guía de referencia · Clipp Operations · Actualizado 28 Abr 2026</div></div></div>
+
+      <!-- BANNER QUE HAY DE NUEVO -->
+      <div style="margin:0 0 16px;padding:14px 18px;background:linear-gradient(135deg,#dbeafe 0%,#ede9fe 100%);border:1px solid #c7d2fe;border-radius:10px;color:#1e3a8a">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <span style="font-size:24px">✨</span>
+          <b style="font-size:15px">Novedades en esta versión (v5.53 + CV 1.3)</b>
+        </div>
+        <ul style="margin:6px 0 0 30px;line-height:1.7;font-size:12.5px">
+          <li><b>📁 Repositorio de Documentos</b> ✨ — subí archivos (contratos, actas, manuales, screenshots, videos) y asociá a cliente / proyecto / fase. Storage en Supabase, vista previa inline, descarga con URL firmada.</li>
+          <li><b>👥 Roles y asignaciones multinivel</b> — cada fase y tarea pueden tener un rol específico (PM, técnico, capacitador, soporte...) y una persona asignada. Click directo en cada tarea/fase para asignar.</li>
+          <li><b>🎓 Guiones de Capacitación</b> — guiones por Tipo de Cliente con secciones, items, duración. Imprime, exporta o copia.</li>
+          <li><b>🔗 Cadena de Valor</b> — módulo central de configuración de despliegue con plantillas Tipo 1–8, motor de reglas, Gantt visual y wizard guiado.</li>
+          <li><b>🗂 Catálogos mejorado</b> — todas las secciones cargan automáticamente. Botón <b>🔍 Diagnóstico</b> para verificar el estado de los datos.</li>
+          <li><b>📄 Paginación universal</b> — selector "25 / 50 / 100 / 200 / Todos" en todas las tablas.</li>
+          <li><b>🐛 Wizard "Crear Despliegue" reparado</b> — ahora reporta errores reales y se completa correctamente.</li>
+        </ul>
+      </div>
 
       <!-- REFERENCE TABLE -->
       <div class="card" style="margin-bottom:16px">
@@ -2049,6 +2094,208 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
           </ul>
         </div></div>
 
+        <!-- CADENA DE VALOR -->
+        <div class="card" style="grid-column:span 2;border:2px solid #c7d2fe"><div class="card-h" style="background:linear-gradient(90deg,#dbeafe,#ede9fe)"><div class="card-title">🔗 Cadena de Valor — Configuración de Despliegue ✨ NUEVO</div></div><div class="card-b" style="font-size:12.5px">
+          <p><strong>Centro maestro</strong> para gestionar el ciclo completo de implementación de un cliente: desde Prospecto hasta Soporte continuo. Es el módulo recomendado para todos los nuevos despliegues.</p>
+
+          <div style="margin:10px 0;padding:8px 12px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:4px;font-size:11.5px">
+            <b>⚠️ ¿Reemplaza a Despliegues?</b> No directamente. <b>Despliegues</b> queda como track simple (legacy) para clientes ya en producción. Para <b>nuevos clientes</b> usa Cadena de Valor — tiene plantillas, reglas, Gantt y checklists detallados.
+          </div>
+
+          <p style="margin-top:10px"><b>Tabs internos:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>📊 Resumen</b> — KPIs globales, alertas, fases activas, salud de despliegues.</li>
+            <li><b>🎯 Despliegues por Cliente</b> — lista de proyectos con filtros. Botón <b>+ Nuevo Despliegue</b> abre wizard de 5 pasos.</li>
+            <li><b>🧩 Componentes</b> — catálogo de módulos del ecosistema (admin_web, app_conductor, etc.).</li>
+            <li><b>📋 Plantillas</b> — Tipo 1–8 con combinaciones predefinidas.</li>
+            <li><b>✅ Checklists</b> — items que se transforman en tareas del Gantt.</li>
+            <li><b>⚙️ Reglas</b> — motor de validaciones (missing/has/both → block/warn/info).</li>
+            <li><b>🚪 Gates</b> — hitos de aprobación entre fases.</li>
+            <li><b>🎓 Guiones Capacitación</b> ✨ NUEVO — guiones por Tipo de Cliente para estandarizar capacitaciones.</li>
+            <li><b>📈 Cronograma</b> — Gantt visual respetando feriados y findes.</li>
+            <li><b>🔧 Configuración</b> — feriados, auditoría, sincronización.</li>
+          </ul>
+
+          <p><b>Las 9 fases canónicas:</b> Prospecto → Contrato → Alta técnica → Config base → Config módulos → Capacitación → Piloto → Producción → Soporte continuo. Cada una con su gate (hito de aprobación).</p>
+
+          <p><b>Wizard "+ Nuevo Despliegue":</b></p>
+          <ol style="margin:4px 0 8px 18px;line-height:1.7">
+            <li><b>Cliente</b> — nombre, país, ciudad, contacto.</li>
+            <li><b>Plantilla</b> — Tipo 1 a 8 (editable después).</li>
+            <li><b>Módulos</b> — activar/desactivar (Admin Web es obligatorio). Reglas en vivo.</li>
+            <li><b>Cronograma</b> — fecha inicio + responsable. Preview de fechas por fase.</li>
+            <li><b>Confirmar</b> — genera proyecto + 9 fases + tareas automáticamente.</li>
+          </ol>
+
+          <p><b>Plantillas disponibles:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7;font-size:11.5px">
+            <li><b>Tipo 1</b> — Admin Web + App Conductor + Bot Normal</li>
+            <li><b>Tipo 2</b> — Admin Web + App Conductor + Bot Coexistencia</li>
+            <li><b>Tipo 3</b> — + Callcenter</li>
+            <li><b>Tipo 4</b> — + Counter</li>
+            <li><b>Tipo 5</b> — Todo (Bot + Counter + Callcenter)</li>
+            <li><b>Tipo 6</b> — Admin + App Cliente + Bot</li>
+            <li><b>Tipo 7</b> — Admin + App Cliente + App Conductor</li>
+            <li><b>Tipo 8</b> — Admin + Bot + Callcenter + Counter</li>
+          </ul>
+
+          <p><b>💡 Tips:</b></p>
+          <ul style="margin:4px 0 0 16px;line-height:1.7">
+            <li>Personaliza los componentes y plantillas según tu realidad antes de crear el primer despliegue real.</li>
+            <li>Carga feriados de los países donde operas (Configuración → Feriados) — el Gantt los respeta automáticamente.</li>
+            <li>El Gantt tiene exportadores a HTML imprimible y CSV para Excel.</li>
+            <li>Cada acción queda auditada en <code>activity_logs</code>.</li>
+          </ul>
+        </div></div>
+
+        <!-- DOCUMENTOS -->
+        <div class="card" style="grid-column:span 2;border:2px solid #fbbf24"><div class="card-h" style="background:linear-gradient(90deg,#fef3c7,#fde68a)"><div class="card-title">📁 Repositorio de Documentos ✨ NUEVO</div></div><div class="card-b" style="font-size:12.5px">
+          <p><strong>Almacena cualquier documento</strong> (contratos, actas, manuales, screenshots, videos, etc.) y asocialo a un cliente, proyecto, fase o tarea. Los archivos viven en <b>Supabase Storage</b> (privado, solo authenticated).</p>
+
+          <div style="margin:10px 0;padding:8px 12px;background:#dcfce7;border-left:3px solid #16a34a;border-radius:4px;font-size:11.5px">
+            <b>📍 Dónde está:</b> Cadena de Valor → tab <b>📁 Documentos</b>. También: botón "📁 Subir doc" en el detalle de cada proyecto y botón "📁 N" en cada fase.
+          </div>
+
+          <p style="margin-top:10px"><b>Cómo subir archivos:</b></p>
+          <ol style="margin:4px 0 8px 18px;line-height:1.7">
+            <li><b>Drag & drop</b>: arrastrá archivos sobre la caja punteada del tab Documentos.</li>
+            <li><b>Botón "+📤 Subir archivo"</b>: abre modal con selección y asociaciones.</li>
+            <li><b>Subir desde una fase</b>: en el detalle del proyecto, click en el botón 📁 de cada fase → ya viene pre-asociado al cliente / proyecto / fase.</li>
+            <li><b>Subir desde el proyecto</b>: botón "📁 Subir doc" al pie del modal de detalle.</li>
+          </ol>
+
+          <p><b>Asociaciones disponibles:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>Cliente</b> (cv_clients o cls legacy)</li>
+            <li><b>Proyecto</b> (deployment_projects)</li>
+            <li><b>Fase</b> (cualquiera de las 9 fases canónicas)</li>
+            <li><b>Categoría</b>: Contrato · Acta · Capacitación · Soporte · Diseño · Legal · General · Otro</li>
+            <li><b>Tags</b>: separados por coma en la descripción</li>
+          </ul>
+
+          <p><b>Acciones disponibles:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>👁️ Vista previa</b> inline: imágenes, PDF, video, audio, texto plano. Para otros formatos: link "Abrir en nueva pestaña".</li>
+            <li><b>⬇️ Descargar</b>: usa URL firmada con expiración de 60 segundos (segura).</li>
+            <li><b>🗑️ Eliminar</b>: borra del Storage y de la metadata, irreversible.</li>
+            <li><b>Filtros</b>: cliente · proyecto · fase · categoría · texto libre.</li>
+          </ul>
+
+          <p><b>Limitaciones técnicas:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7;font-size:11.5px">
+            <li>Tamaño máximo por archivo: <b>50 MB</b> (configurable en el bucket).</li>
+            <li>Cualquier formato. La vista previa funciona mejor con PDF, imágenes, video MP4 y texto plano.</li>
+            <li>El bucket es <b>privado</b>: nadie sin sesión puede ver tus archivos.</li>
+            <li>Los archivos NO se borran automáticamente al eliminar el cliente o proyecto. Hay que borrarlos a mano.</li>
+          </ul>
+
+          <p><b>💡 Tips de uso:</b></p>
+          <ul style="margin:4px 0 0 16px;line-height:1.7">
+            <li>Subí el contrato firmado a la fase <b>Contrato</b> del proyecto → así queda al lado del gate de aprobación.</li>
+            <li>Adjuntá actas de capacitación a la fase <b>Capacitación</b> con categoría "Acta".</li>
+            <li>Screenshots de errores → fase <b>Soporte</b> con categoría "Soporte".</li>
+            <li>Manuales de operación → asociá al cliente directamente (sin proyecto) para que sirvan de referencia general.</li>
+          </ul>
+        </div></div>
+
+        <!-- ROLES Y RESPONSABLES -->
+        <div class="card" style="grid-column:span 2;border:2px solid #86efac"><div class="card-h" style="background:linear-gradient(90deg,#dcfce7,#d1fae5)"><div class="card-title">👥 Roles y Responsables (multinivel) ✨ NUEVO</div></div><div class="card-b" style="font-size:12.5px">
+          <p><strong>Cada fase y cada paso tiene su responsable</strong>. El sistema usa un modelo en cascada: si una tarea no tiene responsable directo, hereda del checklist → de la fase → del proyecto.</p>
+
+          <div style="margin:10px 0;padding:8px 12px;background:#dcfce7;border-left:3px solid #16a34a;border-radius:4px;font-size:11.5px">
+            <b>📍 Dónde está:</b> Cadena de Valor → tab <b>👥 Roles</b>. La asignación se hace click-a-asignar en cada fase y tarea del detalle del proyecto.
+          </div>
+
+          <p style="margin-top:10px"><b>Modelo de cascada de responsable:</b></p>
+          <ol style="margin:4px 0 8px 18px;line-height:1.7">
+            <li><b>Tarea</b> (rol + assignee directo) — máxima prioridad.</li>
+            <li><b>Checklist</b> (rol predefinido del template) — heredado al generar tareas.</li>
+            <li><b>Fase</b> (rol por defecto de toda la fase) — fallback.</li>
+            <li><b>Proyecto</b> (responsible global del wizard) — último recurso.</li>
+          </ol>
+
+          <p><b>Roles incluidos por defecto:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7;font-size:11.5px">
+            <li>💼 <b>Comercial</b> — Gestión comercial, contratos y onboarding</li>
+            <li>📋 <b>Project Manager</b> — Coordinación general del despliegue</li>
+            <li>🛠️ <b>Técnico Backend</b> — Configuración Admin Web, geocercas, tarifarios</li>
+            <li>📱 <b>Técnico Apps</b> — Configuración App Conductor / Cliente</li>
+            <li>💬 <b>Técnico Bot/CC</b> — Bot WhatsApp, Callcenter, Counter</li>
+            <li>🧪 <b>QA / Pruebas</b> — Validación piloto, control de calidad</li>
+            <li>🎓 <b>Capacitador</b> — Capacitación a operadores y cliente final</li>
+            <li>🤝 <b>Soporte continuo</b> — Acompañamiento post go-live</li>
+            <li>👥 <b>Cliente (responsable)</b> — Acción del lado del cliente</li>
+          </ul>
+
+          <p><b>Cómo asignar:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>En el detalle de un proyecto</b>: hacer click directamente sobre el badge de rol de cualquier <b>fase</b> o <b>tarea</b> abre el modal de asignación.</li>
+            <li><b>Al asignar a una fase</b>: el sistema te pregunta si querés cascadear el rol a las tareas de esa fase que aún no tienen rol.</li>
+            <li><b>Cada rol</b> puede tener un <b>email default</b>: cuando elegís el rol, autocompleta el assignee.</li>
+            <li><b>En el editor de checklist</b>: campo <i>"Responsable rol"</i> ahora se llena dinámicamente desde el catálogo de roles.</li>
+          </ul>
+
+          <p><b>💡 Tips de uso:</b></p>
+          <ul style="margin:4px 0 0 16px;line-height:1.7">
+            <li>Definí el email default de cada rol → así, las tareas se autoasignan al crear el despliegue.</li>
+            <li>Si tu equipo es chico, podés tener menos roles (ej: solo PM, Técnico, Capacitador, Soporte).</li>
+            <li>Si tu equipo es grande, podés crear roles más específicos (ej: "Técnico Bot WA Norte" vs "Sur").</li>
+            <li>El badge de rol en cada tarea muestra de dónde viene la asignación: <i>(directo)</i>, <i>(desde checklist)</i>, <i>(desde phase)</i>, <i>(desde project)</i>.</li>
+            <li>Click en el badge → asigna a esa tarea concreta (rompe la herencia).</li>
+            <li>Click en el botón <b>↺ Limpiar y heredar</b> en el modal → vuelve a usar la cascada.</li>
+          </ul>
+        </div></div>
+
+        <!-- GUIONES DE CAPACITACIÓN -->
+        <div class="card" style="grid-column:span 2;border:2px solid #fbbf24"><div class="card-h" style="background:linear-gradient(90deg,#fef3c7,#fde68a)"><div class="card-title">🎓 Guiones de Capacitación ✨ NUEVO</div></div><div class="card-b" style="font-size:12.5px">
+          <p><strong>Estandariza la capacitación a tus clientes</strong>. Crea guiones por <b>Tipo de Cliente</b> con secciones, items y duración. Tus operadores siguen el mismo paso a paso para cada despliegue.</p>
+
+          <div style="margin:10px 0;padding:8px 12px;background:#dcfce7;border-left:3px solid #16a34a;border-radius:4px;font-size:11.5px">
+            <b>📍 Dónde está:</b> Cadena de Valor → tab <b>🎓 Guiones Capacitación</b>
+          </div>
+
+          <p style="margin-top:10px"><b>Para qué sirve:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li>Tener un <b>guión por Tipo de Cliente</b> (Taxi Convencional, Taxi Ejecutivo, etc.) para que cualquier operador lleve la misma capacitación.</li>
+            <li>Plantillas reutilizables — duplicas y editas en lugar de empezar desde cero.</li>
+            <li>Imprime / exporta a HTML, Markdown o copia al portapapeles.</li>
+            <li>Cada guión tiene <b>secciones → items → duración en minutos</b>.</li>
+            <li>Asocia el guión a los <b>módulos</b> que cubre (Admin Web, App Conductor, etc.).</li>
+            <li>Define <b>audiencia</b>: operadores, callcenter, counter, conductores, cliente final, admin, mixto.</li>
+          </ul>
+
+          <p><b>Estructura de un guión:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>Cabecera</b>: nombre, tipo de cliente, audiencia, idioma, versión, duración total auto-calculada.</li>
+            <li><b>Objetivos</b>: qué debe lograr el participante al final.</li>
+            <li><b>Material requerido</b>: hardware, software, accesos.</li>
+            <li><b>Módulos abordados</b>: chips multi-select de los módulos del ecosistema.</li>
+            <li><b>Secciones</b> ordenables (↑↓): cada una con título, notas, e items.</li>
+            <li><b>Items</b>: pasos individuales con su duración en minutos. Se suman automáticamente.</li>
+          </ul>
+
+          <p><b>Acciones disponibles:</b></p>
+          <ul style="margin:4px 0 8px 16px;line-height:1.7">
+            <li><b>+ Nuevo Guión</b> — crear desde cero.</li>
+            <li><b>🌱 Seed demo</b> — crea 3 guiones de ejemplo (Tipo 1 Operadores, Tipo 4 Counter, Tipo 5 Callcenter).</li>
+            <li><b>👁️ Vista previa</b> — modo presentación con barra de herramientas.</li>
+            <li><b>✏️ Editar</b> — modificar secciones e items.</li>
+            <li><b>📋 Duplicar</b> — clonar un guión y modificarlo (útil para variar por idioma o por sucursal).</li>
+            <li><b>🖨️ Imprimir</b> — abre ventana imprimible con formato limpio.</li>
+            <li><b>📄 Exportar HTML</b> / <b>📝 Exportar Markdown</b> — descarga el guión como archivo.</li>
+            <li><b>📋 Copiar al portapapeles</b> — para pegarlo en Notion, Confluence, Google Docs.</li>
+          </ul>
+
+          <p><b>💡 Tips de uso:</b></p>
+          <ul style="margin:4px 0 0 16px;line-height:1.7">
+            <li>Define <b>1 guión por cada combinación Tipo de Cliente × Audiencia</b>. Ej: "Taxi Convencional · Operadores", "Taxi Convencional · Counter".</li>
+            <li>Versioná los guiones (1.0 → 1.1 → 2.0) cuando hagás cambios mayores.</li>
+            <li>Imprime el guión antes de cada capacitación y dale una copia al participante.</li>
+            <li>Los guiones se guardan automáticamente en Supabase (tabla <code>cv_trainings</code>). Si la tabla no existe, caen en localStorage como fallback.</li>
+            <li>El total de minutos se actualiza en vivo a medida que editás items.</li>
+          </ul>
+        </div></div>
+
         <!-- CATÁLOGOS -->
         <div class="card"><div class="card-h"><div class="card-title">🗂 Catálogos</div></div><div class="card-b" style="font-size:12.5px">
           <p>Configura todos los valores maestros del sistema. Los cambios impactan en toda la aplicación al instante.</p>
@@ -2059,6 +2306,9 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
             <li><strong>Tipos de Cobro</strong> — componentes disponibles para contratos.</li>
             <li><strong>Fases</strong> — etapas del proceso de implementación.</li>
             <li><strong>Estados de Riesgo</strong> — umbrales para cobranzas y contratos.</li>
+            <li>✨ <strong>Ahora:</strong> todas las secciones cargan automáticamente al entrar (antes algunas eran lazy).</li>
+            <li>✨ Botón <strong>🔍 Diagnóstico</strong> verifica conexión, datos en Supabase y memoria.</li>
+            <li>✨ Botón <strong>🔄 Recargar</strong> fuerza relectura desde Supabase.</li>
           </ul>
         </div></div>
 
@@ -2416,6 +2666,9 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
     <button class="cv-tab" data-cvtab="checklists" onclick="cvSetTab('checklists')">✅ Checklists</button>
     <button class="cv-tab" data-cvtab="rules" onclick="cvSetTab('rules')">⚙️ Reglas</button>
     <button class="cv-tab" data-cvtab="gates" onclick="cvSetTab('gates')">🚦 Gates</button>
+    <button class="cv-tab" data-cvtab="roles" onclick="cvSetTab('roles')">👥 Roles <span class="badge" id="cv-bd-roles">0</span></button>
+    <button class="cv-tab" data-cvtab="documents" onclick="cvSetTab('documents')">📁 Documentos <span class="badge" id="cv-bd-docs">0</span></button>
+    <button class="cv-tab" data-cvtab="trainings" onclick="cvSetTab('trainings')">🎓 Guiones Capacitación <span class="badge" id="cv-bd-train">0</span></button>
     <button class="cv-tab" data-cvtab="gantt" onclick="cvSetTab('gantt')">📈 Cronograma</button>
     <button class="cv-tab" data-cvtab="settings" onclick="cvSetTab('settings')">🔧 Configuración</button>
   </div>
@@ -2555,6 +2808,66 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
       <button class="btn btn-p btn-sm" onclick="cvOpenGate(null)" style="margin-left:auto">+ Nuevo Gate</button>
     </div>
     <div class="cv-tpl-row" id="cv-gates-list"></div>
+  </div>
+
+  <!-- ════════════ PANEL ROLES ════════════ -->
+  <div class="cv-panel" data-cvpanel="roles">
+    <div style="margin:0 0 14px;padding:11px 14px;background:linear-gradient(90deg,#dcfce7,#d1fae5);border:1px solid #86efac;border-radius:8px;font-size:12px;color:#14532d">
+      <b>👥 Modelo de responsables multinivel</b> · Cada <b>fase</b> tiene un rol por defecto. Cada <b>tarea</b> puede tener un rol específico y una persona asignada (assignee). Si no se setea en la tarea, hereda del checklist → de la fase → del proyecto.
+    </div>
+    <div class="filter-bar">
+      <input class="fi" id="cv-role-search" placeholder="🔍 Buscar rol..." oninput="cvRenderRoles()">
+      <button class="btn btn-p btn-sm" onclick="cvOpenRole(null)" style="margin-left:auto">+ Nuevo Rol</button>
+    </div>
+    <div id="cv-roles-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px"></div>
+  </div>
+
+  <!-- ════════════ PANEL DOCUMENTOS ════════════ -->
+  <div class="cv-panel" data-cvpanel="documents">
+    <div style="margin:0 0 14px;padding:11px 14px;background:linear-gradient(90deg,#fef3c7,#fde68a);border:1px solid #fbbf24;border-radius:8px;font-size:12px;color:#78350f">
+      <b>📁 Repositorio de documentos</b> · Subí contratos, actas, manuales, screenshots, etc. Asocia cada archivo a un <b>cliente</b>, <b>proyecto</b>, <b>fase</b> o <b>tarea</b>. Quedan en Supabase Storage (privado, solo authenticated).
+    </div>
+    <div class="filter-bar" style="flex-wrap:wrap;gap:6px">
+      <input class="fi" id="cv-doc-search" placeholder="🔍 Buscar..." oninput="cvRenderDocuments()">
+      <select class="fi" id="cv-doc-fcli" onchange="cvRenderDocuments()" style="min-width:180px"><option value="">Todos los clientes</option></select>
+      <select class="fi" id="cv-doc-fproj" onchange="cvRenderDocuments()" style="min-width:180px"><option value="">Todos los proyectos</option></select>
+      <select class="fi" id="cv-doc-fphase" onchange="cvRenderDocuments()" style="min-width:160px"><option value="">Todas las fases</option></select>
+      <select class="fi" id="cv-doc-fcat" onchange="cvRenderDocuments()" style="min-width:140px">
+        <option value="">Todas las categorías</option>
+        <option value="contrato">Contrato</option>
+        <option value="acta">Acta</option>
+        <option value="capacitacion">Capacitación</option>
+        <option value="soporte">Soporte</option>
+        <option value="diseno">Diseño / Visual</option>
+        <option value="legal">Legal</option>
+        <option value="otro">Otro</option>
+      </select>
+      <button class="btn btn-p btn-sm" onclick="cvOpenDocUpload()" style="margin-left:auto">📤 Subir archivo</button>
+    </div>
+
+    <!-- Drop zone -->
+    <div id="cv-doc-dropzone" class="cv-doc-drop" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="cvDropDocs(event)" onclick="cvOpenDocUpload()">
+      <div style="font-size:32px">📎</div>
+      <div style="font-weight:600;font-size:13px;margin-top:6px">Arrastrá archivos aquí o hacé click para subir</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Hasta 50 MB por archivo · cualquier formato</div>
+    </div>
+
+    <div id="cv-docs-list" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ════════════ PANEL GUIONES DE CAPACITACIÓN ════════════ -->
+  <div class="cv-panel" data-cvpanel="trainings">
+    <div style="margin:0 0 14px;padding:11px 14px;background:linear-gradient(90deg,#dbeafe,#ede9fe);border:1px solid #c7d2fe;border-radius:8px;font-size:12px;color:#1e3a8a">
+      <b>🎓 Estandariza la capacitación a tus clientes</b> · Crea guiones por <b>Tipo de Cliente</b> con secciones, items y duración. Tus operadores siguen el mismo paso a paso para cada despliegue. Imprime, exporta o copia el guión cuando capacites.
+    </div>
+    <div class="filter-bar">
+      <input class="fi" id="cv-train-search" placeholder="🔍 Buscar guión..." oninput="cvRenderTrainings()">
+      <select class="fi" id="cv-train-tipo" onchange="cvRenderTrainings()" style="min-width:180px"><option value="">Todos los tipos</option></select>
+      <select class="fi" id="cv-train-mod" onchange="cvRenderTrainings()" style="min-width:180px"><option value="">Todos los módulos</option></select>
+      <button class="btn btn-p btn-sm" onclick="cvOpenTraining(null)" style="margin-left:auto">+ Nuevo Guión</button>
+      <button class="btn btn-g btn-sm" onclick="cvSeedTrainings()" title="Cargar 3 guiones demo basados en plantillas">🌱 Seed demo</button>
+    </div>
+    <div id="cv-trainings-list"></div>
   </div>
 
   <!-- ════════════ PANEL GANTT ════════════ -->
@@ -2711,7 +3024,7 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
     <div class="cv-form-grid">
       <div><label>Duración (días)</label><input id="cv-chk-i-dur" type="number" value="1" min="1"></div>
       <div><label>Responsable rol</label>
-        <select id="cv-chk-i-role"><option value="">Sin asignar</option><option value="launcher">Launcher</option><option value="comercial">Comercial</option><option value="soporte">Soporte</option><option value="operaciones">Operaciones</option></select>
+        <select id="cv-chk-i-role"><option value="">Sin asignar</option></select>
       </div>
       <div><label>Orden</label><input id="cv-chk-i-sort" type="number" value="10"></div>
     </div>
@@ -2814,6 +3127,229 @@ body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#24334
         <button class="btn btn-p" onclick="cvSaveGate()">Guardar</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══ DOCUMENT UPLOAD MODAL ══ -->
+<div class="modal-ov" id="cv-mod-doc-upload">
+  <div class="modal" style="max-width:560px">
+    <div class="m-title"><span>📤 Subir documentos</span><button class="m-close" onclick="closeM('cv-mod-doc-upload')">✕</button></div>
+
+    <input type="file" id="cv-doc-file-input" multiple style="display:none" onchange="cvHandleFileSelection(this.files)">
+
+    <div id="cv-doc-upload-files" style="margin-bottom:12px"></div>
+
+    <button class="btn btn-g" onclick="document.getElementById('cv-doc-file-input').click()" style="width:100%;margin-bottom:14px">📎 Seleccionar archivos</button>
+
+    <div style="border-top:1px solid var(--border);padding-top:12px">
+      <h4 style="margin:0 0 10px;font-size:13px;color:var(--text)">Asociaciones (opcional)</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Cliente</label>
+          <select id="cv-doc-up-client" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)" onchange="cvUpdateProjectsForDocUp()"><option value="">— Sin asociar —</option></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Proyecto</label>
+          <select id="cv-doc-up-project" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)" onchange="cvUpdatePhasesForDocUp()"><option value="">— Sin asociar —</option></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Fase</label>
+          <select id="cv-doc-up-phase" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)"><option value="">— Cualquier fase —</option></select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Categoría</label>
+          <select id="cv-doc-up-cat" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+            <option value="general">General</option>
+            <option value="contrato">Contrato</option>
+            <option value="acta">Acta</option>
+            <option value="capacitacion">Capacitación</option>
+            <option value="soporte">Soporte</option>
+            <option value="diseno">Diseño / Visual</option>
+            <option value="legal">Legal</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1">
+          <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción / Tags</label>
+          <input id="cv-doc-up-desc" placeholder="Descripción opcional · etiquetas separadas por coma" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+      <button class="btn btn-g" onclick="closeM('cv-mod-doc-upload')">Cancelar</button>
+      <button class="btn btn-p" id="cv-doc-up-btn" onclick="cvUploadDocuments()">📤 Subir <span id="cv-doc-up-count">0</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DOCUMENT PREVIEW MODAL ══ -->
+<div class="modal-ov" id="cv-mod-doc-preview">
+  <div class="modal cv-modal-xl">
+    <div class="m-title"><span id="cv-doc-prev-title">Vista previa</span><button class="m-close" onclick="closeM('cv-mod-doc-preview')">✕</button></div>
+    <div id="cv-doc-prev-body" style="min-height:300px;max-height:70vh;overflow:auto;text-align:center"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+      <button class="btn btn-g" id="cv-doc-prev-download" onclick="cvDownloadCurrentDoc()">⬇️ Descargar</button>
+      <button class="btn btn-g" onclick="closeM('cv-mod-doc-preview')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ASSIGN TASK MODAL (asignar persona/rol a una tarea o fase) ══ -->
+<div class="modal-ov" id="cv-mod-assign">
+  <div class="modal" style="max-width:480px">
+    <div class="m-title"><span id="cv-assign-title">Asignar responsable</span><button class="m-close" onclick="closeM('cv-mod-assign')">✕</button></div>
+    <div id="cv-assign-meta" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:10px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Rol</label>
+        <select id="cv-assign-role" onchange="cvAssignAutofillEmail()" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)"></select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Persona (email)</label>
+        <input id="cv-assign-email" placeholder="opcional · email de la persona concreta" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-g btn-sm" onclick="cvAssignClear()">↺ Limpiar y heredar</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-assign')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvAssignSave()">💾 Asignar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ROLE EDITOR MODAL ══ -->
+<div class="modal-ov" id="cv-mod-role">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-role-mt">Nuevo Rol</span><button class="m-close" onclick="closeM('cv-mod-role')">✕</button></div>
+    <div class="cv-form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Código *</label>
+        <input id="cv-role-code" placeholder="comercial, pm, tecnico_backend..." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Nombre visible *</label>
+        <input id="cv-role-name" placeholder="Comercial" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Ícono</label>
+        <input id="cv-role-icon" placeholder="💼" maxlength="3" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Color</label>
+        <input id="cv-role-color" type="color" value="#637087" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:5px;font-size:13px;background:var(--bg);height:34px">
+      </div>
+      <div style="grid-column:1/-1">
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción</label>
+        <input id="cv-role-desc" placeholder="Qué hace este rol" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div style="grid-column:1/-1">
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Email del responsable por defecto</label>
+        <input id="cv-role-email" placeholder="usuario@empresa.com (opcional, para asignar automáticamente)" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-role-del-btn" onclick="cvDeleteRole()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-role')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveRole()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TRAINING EDITOR MODAL ══ -->
+<div class="modal-ov" id="cv-mod-train">
+  <div class="modal cv-modal-xl">
+    <div class="m-title"><span id="cv-train-mt">Nuevo Guión de Capacitación</span><button class="m-close" onclick="closeM('cv-mod-train')">✕</button></div>
+
+    <!-- Cabecera -->
+    <div class="cv-form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Nombre del guión *</label>
+        <input id="cv-train-name" placeholder="Ej: Capacitación Tipo 1 — Operadores" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Tipo de Cliente *</label>
+        <select id="cv-train-clitype" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)"></select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Audiencia</label>
+        <select id="cv-train-aud" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+          <option value="operadores">Operadores</option>
+          <option value="callcenter">Callcenter</option>
+          <option value="counter">Counter</option>
+          <option value="conductores">Conductores</option>
+          <option value="cliente_final">Cliente final</option>
+          <option value="admin">Administradores</option>
+          <option value="mixto">Mixto</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Idioma</label>
+        <select id="cv-train-lang" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+          <option value="es">Español</option>
+          <option value="en">Inglés</option>
+          <option value="pt">Portugués</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Versión</label>
+        <input id="cv-train-ver" placeholder="1.0" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Duración total (min)</label>
+        <input id="cv-train-dur" type="text" disabled style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg2);color:var(--muted)">
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Módulos abordados (opcional)</label>
+      <div id="cv-train-mods" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);min-height:42px"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Objetivos del guión</label>
+      <textarea id="cv-train-obj" rows="2" placeholder="Ej: Que el operador sepa registrar un cliente, asignar conductor y resolver incidencias básicas." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text);resize:vertical"></textarea>
+    </div>
+
+    <div style="margin-top:14px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Material requerido</label>
+      <input id="cv-train-mat" placeholder="Ej: Computadora con Chrome, acceso a Admin Web, WhatsApp del Bot, micrófono" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)">
+    </div>
+
+    <!-- Secciones del guión -->
+    <div style="margin-top:18px;display:flex;align-items:center;gap:10px">
+      <h3 style="margin:0;font-size:14px">📚 Secciones del guión</h3>
+      <button class="btn btn-p btn-sm" onclick="cvTrainAddSection()" style="margin-left:auto">+ Sección</button>
+    </div>
+    <div id="cv-train-sections" style="margin-top:8px"></div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+      <button class="btn btn-d" id="cv-train-del-btn" onclick="cvDeleteTraining()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="cvViewTraining()">👁️ Vista previa</button>
+        <button class="btn btn-g" onclick="closeM('cv-mod-train')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveTraining()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TRAINING VIEW MODAL (modo presentación / impresión) ══ -->
+<div class="modal-ov" id="cv-mod-train-view">
+  <div class="modal cv-modal-xl">
+    <div class="m-title"><span id="cv-trv-title">Guión de Capacitación</span><button class="m-close" onclick="closeM('cv-mod-train-view')">✕</button></div>
+    <div id="cv-trv-toolbar" style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-g btn-sm" onclick="cvPrintTraining()">🖨️ Imprimir</button>
+      <button class="btn btn-g btn-sm" onclick="cvExportTrainingHTML()">📄 Exportar HTML</button>
+      <button class="btn btn-g btn-sm" onclick="cvExportTrainingMD()">📝 Exportar Markdown</button>
+      <button class="btn btn-g btn-sm" onclick="cvCopyTraining()">📋 Copiar al portapapeles</button>
+      <span id="cv-trv-meta" style="margin-left:auto;font-size:11px;color:var(--muted)"></span>
+    </div>
+    <div id="cv-trv-body" style="font-size:13.5px;line-height:1.6;max-height:65vh;overflow:auto;padding:0 4px"></div>
   </div>
 </div>
 
@@ -3787,7 +4323,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'cadena':['Cadena de Valor','Configuración de despliegue · Centro maestro'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.29'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'cadena':['Cadena de Valor','Configuración de despliegue · Centro maestro'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.53 + Cadena de Valor 1.3'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -3845,7 +4381,27 @@ var renderInactD    = debounce(function(){ resetPage('tbl-i'); renderInact(); },
 var renderUsuariosD = debounce(function(){ renderUsuarios(); }, 180);
 
 // 2. PAGINACIÓN LIGERA — renderiza solo N filas, botón "cargar más"
-var _PAGE_SIZE = 50; // filas por página
+var _PAGE_SIZE_DEFAULT = 50;
+// Tamaño por tabla (configurable por el usuario), -1 = todos
+var _pageSize = (function(){
+  try{ return JSON.parse(localStorage.getItem('pgSize_v1')||'{}'); }catch(e){ return {}; }
+})();
+function getPageSize(tblId){
+  var v = _pageSize[tblId];
+  if(v === undefined) return _PAGE_SIZE_DEFAULT;
+  return v;
+}
+function setPageSize(tblId, n){
+  _pageSize[tblId] = n;
+  try{ localStorage.setItem('pgSize_v1', JSON.stringify(_pageSize)); }catch(e){}
+  resetPage(tblId);
+  if(typeof renderAfterSave==='function') renderAfterSave();
+  else if(typeof renderCurrentView==='function') renderCurrentView();
+}
+window.setPageSize = setPageSize;
+window.getPageSize = getPageSize;
+// Compat: variable antigua
+var _PAGE_SIZE = _PAGE_SIZE_DEFAULT;
 var _pageState = {}; // { tblId: currentPage }
 
 function getPage(tblId){ return _pageState[tblId]||1; }
@@ -3855,22 +4411,46 @@ function resetPage(tblId){ _pageState[tblId]=1; }
 // Aplica paginación a un array ya filtrado y ordenado
 function paginateRows(rows, tblId){
   var page = getPage(tblId);
+  var size = getPageSize(tblId);
   var total = rows.length;
-  var end = page * _PAGE_SIZE;
+  if(size === -1){
+    // Todos
+    return { rows: rows, total: total, shown: total, hasMore: false, page: 1, totalPages: 1, size: -1 };
+  }
+  var end = page * size;
   var slice = rows.slice(0, end);
-  return { rows: slice, total: total, shown: slice.length, hasMore: end < total };
+  return { rows: slice, total: total, shown: slice.length, hasMore: end < total, page: page, totalPages: Math.max(1, Math.ceil(total/size)), size: size };
 }
 
-// Genera el footer de paginación
+// Genera el footer de paginación (SIEMPRE visible, con info y selector de tamaño)
 function paginationFooter(tblId, result, colSpan){
-  if(!result.hasMore) return '';
-  var remaining = result.total - result.shown;
-  var btnId = 'pg-btn-'+tblId;
-  return '<tr class="pg-more-row"><td colspan="'+colSpan+'" style="text-align:center;padding:10px">'+
-    '<button id="'+btnId+'" class="btn btn-g btn-sm" data-tbl="'+tblId+'" onclick="_loadMore(this.dataset.tbl)" style="font-size:12px">'+
-      '&#9660; Cargar '+Math.min(remaining,_PAGE_SIZE)+' más &nbsp;('+remaining+' restantes)'+
-    '</button>'+
-    '<span style="margin-left:10px;font-size:11px;color:var(--muted)">'+result.shown+' de '+result.total+'</span>'+
+  var size = result.size;
+  var sizeOpts = [25,50,100,200,-1].map(function(n){
+    var lbl = n===-1 ? 'Todos' : String(n);
+    var sel = (n===size) ? ' selected' : '';
+    return '<option value="'+n+'"'+sel+'>'+lbl+'</option>';
+  }).join('');
+  var loadBtn = '';
+  if(result.hasMore){
+    var remaining = result.total - result.shown;
+    var nextChunk = Math.min(remaining, size);
+    var btnId = 'pg-btn-'+tblId;
+    loadBtn = '<button id="'+btnId+'" class="btn btn-g btn-sm" data-tbl="'+tblId+'" onclick="_loadMore(this.dataset.tbl)" style="font-size:11px;padding:4px 10px;margin-left:8px">'+
+      '&#9660; Cargar '+nextChunk+' más'+
+    '</button>';
+  }
+  return '<tr class="pg-more-row"><td colspan="'+colSpan+'" style="padding:10px 12px;background:var(--bg2);border-top:2px solid var(--border)">'+
+    '<div style="display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;font-size:11.5px">'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<span style="color:var(--muted)">Mostrar</span>'+
+        '<select onchange="setPageSize(\''+tblId+'\', parseInt(this.value,10))" style="padding:3px 6px;font-size:11.5px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:4px">'+sizeOpts+'</select>'+
+        '<span style="color:var(--muted)">por página</span>'+
+      '</div>'+
+      '<div>'+
+        '<b>'+result.shown+'</b> <span style="color:var(--muted)">de <b style="color:var(--text)">'+result.total+'</b> registros</span>'+
+        loadBtn+
+      '</div>'+
+    '</div>'+
   '</td></tr>';
 }
 
@@ -5000,7 +5580,7 @@ function renderOps(){
   if(!rows.length && !pg.total){
     tb.innerHTML='<tr><td colspan="24" class="dep-empty"><div style="font-size:34px">✅</div><div class="dep-empty-title">Sin clientes operativos</div><div style="font-size:12px">No hay registros que coincidan con los filtros actuales.</div></td></tr>';
   } else {
-    const start=(getPage('tbl-o')-1)*_PAGE_SIZE;
+    const start=(getPage('tbl-o')-1)*getPageSize('tbl-o');
     tb.innerHTML=rows.map(function(group,idx){ return depOpsGroupHtml(group,start+idx+1); }).join('')+paginationFooter('tbl-o',pg,24);
   }
   setTimeout(function(){ initSortHeaders(document.getElementById('tbl-o'),sortGetters); applyAllHeaderTooltips(document.getElementById('view-operativos')); },20);
@@ -5038,7 +5618,7 @@ function renderInact(){
   var fPage=_pgInact.rows;
   const cnt=document.getElementById('ci-cnt');if(cnt)cnt.textContent=`${f.length} de ${cls.filter(c=>c.es==='deshabilitado'||c.es==='perdido').length}`;
   const tb=document.getElementById('itb');if(!tb)return;
-  tb.innerHTML=fPage.length||_pgInact.total?fPage.map(function(c,idx){ const _gIdx=(getPage('tbl-i')-1)*_PAGE_SIZE+idx;
+  tb.innerHTML=fPage.length||_pgInact.total?fPage.map(function(c,idx){ const _gIdx=(getPage('tbl-i')-1)*getPageSize('tbl-i')+idx;
     const moHtml=c.mo&&c.mo.length?c.mo.map(m=>`<span class="mt">${esc(m)}</span>`).join(''):'—';
     return`<tr>
     <td style="color:var(--subtle);font-size:11px;font-family:'DM Mono',monospace">${String(_gIdx+1).padStart(2,'0')}</td>
@@ -5122,7 +5702,7 @@ function renderCls(){
   var _pgCls=paginateRows(fSorted,'tbl-c');
   var fPage=_pgCls.rows;
 
-  tb.innerHTML=fPage.length||_pgCls.total?fPage.map(function(c,idx){ const _gIdx=(getPage('tbl-c')-1)*_PAGE_SIZE+idx;
+  tb.innerHTML=fPage.length||_pgCls.total?fPage.map(function(c,idx){ const _gIdx=(getPage('tbl-c')-1)*getPageSize('tbl-c')+idx;
     const cx=complexBadge({mo:c.mo});
     const _validMods=new Set((cats.md&&cats.md.length?cats.md:BASE_MD).map(m=>m.name));
     const moHtml=(c.mo||[]).filter(m=>_validMods.has(m)).map(m=>`<span class="mt">${esc(m)}</span>`).join('');
@@ -5147,7 +5727,7 @@ function renderCls(){
         <button class="icon-btn del" onclick="confDel('cl',${c.id},'${esc(c.nm)}')">🗑</button>
       </td>
     </tr>`;
-  }).join(''):`<tr><td colspan="14" style="text-align:center;padding:30px;color:var(--subtle)">Sin clientes. Prueba cambiar los filtros.</td></tr>`;
+  }).join('')+paginationFooter('tbl-c',_pgCls,16):`<tr><td colspan="16" style="text-align:center;padding:30px;color:var(--subtle)">Sin clientes. Prueba cambiar los filtros.</td></tr>`;
   initSortHeaders(document.getElementById('tbl-c'),[null,function(d){return d.nm||'';},function(d){return d.pa||'';},function(d){return d.ci||'';},function(d){return d.ap||'';},function(d){return d.tp||'';},function(d){return Array.isArray(d.bot)?d.bot.join(', '):(d.bot||'');},function(d){return d.es||'';},function(d){return d.fconf||'';},null,null,function(d){return d.co||'';},function(d){return d.ph||'';},null,function(d){return d.no||'';},null]);
   applyAllHeaderTooltips(document.getElementById('view-clientes'));
 }
@@ -10175,7 +10755,7 @@ if(location.search.includes('demo=1')){
             ${x.is_required?'<span class="cv-chk-tag req">OBLIGATORIO</span>':''}
             ${x.is_critical?'<span class="cv-chk-tag crit">CRÍTICO</span>':''}
             <span>⏱️ ${x.duration_days||1} d</span>
-            ${x.responsible_role?`<span>👤 ${esc(x.responsible_role)}</span>`:''}
+            ${x.responsible_role||x.role?(window.cvRoleBadge?window.cvRoleBadge(x.responsible_role||x.role):`<span>👤 ${esc(x.responsible_role||x.role)}</span>`):''}
           </div>
         </div>
         <button class="icon-btn edit" title="Editar">✏️</button>
@@ -10193,13 +10773,18 @@ if(location.search.includes('demo=1')){
     compI.innerHTML = CV.components.map(c=>`<option value="${c.code}">${c.icon||'🧩'} ${esc(c.name||'')}</option>`).join('');
     const phaseI = $('cv-chk-i-phase');
     phaseI.innerHTML = PHASES.map(p=>`<option value="${p.code}">${p.icon} ${p.name}</option>`).join('');
+    // Poblar select de roles dinámicamente desde CV.roles (si está cargado)
+    const roleI = $('cv-chk-i-role');
+    if(roleI && window.cvRoleOptions){
+      roleI.innerHTML = window.cvRoleOptions(x?.responsible_role || x?.role || '');
+    }
     $('cv-chk-mt').textContent = id ? 'Editar item de checklist' : 'Nuevo item de checklist';
     if(x){
       compI.value = x.component_code||'admin_web';
       phaseI.value = x.phase_code||'configuracion_mod';
       $('cv-chk-i-name').value = x.name||'';
       $('cv-chk-i-dur').value = x.duration_days||1;
-      $('cv-chk-i-role').value = x.responsible_role||'';
+      $('cv-chk-i-role').value = x.responsible_role || x.role || '';
       $('cv-chk-i-sort').value = x.sort_order||10;
       $('cv-chk-i-req').checked = !!x.is_required;
       $('cv-chk-i-crit').checked = !!x.is_critical;
@@ -10913,120 +11498,249 @@ if(location.search.includes('demo=1')){
   async function cvWizFinish(){
     _captureWizStep();
     const w = CV.wiz;
-    if(!w.clientName || !w.startDate || !w.responsible){ alert('Faltan datos'); return; }
+    console.log('[CV] cvWizFinish iniciado', JSON.parse(JSON.stringify(w)));
+
+    // Validación final
+    if(!w.clientName){ alert('Falta nombre del cliente (paso 1)'); CV.wiz.step=1; cvRenderWizard(); return; }
+    if(!w.startDate){ alert('Falta fecha de inicio (paso 4)'); CV.wiz.step=4; cvRenderWizard(); return; }
+    if(!w.responsible){ alert('Falta responsable (paso 4)'); CV.wiz.step=4; cvRenderWizard(); return; }
+    if(!w.components || !w.components.length){ w.components = ['admin_web']; }
+
+    // Helper: limpiar meta para que solo contenga columnas válidas
+    function _meta(){
+      const u = window._currentUser;
+      // created_by/updated_by deben ser UUID; si _currentUser.id no es UUID, dejamos null
+      const isUuid = (s)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s||''));
+      const uid = u && isUuid(u.id) ? u.id : null;
+      return { created_by: uid, updated_by: uid };
+    }
+
+    // Botón finish: deshabilitar mientras procesa
+    const btnFin = document.getElementById('cv-wiz-finish');
+    const btnPrev = document.getElementById('cv-wiz-prev');
+    if(btnFin){ btnFin.disabled = true; btnFin.textContent = '⏳ Creando...'; }
+    if(btnPrev){ btnPrev.disabled = true; }
 
     try{
       if(typeof showSync==='function') showSync(true,'Generando despliegue...');
-      const meta = (window.CV_userMeta && window.CV_userMeta()) || { created_by: window._currentUser?.email||null, updated_by: window._currentUser?.email||null };
+      const meta = _meta();
       const now = new Date().toISOString();
       const useSb = !!window.supabase;
+      console.log('[CV] useSb=',useSb,' meta=',meta);
 
-      // 1) Cliente
+      // ══════════════════════════════════════════════════════════
+      // 1) CLIENTE en cv_clients
+      // ══════════════════════════════════════════════════════════
       let clientId = w.clientId;
+      let clientObj = null;
       if(!clientId){
-        const cli = { name:w.clientName, country:w.country||null, city:w.city||null, contact:w.contact||null, notes:w.notes||null, status:'activo', created_at:now, updated_at:now, ...meta };
+        const cliPayload = {
+          name: w.clientName,
+          country: w.country || null,
+          city: w.city || null,
+          contact: w.contact || null,
+          notes: w.notes || null,
+          status: 'activo',
+          ...meta
+        };
         if(useSb){
-          try{
-            const { data, error } = await window.supabase.from('cv_clients').insert([cli]).select();
-            if(error) throw error;
-            clientId = data[0].id; cli.id = clientId;
-          }catch(e){ console.warn('Insert cliente fallo, uso local',e); clientId = 'cli_'+Date.now(); cli.id=clientId; }
-        } else { clientId = 'cli_'+Date.now(); cli.id=clientId; }
+          console.log('[CV] Insertando cliente:', cliPayload);
+          const { data, error } = await window.supabase.from('cv_clients').insert([cliPayload]).select();
+          if(error){
+            console.error('[CV] Error insertando cliente:', error);
+            throw new Error('Cliente: '+(error.message||error.code||'desconocido'));
+          }
+          clientObj = data && data[0]; clientId = clientObj?.id;
+          console.log('[CV] Cliente creado con id:', clientId);
+        } else {
+          // Modo offline → id local con prefijo claro
+          clientId = 'local_cli_'+Date.now();
+          clientObj = { id:clientId, ...cliPayload, created_at:now, updated_at:now };
+        }
         CV.clients = CV.clients || [];
-        CV.clients.push(cli);
+        CV.clients.push(clientObj);
       }
 
-      // 2) Proyecto
+      // ══════════════════════════════════════════════════════════
+      // 2) PROYECTO en deployment_projects
+      // ══════════════════════════════════════════════════════════
       const tpl = (CV.templates||[]).find(t=>t.id===w.templateId);
-      const projId = (typeof crypto!=='undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('prj_'+Date.now());
-      const proj = {
-        id: projId, client_id: clientId,
+      const projPayload = {
+        client_id: clientId,
+        template_id: w.templateId || null,
+        template_code: tpl?.code || (tpl?.name||'').split('·')[0]?.trim() || null,
         name: w.projectName || (w.clientName+' · Despliegue'),
-        template_id: w.templateId, template_code: tpl?.code || tpl?.name?.split('·')[0]?.trim() || null,
-        component_codes: w.components||[],
-        components: w.components||[],
-        start_date: w.startDate, end_date: null,
-        responsible: w.responsible, status:'activo', current_phase:'prospecto',
-        progress:0, health:'verde', notes:w.notes||null,
-        created_at:now, updated_at:now, ...meta
+        components: w.components || [],
+        component_codes: w.components || [],
+        start_date: w.startDate,
+        end_date: null,
+        responsible: w.responsible,
+        status: 'activo',
+        current_phase: 'prospecto',
+        progress: 0,
+        health: 'verde',
+        notes: w.notes || null,
+        ...meta
       };
 
-      // 3) Fases con scheduling
+      let projId;
+      if(useSb){
+        console.log('[CV] Insertando proyecto:', projPayload);
+        const { data, error } = await window.supabase.from('deployment_projects').insert([projPayload]).select();
+        if(error){
+          console.error('[CV] Error insertando proyecto:', error);
+          throw new Error('Proyecto: '+(error.message||error.code||'desconocido'));
+        }
+        projId = data[0].id;
+        Object.assign(projPayload, { id: projId, created_at: now, updated_at: now });
+        console.log('[CV] Proyecto creado con id:', projId);
+      } else {
+        projId = 'local_prj_'+Date.now();
+        projPayload.id = projId;
+        projPayload.created_at = now; projPayload.updated_at = now;
+      }
+
+      // ══════════════════════════════════════════════════════════
+      // 3) FASES con scheduling
+      // ══════════════════════════════════════════════════════════
       const hSet = _holidaysSet();
       let cursor = firstBD(w.startDate, hSet);
-      const phasesGen = PHASES.map((ph,idx)=>{
+      const phasesGen = PHASES.map((ph, idx)=>{
         const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===ph.code && (t.module==='_todos' || (w.components||[]).includes(t.module)));
         const days = phaseTasks.reduce((a,t)=>a+(t.duration_days||1),0) || 1;
         const start = new Date(cursor);
         const end   = addBD(cursor, days, hSet);
         cursor = nextBD(end, hSet);
         return {
-          id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('ph_'+Date.now()+'_'+idx),
-          project_id:projId, phase_code:ph.code, phase_name:ph.name, order_idx:idx,
-          start_date:_ymd(start), end_date:_ymd(end), status: idx===0?'activa':'pendiente',
-          progress:0, responsible:w.responsible, gate_id:null, gate_status:'pendiente',
-          created_at:now, updated_at:now, ...meta
+          project_id: projId,
+          phase_code: ph.code,
+          phase_name: ph.name,
+          order_idx: idx,
+          sort_order: idx,
+          start_date: _ymd(start),
+          end_date: _ymd(end),
+          status: idx===0 ? 'activa' : 'pendiente',
+          progress: 0,
+          responsible: w.responsible,
+          gate_status: 'pendiente',
+          ...meta
         };
       });
-      proj.end_date = phasesGen[phasesGen.length-1].end_date;
+      // Actualizar end_date del proyecto
+      const finalEnd = phasesGen[phasesGen.length-1].end_date;
+      projPayload.end_date = finalEnd;
 
-      // 4) Tareas a partir de checklists filtradas
+      let phasesInserted = phasesGen;
+      if(useSb && phasesGen.length){
+        console.log('[CV] Insertando',phasesGen.length,'fases...');
+        const { data, error } = await window.supabase.from('deployment_phases').insert(phasesGen).select();
+        if(error){
+          console.error('[CV] Error insertando fases:', error);
+          throw new Error('Fases: '+(error.message||error.code||'desconocido'));
+        }
+        phasesInserted = data;
+        console.log('[CV] Fases creadas:', phasesInserted.length);
+        // actualizar end_date del proyecto
+        await window.supabase.from('deployment_projects').update({ end_date: finalEnd, updated_at: now }).eq('id', projId);
+      } else {
+        phasesInserted = phasesGen.map((p,i)=>({ ...p, id:'local_ph_'+Date.now()+'_'+i, created_at:now, updated_at:now }));
+      }
+
+      // ══════════════════════════════════════════════════════════
+      // 4) TAREAS a partir de checklists
+      // ══════════════════════════════════════════════════════════
       const tasksGen = [];
-      phasesGen.forEach(phRow=>{
+      phasesInserted.forEach(phRow=>{
         const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===phRow.phase_code && (t.module==='_todos' || (w.components||[]).includes(t.module)));
-        // fechas dentro de la fase, secuencial respetando duración
         let tCursor = firstBD(phRow.start_date, hSet);
-        phaseTasks.forEach((tplT,k)=>{
-          const dur = tplT.duration_days||1;
+        phaseTasks.forEach((tplT, k)=>{
+          const dur = tplT.duration_days || 1;
           const tStart = new Date(tCursor);
           const tEnd   = addBD(tCursor, dur, hSet);
           tCursor = nextBD(tEnd, hSet);
           tasksGen.push({
-            id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('tk_'+Date.now()+'_'+phRow.phase_code+'_'+k),
-            project_id:projId, phase_id:phRow.id, phase_code:phRow.phase_code,
-            checklist_id:tplT.id||null, name:tplT.name, description:tplT.description||null,
-            module:tplT.module, mandatory:tplT.mandatory!==false, critical:!!tplT.critical,
-            duration_days:dur, responsible: tplT.responsible||w.responsible,
-            order_idx:k, depends_on:tplT.depends_on||null,
-            start_date:_ymd(tStart), end_date:_ymd(tEnd),
-            status:'pendiente', progress:0,
-            created_at:now, updated_at:now, ...meta
+            project_id: projId,
+            phase_id: phRow.id,
+            phase_code: phRow.phase_code,
+            checklist_id: (typeof tplT.id === 'string' && /^[0-9a-f-]{36}$/i.test(tplT.id)) ? tplT.id : null,
+            name: tplT.name,
+            description: tplT.description || null,
+            module: tplT.module || null,
+            mandatory: tplT.mandatory !== false,
+            critical: !!tplT.critical,
+            is_required: tplT.mandatory !== false,
+            is_critical: !!tplT.critical,
+            duration_days: dur,
+            responsible: tplT.responsible || w.responsible,
+            order_idx: k,
+            sort_order: k,
+            start_date: _ymd(tStart),
+            end_date: _ymd(tEnd),
+            status: 'pendiente',
+            progress: 0,
+            ...meta
           });
         });
       });
+      console.log('[CV] Tareas a generar:', tasksGen.length);
 
-      // 5) Persistir
-      if(useSb){
-        try{
-          await window.supabase.from('deployment_projects').insert([proj]);
-          if(phasesGen.length) await window.supabase.from('deployment_phases').insert(phasesGen);
-          if(tasksGen.length){
-            // batch en bloques de 200 por seguridad
-            for(let i=0;i<tasksGen.length;i+=200){
-              await window.supabase.from('deployment_tasks').insert(tasksGen.slice(i,i+200));
-            }
+      let tasksInserted = tasksGen;
+      if(useSb && tasksGen.length){
+        // Insertar en lotes de 100 para evitar payloads grandes
+        tasksInserted = [];
+        for(let i=0; i<tasksGen.length; i+=100){
+          const batch = tasksGen.slice(i, i+100);
+          const { data, error } = await window.supabase.from('deployment_tasks').insert(batch).select();
+          if(error){
+            console.error('[CV] Error insertando tareas (batch '+i+'):', error);
+            throw new Error('Tareas: '+(error.message||error.code||'desconocido'));
           }
-        }catch(e){ console.warn('Insert proyecto/fases/tareas fallo, queda local',e); }
+          tasksInserted.push(...(data||[]));
+        }
+        console.log('[CV] Tareas creadas:', tasksInserted.length);
+      } else {
+        tasksInserted = tasksGen.map((t,i)=>({ ...t, id:'local_tk_'+Date.now()+'_'+i, created_at:now, updated_at:now }));
       }
-      CV.projects = CV.projects || []; CV.projects.push(proj);
-      CV.phases   = CV.phases   || []; CV.phases.push(...phasesGen);
-      CV.tasks    = CV.tasks    || []; CV.tasks.push(...tasksGen);
 
+      // ══════════════════════════════════════════════════════════
+      // 5) Actualizar memoria
+      // ══════════════════════════════════════════════════════════
+      CV.projects = CV.projects || []; CV.projects.push(projPayload);
+      CV.phases   = CV.phases   || []; CV.phases.push(...phasesInserted);
+      CV.tasks    = CV.tasks    || []; CV.tasks.push(...tasksInserted);
+
+      // ══════════════════════════════════════════════════════════
       // 6) Auditoría
-      if(window.cvLogAudit) window.cvLogAudit('create','project', projId, { name:proj.name, components:w.components });
+      // ══════════════════════════════════════════════════════════
+      try{
+        if(window.cvLogAudit) window.cvLogAudit('create','project', projId, { name: projPayload.name, components: w.components });
+      }catch(e){ console.warn('[CV] Audit log fallo (ignorado):', e); }
 
-      // 7) UI
-      const m = document.getElementById('cv-mod-wiz'); if(m) m.classList.remove('show');
-      if(typeof showSync==='function') showSync(true,'Despliegue creado');
-      cvSetTab && cvSetTab('projects');
-      cvRenderProjects && cvRenderProjects();
-      // saveCache
+      // ══════════════════════════════════════════════════════════
+      // 7) UI · cerrar wizard, refrescar lista, abrir detalle
+      // ══════════════════════════════════════════════════════════
+      const m = document.getElementById('cv-mod-wiz'); if(m){ m.classList.remove('show'); }
+      if(typeof showSync==='function') showSync(true,'✓ Despliegue creado');
+      if(window.cvSetTab) window.cvSetTab('projects');
+      if(window.cvRenderProjects) window.cvRenderProjects();
       if(window.cvSaveCache) window.cvSaveCache();
-      // abrir detalle
-      setTimeout(()=>cvOpenProject(projId), 300);
+      if(window.cvRefreshBadges) window.cvRefreshBadges();
+      console.log('[CV] Despliegue creado exitosamente:', projId);
+
+      // Abrir detalle automáticamente
+      setTimeout(()=>{
+        if(window.cvOpenProject) window.cvOpenProject(projId);
+      }, 400);
+
     }catch(e){
-      console.error(e);
-      alert('Error creando despliegue: '+(e.message||e));
+      console.error('[CV] cvWizFinish error:', e);
+      const msg = e?.message || e?.toString() || 'desconocido';
+      alert('❌ Error creando despliegue:\n\n'+msg+'\n\nRevisa la consola (F12) para más detalle.');
+      if(typeof showSync==='function') showSync(false, 'Error');
+    } finally {
+      // Re-habilitar botones
+      if(btnFin){ btnFin.disabled = false; btnFin.textContent = '✓ Crear despliegue'; }
+      if(btnPrev){ btnPrev.disabled = false; }
     }
   }
   window.cvWizFinish = cvWizFinish;
@@ -11130,12 +11844,18 @@ if(location.search.includes('demo=1')){
             const phDone  = phTasks.filter(t=>t.status==='completada').length;
             const phProg  = phTasks.length?Math.round(phDone*100/phTasks.length):0;
             const gate = (CV.gates||[]).find(g=>g.phase_code===ph.phase_code);
+            const phRoleBadge = (window.cvRoleBadge ? window.cvRoleBadge(ph.phase_role, ph.assignee) : '');
+            const phDocs = window.cvDocsForPhase ? window.cvDocsForPhase(p.id, ph.phase_code).length : 0;
             return `<div style="padding:8px 0; border-bottom:1px solid var(--border);">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span>${phMeta.icon}</span>
                 <b style="flex:1;">${esc(phMeta.name)}</b>
                 <span class="chip">${phProg}%</span>
                 <span class="chip" style="background:${ph.status==='completada'?'var(--green-l)':ph.status==='activa'?'var(--blue-l)':'var(--bg2)'}; color:${ph.status==='completada'?'var(--green)':ph.status==='activa'?'var(--blue)':'var(--muted)'};">${esc(ph.status||'pendiente')}</span>
+              </div>
+              <div style="margin-top:5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span style="cursor:pointer" onclick="cvOpenAssign('phase','${ph.id}')" title="Click para asignar rol/persona">${phRoleBadge}</span>
+                <button class="btn btn-g btn-sm" style="padding:2px 8px;font-size:10.5px" onclick="cvOpenDocUpload({clientId:'${p.client_id}',projectId:'${p.id}',phaseId:'${ph.id}',phaseCode:'${ph.phase_code}'})" title="Subir documento a esta fase">📁 ${phDocs}</button>
               </div>
               ${gate?`<div style="margin-top:5px; font-size:11px; color:var(--muted);">🚪 ${esc(gate.name)}
                 <button class="btn-sm" style="margin-left:6px;" onclick="cvApprovePhase('${ph.id}')">${ph.gate_status==='aprobado'?'✓ aprobado':'Aprobar'}</button>
@@ -11174,12 +11894,21 @@ if(location.search.includes('demo=1')){
               const isDone = t.status==='completada';
               const ph = PHASES.find(x=>x.code===t.phase_code) || {icon:'•'};
               const overdueT = !isDone && t.end_date && new Date(t.end_date) < today;
+              // Resolver responsable (cascada: tarea → checklist → fase → proyecto)
+              const resp = window.cvResolveResponsible ? window.cvResolveResponsible(t) : null;
+              const respBadge = window.cvRoleBadge ? window.cvRoleBadge(resp?.role, resp?.assignee || t.responsible) : '';
+              const sourceLabel = resp?.source ? `<span style="font-size:9.5px;color:var(--muted);font-style:italic" title="Heredado de ${resp.source}">(${resp.source==='task'?'directo':'desde '+resp.source})</span>` : '';
               return `<div style="display:flex; gap:10px; align-items:center; padding:8px 6px; border-bottom:1px solid var(--border); ${overdueT?'background:rgba(239,68,68,.05);':''}">
                 <input type="checkbox" ${isDone?'checked':''} onchange="cvToggleTask('${t.id}', this.checked)" style="cursor:pointer;" />
                 <span title="${esc(ph.name||'')}">${ph.icon}</span>
                 <div style="flex:1; ${isDone?'text-decoration:line-through; color:var(--muted);':''}">
                   <div style="font-weight:600; font-size:13px;">${esc(t.name)} ${t.critical?'<span class="chip" style="background:var(--red-l); color:var(--red); font-size:9px;">crítica</span>':''}</div>
-                  <div style="color:var(--muted); font-size:11px;">${t.start_date?new Date(t.start_date).toLocaleDateString('es'):''} → ${t.end_date?new Date(t.end_date).toLocaleDateString('es'):''} · ${t.duration_days||1}d · ${esc(t.responsible||'')}${overdueT?' · <b style="color:var(--red);">VENCIDA</b>':''}</div>
+                  <div style="color:var(--muted); font-size:11px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:2px;">
+                    <span>${t.start_date?new Date(t.start_date).toLocaleDateString('es'):''} → ${t.end_date?new Date(t.end_date).toLocaleDateString('es'):''} · ${t.duration_days||1}d</span>
+                    <span onclick="event.stopPropagation();cvOpenAssign('task','${t.id}')" style="cursor:pointer" title="Click para asignar">${respBadge}</span>
+                    ${sourceLabel}
+                    ${overdueT?'· <b style="color:var(--red);">VENCIDA</b>':''}
+                  </div>
                 </div>
               </div>`;
             }).join('')||'<div class="cv-empty">Sin tareas en esta fase.</div>';
@@ -11189,6 +11918,7 @@ if(location.search.includes('demo=1')){
 
       <div style="display:flex; gap:8px; justify-content:flex-end; padding-top:6px;">
         <button class="btn" onclick="cvDeleteProject('${id}')" style="background:var(--red-l); color:var(--red); border-color:var(--red-l);">🗑️ Eliminar</button>
+        <button class="btn" onclick="cvOpenDocUpload({clientId:'${p.client_id}',projectId:'${p.id}'})">📁 Subir doc</button>
         <button class="btn" onclick="cvGoGantt('${id}')">📊 Ver Gantt</button>
         <button class="btn primary" onclick="closeM('cv-mod-proj')">Cerrar</button>
       </div>`;
@@ -11576,6 +12306,1632 @@ ${wrap.innerHTML}
   window.cvPrintGantt = cvPrintGantt;
 
 })(); // fin IIFE PARTE 3
+
+// ════════════════════════════════════════════════════════════════════
+// CADENA DE VALOR · MÓDULO GUIONES DE CAPACITACIÓN
+// ════════════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+
+  // Asegurar estado y arrays
+  if(typeof window.CV === 'undefined') window.CV = {};
+  if(!Array.isArray(window.CV.trainings)) window.CV.trainings = [];
+
+  let _editTrainId = null;     // id en edición (null = nuevo)
+  let _draftSections = [];     // secciones del guión en edición
+
+  // Cargar guiones desde Supabase si la tabla existe
+  async function cvLoadTrainings(){
+    if(!window.supabase) return;
+    try{
+      const r = await window.supabase.from('cv_trainings').select('*').order('created_at',{ascending:false});
+      if(r.error){
+        // Si la tabla no existe → usar localStorage como fallback
+        console.warn('[CV-TR] cv_trainings no disponible, uso localStorage:', r.error.message);
+        try{
+          const local = JSON.parse(localStorage.getItem('cv_trainings_v1')||'[]');
+          window.CV.trainings = Array.isArray(local) ? local : [];
+        }catch(e){ window.CV.trainings = []; }
+      } else {
+        window.CV.trainings = r.data || [];
+      }
+    }catch(e){
+      console.warn('[CV-TR] error cargando trainings:', e);
+    }
+    cvRefreshTrainBadge();
+    if(window.CV.currentTab==='trainings') cvRenderTrainings();
+  }
+  window.cvLoadTrainings = cvLoadTrainings;
+
+  function cvRefreshTrainBadge(){
+    const el = document.getElementById('cv-bd-train');
+    if(el) el.textContent = (window.CV.trainings||[]).length;
+  }
+  window.cvRefreshTrainBadge = cvRefreshTrainBadge;
+
+  function _saveLocal(){
+    try{ localStorage.setItem('cv_trainings_v1', JSON.stringify(window.CV.trainings||[])); }catch(e){}
+  }
+
+  // ─────────────────────────────────────────────────────
+  // Lista
+  // ─────────────────────────────────────────────────────
+  function cvRenderTrainings(){
+    const cont = document.getElementById('cv-trainings-list');
+    if(!cont) return;
+
+    // Poblar selects de filtro (tipos de cliente desde catálogos legacy + módulos desde components_catalog)
+    const tipos = (typeof cats!=='undefined' && cats.tp) ? cats.tp : [];
+    const selT = document.getElementById('cv-train-tipo');
+    if(selT){
+      const cur = selT.value;
+      selT.innerHTML = '<option value="">Todos los tipos</option>' + tipos.map(t=>`<option value="${esc(t.name)}" ${cur===t.name?'selected':''}>${esc(t.name)}</option>`).join('');
+    }
+    const mods = (window.CV.components||[]).filter(c=>c.is_active!==false);
+    const selM = document.getElementById('cv-train-mod');
+    if(selM){
+      const cur = selM.value;
+      selM.innerHTML = '<option value="">Todos los módulos</option>' + mods.map(m=>`<option value="${esc(m.code)}" ${cur===m.code?'selected':''}>${esc(m.icon||'')} ${esc(m.name||m.code)}</option>`).join('');
+    }
+
+    const search = (document.getElementById('cv-train-search')?.value||'').toLowerCase().trim();
+    const fT = document.getElementById('cv-train-tipo')?.value||'';
+    const fM = document.getElementById('cv-train-mod')?.value||'';
+
+    const list = (window.CV.trainings||[]).filter(t=>{
+      if(search && !((t.name||'')+' '+(t.objectives||'')).toLowerCase().includes(search)) return false;
+      if(fT && t.client_type!==fT) return false;
+      if(fM && !(t.modules||[]).includes(fM)) return false;
+      return true;
+    });
+
+    if(!list.length){
+      cont.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">🎓</div>No hay guiones aún. Crea uno con <b>+ Nuevo Guión</b> o cargá los demos con <b>🌱 Seed demo</b>.</div>';
+      return;
+    }
+
+    cont.innerHTML = list.map(t=>{
+      const totalMin = (t.sections||[]).reduce((acc,s)=>acc + (s.items||[]).reduce((a,it)=>a+(parseInt(it.minutes,10)||0),0), 0);
+      const sectionsCount = (t.sections||[]).length;
+      const itemsCount = (t.sections||[]).reduce((a,s)=>a+((s.items||[]).length),0);
+      const modBadges = (t.modules||[]).map(code=>{
+        const c = (window.CV.components||[]).find(x=>x.code===code);
+        return `<span class="chip" style="background:${c?.color||'var(--blue-l)'}33;color:${c?.color||'var(--blue)'};border:1px solid ${c?.color||'var(--blue)'}55">${esc(c?.icon||'🧩')} ${esc(c?.name||code)}</span>`;
+      }).join('');
+      return `<div class="cv-cli-card" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:240px">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <b style="font-size:14px">${esc(t.name||'(sin nombre)')}</b>
+              <span class="chip" style="background:var(--violet-l);color:var(--violet)">${esc(t.client_type||'sin tipo')}</span>
+              <span class="chip" style="background:var(--blue-l);color:var(--blue)">${esc(t.audience||'mixto')}</span>
+              ${t.version?`<span class="chip">v${esc(t.version)}</span>`:''}
+            </div>
+            <div style="margin-top:6px;font-size:12px;color:var(--muted)">${esc((t.objectives||'').slice(0,160))}${(t.objectives||'').length>160?'…':''}</div>
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">${modBadges}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:11px">
+            <div><b style="color:var(--text);font-size:14px">${totalMin}</b> <span style="color:var(--muted)">min</span></div>
+            <div style="color:var(--muted)">${sectionsCount} secciones · ${itemsCount} items</div>
+            <div style="display:flex;gap:5px;margin-top:4px">
+              <button class="btn btn-g btn-sm" onclick="event.stopPropagation();cvViewTrainingById('${t.id}')" title="Vista previa / Imprimir">👁️</button>
+              <button class="btn btn-g btn-sm" onclick="event.stopPropagation();cvOpenTraining('${t.id}')" title="Editar">✏️</button>
+              <button class="btn btn-g btn-sm" onclick="event.stopPropagation();cvDuplicateTraining('${t.id}')" title="Duplicar">📋</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderTrainings = cvRenderTrainings;
+
+  // ─────────────────────────────────────────────────────
+  // Editor (open / render / save / delete / duplicate)
+  // ─────────────────────────────────────────────────────
+  function cvOpenTraining(id){
+    _editTrainId = id;
+    const t = id ? (window.CV.trainings||[]).find(x=>String(x.id)===String(id)) : null;
+    document.getElementById('cv-train-mt').textContent = t ? 'Editar Guión' : 'Nuevo Guión de Capacitación';
+    document.getElementById('cv-train-name').value = t?.name || '';
+    document.getElementById('cv-train-aud').value  = t?.audience || 'operadores';
+    document.getElementById('cv-train-lang').value = t?.language || 'es';
+    document.getElementById('cv-train-ver').value  = t?.version  || '1.0';
+    document.getElementById('cv-train-obj').value  = t?.objectives || '';
+    document.getElementById('cv-train-mat').value  = t?.materials || '';
+
+    // Tipos de cliente
+    const tipos = (typeof cats!=='undefined' && cats.tp) ? cats.tp : [];
+    const sel = document.getElementById('cv-train-clitype');
+    sel.innerHTML = '<option value="">— Seleccioná —</option>' + tipos.map(tp=>`<option value="${esc(tp.name)}" ${t?.client_type===tp.name?'selected':''}>${esc(tp.name)}</option>`).join('');
+
+    // Módulos como chips toggleables
+    const mods = (window.CV.components||[]).filter(c=>c.is_active!==false);
+    const active = new Set(t?.modules||[]);
+    const wrap = document.getElementById('cv-train-mods');
+    wrap.innerHTML = mods.length ? mods.map(m=>{
+      const on = active.has(m.code);
+      return `<label class="chip" style="cursor:pointer;user-select:none;background:${on?'var(--blue)':'var(--bg2)'};color:${on?'#fff':'var(--text)'};border:1px solid ${on?'var(--blue)':'var(--border)'}" data-code="${esc(m.code)}">
+        <input type="checkbox" ${on?'checked':''} style="display:none" onchange="cvTrainToggleMod('${esc(m.code)}', this.checked, this.parentElement)">
+        ${esc(m.icon||'🧩')} ${esc(m.name||m.code)}
+      </label>`;
+    }).join('') : '<span style="color:var(--muted);font-size:12px">No hay componentes cargados todavía</span>';
+
+    // Secciones
+    _draftSections = JSON.parse(JSON.stringify(t?.sections||[]));
+    _renderDraftSections();
+    _updateTotalMin();
+
+    // Botón eliminar
+    const delBtn = document.getElementById('cv-train-del-btn');
+    if(delBtn) delBtn.style.display = id ? 'inline-block' : 'none';
+
+    document.getElementById('cv-mod-train').classList.add('show');
+  }
+  window.cvOpenTraining = cvOpenTraining;
+
+  function cvTrainToggleMod(code, on, lbl){
+    if(on){
+      lbl.style.background = 'var(--blue)'; lbl.style.color='#fff'; lbl.style.borderColor='var(--blue)';
+    } else {
+      lbl.style.background = 'var(--bg2)';  lbl.style.color='var(--text)'; lbl.style.borderColor='var(--border)';
+    }
+  }
+  window.cvTrainToggleMod = cvTrainToggleMod;
+
+  function _renderDraftSections(){
+    const cont = document.getElementById('cv-train-sections');
+    if(!cont) return;
+    if(!_draftSections.length){
+      cont.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:8px;font-size:12px">Aún no hay secciones. Click en <b>+ Sección</b> arriba para empezar.</div>';
+      return;
+    }
+    cont.innerHTML = _draftSections.map((s, si)=>{
+      const items = (s.items||[]).map((it, ii)=>{
+        return `<div style="display:flex;gap:6px;align-items:flex-start;margin:5px 0;padding:6px;background:var(--bg);border:1px solid var(--border);border-radius:6px">
+          <div style="flex:1;display:grid;grid-template-columns:1fr 70px;gap:6px">
+            <input value="${esc(it.text||'')}" oninput="cvTrainSetItemText(${si},${ii},this.value)" placeholder="Paso o instrucción..." style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text)">
+            <input type="number" value="${parseInt(it.minutes,10)||0}" min="0" oninput="cvTrainSetItemMin(${si},${ii},this.value)" placeholder="min" style="border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text);text-align:center" title="Minutos estimados">
+          </div>
+          <button class="btn btn-d btn-sm" onclick="cvTrainDelItem(${si},${ii})" style="padding:2px 8px" title="Eliminar item">🗑️</button>
+        </div>`;
+      }).join('');
+      const sectionMin = (s.items||[]).reduce((a,it)=>a+(parseInt(it.minutes,10)||0),0);
+      return `<div style="margin:10px 0;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <span style="background:var(--blue);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${si+1}</span>
+          <input value="${esc(s.title||'')}" oninput="cvTrainSetSecTitle(${si},this.value)" placeholder="Título de la sección (ej: Introducción al Admin Web)" style="flex:1;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:13px;font-weight:600;background:var(--bg);color:var(--text)">
+          <span style="font-size:11px;color:var(--muted)">${sectionMin} min</span>
+          <button class="btn btn-g btn-sm" onclick="cvTrainMoveSec(${si},-1)" ${si===0?'disabled':''} title="Subir">↑</button>
+          <button class="btn btn-g btn-sm" onclick="cvTrainMoveSec(${si},1)" ${si===_draftSections.length-1?'disabled':''} title="Bajar">↓</button>
+          <button class="btn btn-d btn-sm" onclick="cvTrainDelSec(${si})" title="Eliminar sección">🗑️</button>
+        </div>
+        <textarea oninput="cvTrainSetSecNotes(${si},this.value)" placeholder="Notas / objetivos de esta sección (opcional)" style="width:100%;border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;background:var(--bg);color:var(--text);resize:vertical;min-height:36px;margin-bottom:6px">${esc(s.notes||'')}</textarea>
+        <div>${items}</div>
+        <button class="btn btn-g btn-sm" onclick="cvTrainAddItem(${si})" style="margin-top:6px">+ Item</button>
+      </div>`;
+    }).join('');
+  }
+
+  function _updateTotalMin(){
+    const total = _draftSections.reduce((a,s)=>a + (s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0), 0);
+    const el = document.getElementById('cv-train-dur');
+    if(el) el.value = total + ' min (≈ ' + (total/60).toFixed(1) + ' h)';
+  }
+
+  // Mutators de secciones/items
+  function cvTrainAddSection(){ _draftSections.push({title:'', notes:'', items:[]}); _renderDraftSections(); _updateTotalMin(); }
+  function cvTrainSetSecTitle(si, val){ if(_draftSections[si]) _draftSections[si].title = val; }
+  function cvTrainSetSecNotes(si, val){ if(_draftSections[si]) _draftSections[si].notes = val; }
+  function cvTrainDelSec(si){ if(!confirm('¿Eliminar esta sección?')) return; _draftSections.splice(si,1); _renderDraftSections(); _updateTotalMin(); }
+  function cvTrainMoveSec(si, dir){
+    const ni = si + dir; if(ni<0 || ni>=_draftSections.length) return;
+    const tmp = _draftSections[si]; _draftSections[si] = _draftSections[ni]; _draftSections[ni] = tmp;
+    _renderDraftSections(); _updateTotalMin();
+  }
+  function cvTrainAddItem(si){
+    if(!_draftSections[si]) return;
+    if(!Array.isArray(_draftSections[si].items)) _draftSections[si].items = [];
+    _draftSections[si].items.push({text:'', minutes:5});
+    _renderDraftSections(); _updateTotalMin();
+  }
+  function cvTrainSetItemText(si, ii, val){
+    if(_draftSections[si]?.items?.[ii]) _draftSections[si].items[ii].text = val;
+  }
+  function cvTrainSetItemMin(si, ii, val){
+    if(_draftSections[si]?.items?.[ii]){
+      _draftSections[si].items[ii].minutes = parseInt(val,10)||0;
+      _updateTotalMin();
+      // actualizar contador de la sección sin re-render completo
+      const lbl = document.querySelectorAll('#cv-train-sections > div')[si]?.querySelector('span[style*="color:var(--muted)"]');
+      if(lbl){
+        const sectionMin = _draftSections[si].items.reduce((a,it)=>a+(parseInt(it.minutes,10)||0),0);
+        lbl.textContent = sectionMin+' min';
+      }
+    }
+  }
+  function cvTrainDelItem(si, ii){
+    if(_draftSections[si]?.items){
+      _draftSections[si].items.splice(ii,1);
+      _renderDraftSections(); _updateTotalMin();
+    }
+  }
+  window.cvTrainAddSection = cvTrainAddSection;
+  window.cvTrainSetSecTitle = cvTrainSetSecTitle;
+  window.cvTrainSetSecNotes = cvTrainSetSecNotes;
+  window.cvTrainDelSec = cvTrainDelSec;
+  window.cvTrainMoveSec = cvTrainMoveSec;
+  window.cvTrainAddItem = cvTrainAddItem;
+  window.cvTrainSetItemText = cvTrainSetItemText;
+  window.cvTrainSetItemMin = cvTrainSetItemMin;
+  window.cvTrainDelItem = cvTrainDelItem;
+
+  async function cvSaveTraining(){
+    const name = document.getElementById('cv-train-name').value.trim();
+    const clitype = document.getElementById('cv-train-clitype').value.trim();
+    if(!name){ alert('Falta el nombre del guión'); return; }
+    if(!clitype){ alert('Falta el Tipo de Cliente'); return; }
+
+    // Capturar módulos seleccionados
+    const modulesActive = [];
+    document.querySelectorAll('#cv-train-mods label').forEach(lbl=>{
+      const cb = lbl.querySelector('input[type="checkbox"]');
+      if(cb?.checked) modulesActive.push(lbl.dataset.code);
+    });
+
+    const totalMin = _draftSections.reduce((a,s)=>a + (s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0), 0);
+    const isUuid = (s)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s||''));
+    const u = window._currentUser;
+    const uid = u && isUuid(u.id) ? u.id : null;
+
+    const payload = {
+      name,
+      client_type: clitype,
+      audience: document.getElementById('cv-train-aud').value,
+      language: document.getElementById('cv-train-lang').value,
+      version: document.getElementById('cv-train-ver').value || '1.0',
+      objectives: document.getElementById('cv-train-obj').value || null,
+      materials: document.getElementById('cv-train-mat').value || null,
+      modules: modulesActive,
+      sections: _draftSections,
+      total_minutes: totalMin,
+      updated_by: uid
+    };
+
+    let saved = null;
+    if(window.supabase){
+      try{
+        if(_editTrainId){
+          const r = await window.supabase.from('cv_trainings').update(payload).eq('id', _editTrainId).select();
+          if(r.error) throw r.error;
+          saved = r.data?.[0];
+        } else {
+          payload.created_by = uid;
+          const r = await window.supabase.from('cv_trainings').insert([payload]).select();
+          if(r.error) throw r.error;
+          saved = r.data?.[0];
+        }
+      }catch(e){
+        console.warn('[CV-TR] Supabase falló, guardo en localStorage:', e.message);
+        // Fallback localStorage
+        if(_editTrainId){
+          const idx = window.CV.trainings.findIndex(x=>String(x.id)===String(_editTrainId));
+          if(idx>=0){ window.CV.trainings[idx] = { ...window.CV.trainings[idx], ...payload, updated_at:new Date().toISOString() }; saved = window.CV.trainings[idx]; }
+        } else {
+          saved = { id: 'local_tr_'+Date.now(), ...payload, created_at:new Date().toISOString(), updated_at:new Date().toISOString() };
+          window.CV.trainings.unshift(saved);
+        }
+        _saveLocal();
+      }
+    } else {
+      // Sin supabase
+      if(_editTrainId){
+        const idx = window.CV.trainings.findIndex(x=>String(x.id)===String(_editTrainId));
+        if(idx>=0){ window.CV.trainings[idx] = { ...window.CV.trainings[idx], ...payload, updated_at:new Date().toISOString() }; saved = window.CV.trainings[idx]; }
+      } else {
+        saved = { id: 'local_tr_'+Date.now(), ...payload, created_at:new Date().toISOString(), updated_at:new Date().toISOString() };
+        window.CV.trainings.unshift(saved);
+      }
+      _saveLocal();
+    }
+
+    // Si vino de supabase, refrescar en memoria
+    if(saved && saved.id){
+      const idx = window.CV.trainings.findIndex(x=>String(x.id)===String(saved.id));
+      if(idx>=0) window.CV.trainings[idx] = saved;
+      else window.CV.trainings.unshift(saved);
+    }
+
+    closeM('cv-mod-train');
+    cvRenderTrainings();
+    cvRefreshTrainBadge();
+    if(typeof showSync==='function') showSync(true,'Guión guardado');
+    try{ if(window.cvLogAudit) window.cvLogAudit(_editTrainId?'update':'create','training', saved?.id, { name }); }catch(e){}
+  }
+  window.cvSaveTraining = cvSaveTraining;
+
+  async function cvDeleteTraining(){
+    if(!_editTrainId){ closeM('cv-mod-train'); return; }
+    if(!confirm('¿Eliminar este guión de capacitación? Esta acción no se puede deshacer.')) return;
+    if(window.supabase){
+      try{ await window.supabase.from('cv_trainings').delete().eq('id', _editTrainId); }catch(e){ console.warn(e); }
+    }
+    window.CV.trainings = window.CV.trainings.filter(x=>String(x.id)!==String(_editTrainId));
+    _saveLocal();
+    closeM('cv-mod-train');
+    cvRenderTrainings();
+    cvRefreshTrainBadge();
+    if(typeof showSync==='function') showSync(true,'Guión eliminado');
+  }
+  window.cvDeleteTraining = cvDeleteTraining;
+
+  function cvDuplicateTraining(id){
+    const t = (window.CV.trainings||[]).find(x=>String(x.id)===String(id)); if(!t) return;
+    const copy = JSON.parse(JSON.stringify(t));
+    delete copy.id; delete copy.created_at; delete copy.updated_at;
+    copy.name = (t.name||'Guión') + ' (copia)';
+    copy.version = '1.0';
+    if(window.supabase){
+      window.supabase.from('cv_trainings').insert([copy]).select().then(r=>{
+        if(r.error){ console.warn(r.error); copy.id='local_tr_'+Date.now(); window.CV.trainings.unshift(copy); _saveLocal(); }
+        else { window.CV.trainings.unshift(r.data[0]); }
+        cvRenderTrainings(); cvRefreshTrainBadge();
+      });
+    } else {
+      copy.id='local_tr_'+Date.now();
+      window.CV.trainings.unshift(copy);
+      _saveLocal(); cvRenderTrainings(); cvRefreshTrainBadge();
+    }
+  }
+  window.cvDuplicateTraining = cvDuplicateTraining;
+
+  // ─────────────────────────────────────────────────────
+  // Vista previa (modo presentación)
+  // ─────────────────────────────────────────────────────
+  let _viewTrainId = null;
+
+  function cvViewTraining(){
+    // desde el editor: usar draft
+    const name = document.getElementById('cv-train-name').value.trim();
+    const clitype = document.getElementById('cv-train-clitype').value.trim();
+    if(!name){ alert('Define al menos el nombre antes de previsualizar'); return; }
+    const modulesActive = [];
+    document.querySelectorAll('#cv-train-mods label').forEach(lbl=>{
+      const cb = lbl.querySelector('input[type="checkbox"]');
+      if(cb?.checked) modulesActive.push(lbl.dataset.code);
+    });
+    const t = {
+      name, client_type:clitype,
+      audience: document.getElementById('cv-train-aud').value,
+      language: document.getElementById('cv-train-lang').value,
+      version: document.getElementById('cv-train-ver').value || '1.0',
+      objectives: document.getElementById('cv-train-obj').value,
+      materials: document.getElementById('cv-train-mat').value,
+      modules: modulesActive,
+      sections: _draftSections
+    };
+    _viewTrainId = null;
+    _renderTrainingView(t);
+    document.getElementById('cv-mod-train-view').classList.add('show');
+  }
+  window.cvViewTraining = cvViewTraining;
+
+  function cvViewTrainingById(id){
+    const t = (window.CV.trainings||[]).find(x=>String(x.id)===String(id)); if(!t) return;
+    _viewTrainId = id;
+    _renderTrainingView(t);
+    document.getElementById('cv-mod-train-view').classList.add('show');
+  }
+  window.cvViewTrainingById = cvViewTrainingById;
+
+  function _renderTrainingView(t){
+    const totalMin = (t.sections||[]).reduce((a,s)=>a+(s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0),0);
+    document.getElementById('cv-trv-title').textContent = '🎓 ' + (t.name||'Guión');
+    document.getElementById('cv-trv-meta').innerHTML = `${esc(t.client_type||'')} · ${esc(t.audience||'')} · v${esc(t.version||'1.0')} · ${totalMin} min`;
+    const modules = (t.modules||[]).map(code=>{
+      const c = (window.CV.components||[]).find(x=>x.code===code);
+      return (c?.icon||'🧩')+' '+(c?.name||code);
+    }).join(' · ');
+
+    const html = `
+      <div style="border:1px solid var(--border);border-radius:10px;padding:18px 20px;background:var(--bg)">
+        <h2 style="margin:0;font-size:20px;color:var(--text)">${esc(t.name||'')}</h2>
+        <div style="margin-top:6px;color:var(--muted);font-size:13px">
+          <b>Tipo de Cliente:</b> ${esc(t.client_type||'—')}
+          &nbsp;·&nbsp; <b>Audiencia:</b> ${esc(t.audience||'—')}
+          &nbsp;·&nbsp; <b>Versión:</b> v${esc(t.version||'1.0')}
+          &nbsp;·&nbsp; <b>Duración:</b> ${totalMin} min (≈ ${(totalMin/60).toFixed(1)} h)
+        </div>
+        ${modules?`<div style="margin-top:8px;font-size:13px"><b>Módulos:</b> ${esc(modules)}</div>`:''}
+        ${t.objectives?`<div style="margin-top:14px;padding:10px 12px;background:var(--blue-l);border-left:3px solid var(--blue);border-radius:4px"><b>🎯 Objetivos:</b><br>${esc(t.objectives).replace(/\\n/g,'<br>')}</div>`:''}
+        ${t.materials?`<div style="margin-top:8px;padding:10px 12px;background:var(--amber-l);border-left:3px solid var(--amber);border-radius:4px;font-size:12.5px"><b>🧰 Material requerido:</b> ${esc(t.materials)}</div>`:''}
+      </div>
+
+      ${(t.sections||[]).map((s,si)=>{
+        const sectionMin = (s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0);
+        return `<div style="margin-top:16px;border:1px solid var(--border);border-radius:10px;background:var(--bg);page-break-inside:avoid">
+          <div style="padding:10px 14px;background:var(--bg2);border-bottom:1px solid var(--border);border-radius:10px 10px 0 0;display:flex;align-items:center;gap:10px">
+            <span style="background:var(--blue);color:#fff;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">${si+1}</span>
+            <div style="flex:1">
+              <b style="font-size:14px">${esc(s.title||'(sin título)')}</b>
+              ${s.notes?`<div style="font-size:11.5px;color:var(--muted);margin-top:2px">${esc(s.notes)}</div>`:''}
+            </div>
+            <span style="font-size:11.5px;color:var(--muted)">⏱️ ${sectionMin} min</span>
+          </div>
+          <ol style="margin:0;padding:10px 14px 12px 36px">
+            ${(s.items||[]).map((it,ii)=>`<li style="margin:4px 0">${esc(it.text||'')} ${parseInt(it.minutes,10)?`<span style="color:var(--muted);font-size:11px">(${parseInt(it.minutes,10)} min)</span>`:''}</li>`).join('') || '<li style="color:var(--muted);font-style:italic">Sin items</li>'}
+          </ol>
+        </div>`;
+      }).join('')}
+
+      <div style="margin-top:18px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--muted);text-align:center">
+        Generado desde Ops Center · Cadena de Valor · ${new Date().toLocaleDateString('es')}
+      </div>
+    `;
+    document.getElementById('cv-trv-body').innerHTML = html;
+  }
+
+  function cvPrintTraining(){
+    const node = document.getElementById('cv-trv-body');
+    if(!node) return;
+    const w = window.open('', '_blank');
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Guión de Capacitación</title>
+      <style>
+        body{font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;line-height:1.5;padding:24px;max-width:900px;margin:0 auto}
+        h2{margin:0 0 6px}
+        ol{margin:6px 0 0 18px}
+        li{margin:4px 0}
+      </style>
+    </head><body>${node.innerHTML}</body></html>`);
+    w.document.close();
+    setTimeout(()=>{ try{ w.print(); }catch(e){} }, 400);
+  }
+  window.cvPrintTraining = cvPrintTraining;
+
+  function cvExportTrainingHTML(){
+    const node = document.getElementById('cv-trv-body');
+    const title = document.getElementById('cv-trv-title')?.textContent || 'Guion';
+    const blob = new Blob([`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:system-ui,sans-serif;line-height:1.5;padding:24px;max-width:900px;margin:0 auto;color:#1a1a1a}h2{margin:0 0 6px}ol{margin:6px 0 0 18px}li{margin:4px 0}</style></head><body>${node.innerHTML}</body></html>`], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = title.replace(/[^\w\d-]+/g,'_').toLowerCase()+'.html'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+  window.cvExportTrainingHTML = cvExportTrainingHTML;
+
+  function cvExportTrainingMD(){
+    // localizar el guión actual (por id o draft)
+    let t;
+    if(_viewTrainId){ t = (window.CV.trainings||[]).find(x=>String(x.id)===String(_viewTrainId)); }
+    if(!t){
+      const modulesActive = [];
+      document.querySelectorAll('#cv-train-mods label').forEach(lbl=>{
+        const cb = lbl.querySelector('input[type="checkbox"]'); if(cb?.checked) modulesActive.push(lbl.dataset.code);
+      });
+      t = {
+        name: document.getElementById('cv-train-name')?.value || 'Guión',
+        client_type: document.getElementById('cv-train-clitype')?.value || '',
+        audience: document.getElementById('cv-train-aud')?.value || '',
+        version: document.getElementById('cv-train-ver')?.value || '1.0',
+        objectives: document.getElementById('cv-train-obj')?.value || '',
+        materials: document.getElementById('cv-train-mat')?.value || '',
+        modules: modulesActive,
+        sections: _draftSections
+      };
+    }
+    const totalMin = (t.sections||[]).reduce((a,s)=>a+(s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0),0);
+    const lines = [];
+    lines.push(`# ${t.name||'Guión'}`);
+    lines.push(``);
+    lines.push(`> **Tipo de Cliente:** ${t.client_type||'—'} · **Audiencia:** ${t.audience||'—'} · **Versión:** v${t.version||'1.0'} · **Duración:** ${totalMin} min`);
+    lines.push(``);
+    if(t.modules && t.modules.length){
+      const mn = t.modules.map(code=>{
+        const c = (window.CV.components||[]).find(x=>x.code===code);
+        return (c?.icon||'🧩')+' '+(c?.name||code);
+      }).join(', ');
+      lines.push(`**Módulos:** ${mn}`);
+      lines.push(``);
+    }
+    if(t.objectives){ lines.push(`## 🎯 Objetivos`); lines.push(t.objectives); lines.push(``); }
+    if(t.materials){ lines.push(`## 🧰 Material requerido`); lines.push(t.materials); lines.push(``); }
+    (t.sections||[]).forEach((s, si)=>{
+      const secMin = (s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0);
+      lines.push(`## ${si+1}. ${s.title||'(sin título)'} _(${secMin} min)_`);
+      if(s.notes) lines.push(`_${s.notes}_`);
+      lines.push(``);
+      (s.items||[]).forEach((it, ii)=>{
+        const m = parseInt(it.minutes,10)||0;
+        lines.push(`${ii+1}. ${it.text||''}${m?` _(${m} min)_`:''}`);
+      });
+      lines.push(``);
+    });
+    const md = lines.join('\n');
+    const blob = new Blob([md],{type:'text/markdown'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = (t.name||'guion').replace(/[^\w\d-]+/g,'_').toLowerCase()+'.md'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+  window.cvExportTrainingMD = cvExportTrainingMD;
+
+  async function cvCopyTraining(){
+    const node = document.getElementById('cv-trv-body');
+    if(!node) return;
+    try{
+      // Texto plano simplificado
+      const txt = node.innerText;
+      await navigator.clipboard.writeText(txt);
+      if(typeof showSync==='function') showSync(true,'Guión copiado');
+      else alert('Guión copiado al portapapeles');
+    }catch(e){
+      alert('No se pudo copiar: '+(e.message||e));
+    }
+  }
+  window.cvCopyTraining = cvCopyTraining;
+
+  // ─────────────────────────────────────────────────────
+  // Seed demo (3 guiones de ejemplo)
+  // ─────────────────────────────────────────────────────
+  async function cvSeedTrainings(){
+    if(!confirm('Esto cargará 3 guiones de capacitación demo (Tipo 1, Tipo 4, Tipo 5). ¿Continuar?')) return;
+    const tipos = (typeof cats!=='undefined' && cats.tp) ? cats.tp.map(t=>t.name) : [];
+    const fallback = tipos[0] || 'Taxi Convencional';
+
+    const demos = [
+      {
+        name: 'Capacitación Tipo 1 — Operadores básicos',
+        client_type: tipos[0] || fallback,
+        audience: 'operadores',
+        language: 'es',
+        version: '1.0',
+        objectives: 'Que el operador domine: registro de cliente, asignación de conductor, monitoreo del servicio, y manejo del Bot WhatsApp Normal.',
+        materials: 'Computadora con Chrome, acceso a Admin Web, número de WhatsApp de Bot, headset, lista de tarifarios impresa.',
+        modules: ['admin_web','app_conductor','bot_normal'],
+        sections: [
+          { title:'Bienvenida y contexto', notes:'Explicar el rol del operador en el éxito del servicio', items:[
+            {text:'Presentación del equipo y de Clipp', minutes:5},
+            {text:'Mostrar app del cliente y app del conductor (demo en vivo)', minutes:10},
+            {text:'Explicar relación operador ↔ conductor ↔ pasajero', minutes:5}
+          ]},
+          { title:'Admin Web — recorrido inicial', notes:'Login, dashboard, secciones', items:[
+            {text:'Login con credenciales (mostrar URL y dominio)', minutes:3},
+            {text:'Tour por el dashboard: KPIs principales', minutes:7},
+            {text:'Cómo buscar un cliente / un servicio', minutes:5},
+            {text:'Sección de geocercas y tarifarios', minutes:8}
+          ]},
+          { title:'Flujo de servicio típico', notes:'Casos de uso del día a día', items:[
+            {text:'Servicio entrante por WhatsApp Bot — qué ve el operador', minutes:10},
+            {text:'Validar dirección, confirmar tarifario, asignar conductor', minutes:10},
+            {text:'Seguimiento del servicio en tiempo real', minutes:7},
+            {text:'Cierre de servicio y revisión de incidencias', minutes:8}
+          ]},
+          { title:'Bot WhatsApp Normal — uso operativo', notes:'', items:[
+            {text:'Comandos clave del bot para el operador', minutes:8},
+            {text:'Cómo escalar de bot a humano', minutes:5},
+            {text:'Manejo de respuestas predefinidas (statusViewPanic, addressFields)', minutes:10}
+          ]},
+          { title:'Práctica supervisada', notes:'Simulación de 3 servicios completos', items:[
+            {text:'Servicio 1 — fácil (operador hace todo, formador observa)', minutes:15},
+            {text:'Servicio 2 — con cambio de dirección a último momento', minutes:15},
+            {text:'Servicio 3 — con queja del pasajero al cierre', minutes:15}
+          ]},
+          { title:'Cierre, dudas y recursos', notes:'', items:[
+            {text:'Q&A abierto', minutes:10},
+            {text:'Entregar manual PDF y link al portal de soporte', minutes:3},
+            {text:'Próximos pasos: turno acompañado durante 2 días', minutes:2}
+          ]}
+        ]
+      },
+      {
+        name: 'Capacitación Tipo 4 — Counter (Agencia)',
+        client_type: tipos[0] || fallback,
+        audience: 'counter',
+        language: 'es',
+        version: '1.0',
+        objectives: 'El operador de counter sabe: crear establecimiento, registrar reserva manual, gestionar tarifarios de agencia, manejar flujo presencial.',
+        materials: 'Counter en producción, lectora de QR, impresora de tickets, datos de la agencia (RUC, dirección).',
+        modules: ['admin_web','app_conductor','counter'],
+        sections: [
+          { title:'Modelo Counter — entendimiento', items:[
+            {text:'Qué es un Counter y casos de uso (aeropuertos, hoteles, agencias)', minutes:8},
+            {text:'Diferencias con app del cliente (counter = manual / app = self-service)', minutes:5},
+            {text:'Estructura: Establecimiento → Counter(s) → Operadores', minutes:7}
+          ]},
+          { title:'Configuración de Establecimiento', items:[
+            {text:'Datos fiscales del establecimiento', minutes:5},
+            {text:'Tarifarios de agencia (typeSizeVehicles)', minutes:10},
+            {text:'Comisión y formas de pago aceptadas', minutes:5}
+          ]},
+          { title:'Flujo presencial completo', items:[
+            {text:'Recibir cliente: validar identidad y destino', minutes:5},
+            {text:'Crear reserva en counter: pasajero, vehículo, ruta', minutes:10},
+            {text:'Cobro y emisión de ticket', minutes:5},
+            {text:'Asignación al conductor disponible', minutes:5},
+            {text:'Seguimiento hasta drop-off', minutes:5}
+          ]},
+          { title:'Reportería y cierre de turno', items:[
+            {text:'Reporte de servicios del día', minutes:5},
+            {text:'Cierre de caja y conciliación', minutes:7},
+            {text:'Reporte a contabilidad', minutes:5}
+          ]},
+          { title:'Práctica y Q&A', items:[
+            {text:'Simulación de 5 reservas (mix simple/complejo)', minutes:25},
+            {text:'Q&A', minutes:10}
+          ]}
+        ]
+      },
+      {
+        name: 'Capacitación Tipo 5 — Callcenter completo',
+        client_type: tipos[0] || fallback,
+        audience: 'callcenter',
+        language: 'es',
+        version: '1.0',
+        objectives: 'El agente de callcenter atiende llamadas entrantes, crea servicios, resuelve incidencias y sabe escalar.',
+        materials: 'Headset, software de llamadas conectado, Admin Web, scripts de atención impresos.',
+        modules: ['admin_web','app_conductor','bot_normal','callcenter','counter'],
+        sections: [
+          { title:'Bienvenida y rol del agente', items:[
+            {text:'Presentación del rol y de los KPIs del callcenter', minutes:5},
+            {text:'Tono y empatía: cómo hablar con un pasajero molesto', minutes:10}
+          ]},
+          { title:'Software de llamadas + Admin Web', items:[
+            {text:'Configurar headset y software de llamadas (instalador)', minutes:8},
+            {text:'Login y dashboard del agente', minutes:7},
+            {text:'Crear servicio durante una llamada (paso a paso)', minutes:15}
+          ]},
+          { title:'Scripts de atención típica', items:[
+            {text:'Script: nuevo servicio entrante', minutes:8},
+            {text:'Script: pasajero pregunta por su servicio en curso', minutes:8},
+            {text:'Script: queja o reclamo', minutes:8},
+            {text:'Script: olvidos en vehículo', minutes:5}
+          ]},
+          { title:'Coordinación con Bot y Counter', items:[
+            {text:'Cuándo escalar de Bot al callcenter', minutes:5},
+            {text:'Recepción de servicios desde Counter', minutes:5}
+          ]},
+          { title:'Casos especiales y escalamiento', items:[
+            {text:'Pasajero en pánico (statusViewPanic)', minutes:10},
+            {text:'Conductor que no responde / no aparece', minutes:8},
+            {text:'Cambios de tarifario en caliente', minutes:5},
+            {text:'Escalamiento a supervisor', minutes:3}
+          ]},
+          { title:'Práctica con llamadas reales (rol-play)', items:[
+            {text:'5 rol-plays con grabación', minutes:30},
+            {text:'Feedback grupal', minutes:15}
+          ]},
+          { title:'Cierre', items:[
+            {text:'Q&A', minutes:10},
+            {text:'Entrega de manuales y links', minutes:5}
+          ]}
+        ]
+      }
+    ];
+
+    const isUuid = (s)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s||''));
+    const u = window._currentUser;
+    const uid = u && isUuid(u.id) ? u.id : null;
+
+    let inserted = 0;
+    for(const d of demos){
+      d.total_minutes = (d.sections||[]).reduce((a,s)=>a+(s.items||[]).reduce((b,it)=>b+(parseInt(it.minutes,10)||0),0),0);
+      d.created_by = uid; d.updated_by = uid;
+      if(window.supabase){
+        try{
+          const r = await window.supabase.from('cv_trainings').insert([d]).select();
+          if(r.error) throw r.error;
+          window.CV.trainings.unshift(r.data[0]);
+          inserted++;
+        }catch(e){
+          console.warn('[CV-TR] seed Supabase falló, uso local:', e.message);
+          d.id = 'local_tr_'+Date.now()+Math.random().toString(36).slice(2,6);
+          d.created_at = new Date().toISOString(); d.updated_at = d.created_at;
+          window.CV.trainings.unshift(d);
+          inserted++;
+        }
+      } else {
+        d.id = 'local_tr_'+Date.now()+Math.random().toString(36).slice(2,6);
+        d.created_at = new Date().toISOString(); d.updated_at = d.created_at;
+        window.CV.trainings.unshift(d);
+        inserted++;
+      }
+    }
+    _saveLocal();
+    cvRenderTrainings(); cvRefreshTrainBadge();
+    if(typeof showSync==='function') showSync(true, inserted+' guiones demo creados');
+  }
+  window.cvSeedTrainings = cvSeedTrainings;
+
+  // ─────────────────────────────────────────────────────
+  // Hook al setTab 'trainings' para que se cargue cuando se abre
+  // ─────────────────────────────────────────────────────
+  const _origSetTab = window.cvSetTab;
+  if(typeof _origSetTab === 'function'){
+    window.cvSetTab = function(tab){
+      _origSetTab(tab);
+      if(tab === 'trainings'){
+        if(!window.CV.trainings || !window.CV.trainings.length){
+          cvLoadTrainings();
+        } else {
+          cvRenderTrainings();
+        }
+      }
+    };
+  }
+
+  // Cargar al iniciar
+  setTimeout(()=>{ try{ cvLoadTrainings(); }catch(e){} }, 1500);
+})();
+
+// ════════════════════════════════════════════════════════════════════
+// CADENA DE VALOR · MÓDULO ROLES Y ASIGNACIONES
+// ════════════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+  if(typeof window.CV === 'undefined') window.CV = {};
+  if(!Array.isArray(window.CV.roles)) window.CV.roles = [];
+
+  // Roles fallback (si no hay tabla cv_roles)
+  const FALLBACK_ROLES = [
+    {code:'comercial',       name:'Comercial',              icon:'💼', color:'#10b981', description:'Gestión comercial'},
+    {code:'pm',              name:'Project Manager',        icon:'📋', color:'#3b82f6', description:'Coordinación general'},
+    {code:'tecnico_backend', name:'Técnico Backend',        icon:'🛠️', color:'#8b5cf6', description:'Configuración Admin Web'},
+    {code:'tecnico_apps',    name:'Técnico Apps',           icon:'📱', color:'#06b6d4', description:'App Conductor / Cliente'},
+    {code:'tecnico_bot',     name:'Técnico Bot/CC',         icon:'💬', color:'#f59e0b', description:'Bot · Callcenter · Counter'},
+    {code:'qa',              name:'QA / Pruebas',           icon:'🧪', color:'#ec4899', description:'Validación piloto'},
+    {code:'capacitador',     name:'Capacitador',            icon:'🎓', color:'#a855f7', description:'Capacitación'},
+    {code:'soporte',         name:'Soporte continuo',       icon:'🤝', color:'#64748b', description:'Post go-live'},
+    {code:'cliente',         name:'Cliente',                icon:'👥', color:'#0ea5e9', description:'Acción del cliente'}
+  ];
+
+  let _editRoleId = null;
+
+  // ────────────────────────────────────────────────────
+  // Carga
+  // ────────────────────────────────────────────────────
+  async function cvLoadRoles(){
+    if(window.supabase){
+      try{
+        const r = await window.supabase.from('cv_roles').select('*').order('sort_order',{ascending:true});
+        if(r.error) throw r.error;
+        if(r.data && r.data.length){
+          window.CV.roles = r.data;
+        } else {
+          window.CV.roles = [...FALLBACK_ROLES];
+        }
+      }catch(e){
+        console.warn('[CV-ROLES] cv_roles no disponible, uso fallback:', e.message);
+        // Cargar de localStorage
+        try{
+          const local = JSON.parse(localStorage.getItem('cv_roles_v1')||'null');
+          window.CV.roles = (Array.isArray(local) && local.length) ? local : [...FALLBACK_ROLES];
+        }catch(_){ window.CV.roles = [...FALLBACK_ROLES]; }
+      }
+    } else {
+      try{
+        const local = JSON.parse(localStorage.getItem('cv_roles_v1')||'null');
+        window.CV.roles = (Array.isArray(local) && local.length) ? local : [...FALLBACK_ROLES];
+      }catch(_){ window.CV.roles = [...FALLBACK_ROLES]; }
+    }
+    _refreshRoleBadge();
+    if(window.CV.currentTab==='roles') cvRenderRoles();
+  }
+  window.cvLoadRoles = cvLoadRoles;
+
+  function _refreshRoleBadge(){
+    const el = document.getElementById('cv-bd-roles');
+    if(el) el.textContent = (window.CV.roles||[]).length;
+  }
+
+  function _saveLocalRoles(){
+    try{ localStorage.setItem('cv_roles_v1', JSON.stringify(window.CV.roles||[])); }catch(_){}
+  }
+
+  // ────────────────────────────────────────────────────
+  // Helper: obtener rol por code, con fallback
+  // ────────────────────────────────────────────────────
+  function _roleByCode(code){
+    if(!code) return null;
+    return (window.CV.roles||[]).find(r => r.code === code) || null;
+  }
+  window.cvRoleByCode = _roleByCode;
+
+  // Pintar badge/avatar de un rol+assignee
+  function cvRoleBadge(role, assignee, opts){
+    opts = opts || {};
+    const r = _roleByCode(role);
+    if(!r && !assignee) return '<span style="color:var(--muted);font-size:11px;font-style:italic">Sin asignar</span>';
+    const color = r?.color || '#637087';
+    const icon  = r?.icon  || '👤';
+    const name  = r?.name  || role || '';
+    const personLbl = assignee ? esc(assignee.split('@')[0]) : '';
+    const titleAttr = (r?.description||'') + (assignee?(' · '+assignee):'');
+    return `<span class="cv-rbadge" title="${esc(titleAttr)}" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;background:${color}22;color:${color};border:1px solid ${color}55;font-size:11px;font-weight:600">
+      <span>${icon}</span><span>${esc(name)}</span>${personLbl?` · <span style="opacity:.85">${personLbl}</span>`:''}
+    </span>`;
+  }
+  window.cvRoleBadge = cvRoleBadge;
+
+  // Genera <option>s para un select de rol
+  function cvRoleOptions(selected){
+    const opts = ['<option value="">— Sin rol —</option>'];
+    (window.CV.roles||[]).forEach(r=>{
+      opts.push(`<option value="${esc(r.code)}" ${selected===r.code?'selected':''}>${esc(r.icon||'👤')} ${esc(r.name)}</option>`);
+    });
+    return opts.join('');
+  }
+  window.cvRoleOptions = cvRoleOptions;
+
+  // ────────────────────────────────────────────────────
+  // Render del panel
+  // ────────────────────────────────────────────────────
+  function cvRenderRoles(){
+    const cont = document.getElementById('cv-roles-list');
+    if(!cont) return;
+    const search = (document.getElementById('cv-role-search')?.value||'').toLowerCase().trim();
+    const list = (window.CV.roles||[]).filter(r=>{
+      if(search && !((r.name||'')+' '+(r.code||'')+' '+(r.description||'')).toLowerCase().includes(search)) return false;
+      return true;
+    });
+    if(!list.length){
+      cont.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">👥</div>No hay roles. Crea uno con <b>+ Nuevo Rol</b>.</div>';
+      return;
+    }
+    cont.innerHTML = list.map(r=>{
+      const usagePh = (window.CV.phases||[]).filter(p=>p.phase_role===r.code).length;
+      const usageT  = (window.CV.tasks||[]).filter(t=>t.role===r.code).length;
+      const usageC  = (window.CV.checklists||[]).filter(c=>(c.role||c.responsible_role)===r.code).length;
+      return `<div class="cv-cli-card" onclick="cvOpenRole('${esc(r.code)}')" style="cursor:pointer">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:42px;height:42px;border-radius:10px;background:${r.color||'#637087'}22;display:inline-flex;align-items:center;justify-content:center;font-size:22px;border:1px solid ${r.color||'#637087'}55">${esc(r.icon||'👤')}</div>
+          <div style="flex:1;min-width:0">
+            <b style="font-size:13.5px">${esc(r.name||'')}</b>
+            <div style="font-size:10.5px;color:var(--muted);font-family:ui-monospace,monospace">${esc(r.code||'')}</div>
+          </div>
+        </div>
+        ${r.description?`<div style="font-size:11.5px;color:var(--muted);margin-top:6px">${esc(r.description)}</div>`:''}
+        ${r.default_email?`<div style="font-size:11px;margin-top:4px">📧 ${esc(r.default_email)}</div>`:''}
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;font-size:10px">
+          <span class="chip">${usageC} en checklists</span>
+          <span class="chip">${usagePh} en fases</span>
+          <span class="chip">${usageT} en tareas</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderRoles = cvRenderRoles;
+
+  // ────────────────────────────────────────────────────
+  // Editor
+  // ────────────────────────────────────────────────────
+  function cvOpenRole(code){
+    _editRoleId = code;
+    const r = code ? _roleByCode(code) : null;
+    document.getElementById('cv-role-mt').textContent = r ? 'Editar Rol' : 'Nuevo Rol';
+    document.getElementById('cv-role-code').value  = r?.code  || '';
+    document.getElementById('cv-role-code').disabled = !!r; // no permitir cambiar el código si ya existe
+    document.getElementById('cv-role-name').value  = r?.name  || '';
+    document.getElementById('cv-role-icon').value  = r?.icon  || '👤';
+    document.getElementById('cv-role-color').value = r?.color || '#637087';
+    document.getElementById('cv-role-desc').value  = r?.description || '';
+    document.getElementById('cv-role-email').value = r?.default_email || '';
+    document.getElementById('cv-role-del-btn').style.display = r ? 'inline-block' : 'none';
+    document.getElementById('cv-mod-role').classList.add('show');
+  }
+  window.cvOpenRole = cvOpenRole;
+
+  async function cvSaveRole(){
+    const code = (document.getElementById('cv-role-code').value||'').trim().toLowerCase().replace(/\s+/g,'_');
+    const name = (document.getElementById('cv-role-name').value||'').trim();
+    if(!code){ alert('Falta código'); return; }
+    if(!name){ alert('Falta nombre'); return; }
+    if(!/^[a-z0-9_]+$/.test(code)){ alert('El código solo puede tener letras minúsculas, números y guiones bajos'); return; }
+    const payload = {
+      code,
+      name,
+      icon:  document.getElementById('cv-role-icon').value || '👤',
+      color: document.getElementById('cv-role-color').value || '#637087',
+      description:   document.getElementById('cv-role-desc').value || null,
+      default_email: document.getElementById('cv-role-email').value || null,
+      is_active: true
+    };
+    if(window.supabase){
+      try{
+        if(_editRoleId){
+          const r = await window.supabase.from('cv_roles').update(payload).eq('code', _editRoleId).select();
+          if(r.error) throw r.error;
+        } else {
+          const r = await window.supabase.from('cv_roles').insert([payload]).select();
+          if(r.error) throw r.error;
+        }
+      }catch(e){
+        console.warn('[CV-ROLES] supabase falló:', e.message);
+      }
+    }
+    // Actualizar memoria
+    const idx = (window.CV.roles||[]).findIndex(x=>x.code===(_editRoleId||code));
+    if(idx>=0){ window.CV.roles[idx] = { ...window.CV.roles[idx], ...payload }; }
+    else { window.CV.roles.push(payload); }
+    _saveLocalRoles();
+    closeM('cv-mod-role');
+    cvRenderRoles();
+    _refreshRoleBadge();
+    if(typeof showSync==='function') showSync(true,'Rol guardado');
+  }
+  window.cvSaveRole = cvSaveRole;
+
+  async function cvDeleteRole(){
+    if(!_editRoleId) return;
+    if(!confirm('¿Eliminar este rol? Las tareas que lo usen quedarán sin rol asignado.')) return;
+    if(window.supabase){
+      try{ await window.supabase.from('cv_roles').delete().eq('code', _editRoleId); }catch(e){ console.warn(e); }
+    }
+    window.CV.roles = (window.CV.roles||[]).filter(r=>r.code!==_editRoleId);
+    _saveLocalRoles();
+    closeM('cv-mod-role');
+    cvRenderRoles();
+    _refreshRoleBadge();
+    if(typeof showSync==='function') showSync(true,'Rol eliminado');
+  }
+  window.cvDeleteRole = cvDeleteRole;
+
+  // ────────────────────────────────────────────────────
+  // ASIGNACIONES rápidas (click en tarea/fase abre modal)
+  // ────────────────────────────────────────────────────
+  let _assignCtx = null; // {kind:'task'|'phase', id, role, assignee, name}
+
+  function cvOpenAssign(kind, id){
+    let target;
+    if(kind==='task'){
+      target = (window.CV.tasks||[]).find(t=>String(t.id)===String(id));
+      if(!target) return;
+      _assignCtx = { kind, id, name: target.name, role: target.role||'', assignee: target.assignee||'' };
+      document.getElementById('cv-assign-title').textContent = '👤 Asignar tarea';
+      document.getElementById('cv-assign-meta').innerHTML = '<b>'+esc(target.name)+'</b><br>Fase: '+esc(target.phase_code||'')+' · '+esc(target.duration_days||1)+'d';
+    } else if(kind==='phase'){
+      target = (window.CV.phases||[]).find(p=>String(p.id)===String(id));
+      if(!target) return;
+      _assignCtx = { kind, id, name: target.phase_name||target.phase_code, role: target.phase_role||'', assignee: target.assignee||'' };
+      document.getElementById('cv-assign-title').textContent = '👤 Asignar fase';
+      document.getElementById('cv-assign-meta').innerHTML = '<b>'+esc(target.phase_name||target.phase_code)+'</b><br>Aplica como default a todas las tareas de esta fase que no tengan rol específico.';
+    } else { return; }
+    // Cargar selects
+    document.getElementById('cv-assign-role').innerHTML = cvRoleOptions(_assignCtx.role);
+    document.getElementById('cv-assign-email').value = _assignCtx.assignee;
+    document.getElementById('cv-mod-assign').classList.add('show');
+  }
+  window.cvOpenAssign = cvOpenAssign;
+
+  function cvAssignAutofillEmail(){
+    const code = document.getElementById('cv-assign-role').value;
+    const r = _roleByCode(code);
+    const email = document.getElementById('cv-assign-email');
+    if(r && r.default_email && !email.value){
+      email.value = r.default_email;
+    }
+  }
+  window.cvAssignAutofillEmail = cvAssignAutofillEmail;
+
+  function cvAssignClear(){
+    document.getElementById('cv-assign-role').value = '';
+    document.getElementById('cv-assign-email').value = '';
+  }
+  window.cvAssignClear = cvAssignClear;
+
+  async function cvAssignSave(){
+    if(!_assignCtx) return;
+    const role = document.getElementById('cv-assign-role').value || null;
+    const email = (document.getElementById('cv-assign-email').value||'').trim() || null;
+    const now = new Date().toISOString();
+
+    if(_assignCtx.kind==='task'){
+      const t = (window.CV.tasks||[]).find(x=>String(x.id)===String(_assignCtx.id));
+      if(t){
+        t.role = role; t.assignee = email; t.responsible = email || (role ? _roleByCode(role)?.name : t.responsible);
+        t.updated_at = now;
+        if(window.supabase){
+          try{ await window.supabase.from('deployment_tasks').update({role, assignee:email, responsible:t.responsible, updated_at:now}).eq('id', _assignCtx.id); }catch(e){ console.warn('[CV-ROLES] update task fallo:', e.message); }
+        }
+      }
+    } else if(_assignCtx.kind==='phase'){
+      const p = (window.CV.phases||[]).find(x=>String(x.id)===String(_assignCtx.id));
+      if(p){
+        p.phase_role = role; p.assignee = email; p.responsible = email || (role ? _roleByCode(role)?.name : p.responsible);
+        p.updated_at = now;
+        if(window.supabase){
+          try{ await window.supabase.from('deployment_phases').update({phase_role:role, assignee:email, responsible:p.responsible, updated_at:now}).eq('id', _assignCtx.id); }catch(e){ console.warn('[CV-ROLES] update phase fallo:', e.message); }
+        }
+        // Cascada opcional: ofrecer aplicar a tareas sin rol
+        const tasksSinRol = (window.CV.tasks||[]).filter(t=>t.phase_id===_assignCtx.id && !t.role);
+        if(tasksSinRol.length && confirm('Hay '+tasksSinRol.length+' tareas en esta fase sin rol. ¿Aplicarles este rol como default?')){
+          for(const t of tasksSinRol){
+            t.role = role; if(email && !t.assignee) t.assignee = email;
+            if(window.supabase){
+              try{ await window.supabase.from('deployment_tasks').update({role, assignee: t.assignee, updated_at:now}).eq('id', t.id); }catch(e){}
+            }
+          }
+        }
+      }
+    }
+    closeM('cv-mod-assign');
+    if(typeof showSync==='function') showSync(true,'Asignación guardada');
+    // Refrescar UI
+    if(window.cvRenderProjectDetail) window.cvRenderProjectDetail();
+    if(window.cvRenderGantt && window.CV.currentTab==='gantt') window.cvRenderGantt();
+    if(window.cvSaveCache) window.cvSaveCache();
+  }
+  window.cvAssignSave = cvAssignSave;
+
+  // ────────────────────────────────────────────────────
+  // Hook al setTab para cargar roles
+  // ────────────────────────────────────────────────────
+  const _origSetTab = window.cvSetTab;
+  if(typeof _origSetTab === 'function'){
+    window.cvSetTab = function(tab){
+      _origSetTab(tab);
+      if(tab === 'roles'){
+        if(!window.CV.roles || !window.CV.roles.length) cvLoadRoles();
+        else cvRenderRoles();
+      }
+    };
+  }
+
+  // Cargar al iniciar
+  setTimeout(()=>{ try{ cvLoadRoles(); }catch(e){} }, 1700);
+
+  // ────────────────────────────────────────────────────
+  // Resolver responsable efectivo de una tarea
+  // (orden: task.role/assignee → checklist.role → phase.phase_role/assignee → project.responsible)
+  // ────────────────────────────────────────────────────
+  window.cvResolveResponsible = function(task){
+    if(!task) return null;
+    if(task.role || task.assignee){
+      return { role: task.role, assignee: task.assignee, source: 'task' };
+    }
+    // Buscar checklist template
+    const ck = (window.CV.checklists||[]).find(c=> String(c.id)===String(task.checklist_id) || (c.phase===task.phase_code && c.name===task.name));
+    if(ck && (ck.role || ck.responsible_role)){
+      return { role: (ck.role||ck.responsible_role), assignee: null, source: 'checklist' };
+    }
+    // Phase
+    const ph = (window.CV.phases||[]).find(p=>String(p.id)===String(task.phase_id));
+    if(ph && (ph.phase_role || ph.assignee)){
+      return { role: ph.phase_role, assignee: ph.assignee, source: 'phase' };
+    }
+    // Project
+    const proj = (window.CV.projects||[]).find(p=>String(p.id)===String(task.project_id));
+    if(proj && proj.responsible){
+      return { role: null, assignee: proj.responsible, source: 'project' };
+    }
+    return null;
+  };
+})();
+
+// ════════════════════════════════════════════════════════════════════
+// CADENA DE VALOR · MÓDULO DE DOCUMENTOS
+// ════════════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+  if(typeof window.CV === 'undefined') window.CV = {};
+  if(!Array.isArray(window.CV.documents)) window.CV.documents = [];
+
+  const BUCKET = 'cv-documents';
+  const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+
+  let _pendingFiles = [];     // archivos en cola para subir
+  let _currentDocId = null;   // doc en preview/descarga
+  let _currentDocCtx = null;  // {clientId, projectId, phaseId, phaseCode, taskId} para uploads contextuales
+
+  // ─────────────────────────────────────────────────────────────
+  // Carga de documentos
+  // ─────────────────────────────────────────────────────────────
+  async function cvLoadDocuments(){
+    if(!window.supabase) return;
+    try{
+      const r = await window.supabase.from('cv_documents').select('*').order('created_at', {ascending:false});
+      if(r.error) throw r.error;
+      window.CV.documents = r.data || [];
+      _refreshDocBadge();
+      if(window.CV.currentTab === 'documents') cvRenderDocuments();
+    }catch(e){
+      console.warn('[CV-DOC] cv_documents no disponible:', e.message);
+      window.CV.documents = [];
+    }
+  }
+  window.cvLoadDocuments = cvLoadDocuments;
+
+  function _refreshDocBadge(){
+    const el = document.getElementById('cv-bd-docs');
+    if(el) el.textContent = (window.CV.documents||[]).length;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Render lista
+  // ─────────────────────────────────────────────────────────────
+  function cvRenderDocuments(){
+    const cont = document.getElementById('cv-docs-list');
+    if(!cont) return;
+
+    // Poblar selects de filtro
+    _populateDocFilters();
+
+    const search = (document.getElementById('cv-doc-search')?.value||'').toLowerCase().trim();
+    const fCli   = document.getElementById('cv-doc-fcli')?.value||'';
+    const fProj  = document.getElementById('cv-doc-fproj')?.value||'';
+    const fPhase = document.getElementById('cv-doc-fphase')?.value||'';
+    const fCat   = document.getElementById('cv-doc-fcat')?.value||'';
+
+    const list = (window.CV.documents||[]).filter(d=>{
+      if(search){
+        const txt = ((d.name||'')+' '+(d.description||'')+' '+(d.tags||[]).join(' ')).toLowerCase();
+        if(!txt.includes(search)) return false;
+      }
+      if(fCli && String(d.client_id)!==String(fCli) && d.legacy_client_id!==fCli) return false;
+      if(fProj && String(d.project_id)!==String(fProj)) return false;
+      if(fPhase && d.phase_code!==fPhase) return false;
+      if(fCat && d.category!==fCat) return false;
+      return true;
+    });
+
+    if(!list.length){
+      cont.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">📂</div>No hay documentos. Subí archivos arrastrando arriba o con el botón <b>📤 Subir archivo</b>.</div>';
+      return;
+    }
+
+    cont.innerHTML = list.map(d => _docCardHTML(d)).join('');
+  }
+  window.cvRenderDocuments = cvRenderDocuments;
+
+  function _populateDocFilters(){
+    // Clientes (de cv_clients y cls legacy)
+    const selCli = document.getElementById('cv-doc-fcli');
+    if(selCli){
+      const cur = selCli.value;
+      const cvCli = (window.CV.clients||[]).map(c=>({id:c.id, name:c.name, isCv:true}));
+      const legacy = (typeof cls!=='undefined' ? cls : []).map(c=>({id:c.id, name:c.nm||c.name, isLegacy:true}));
+      const all = [...cvCli, ...legacy];
+      selCli.innerHTML = '<option value="">Todos los clientes</option>' +
+        all.map(c=>`<option value="${esc(c.id)}" ${cur==c.id?'selected':''}>${esc(c.name||'')}</option>`).join('');
+    }
+    // Proyectos
+    const selProj = document.getElementById('cv-doc-fproj');
+    if(selProj){
+      const cur = selProj.value;
+      selProj.innerHTML = '<option value="">Todos los proyectos</option>' +
+        (window.CV.projects||[]).map(p=>`<option value="${esc(p.id)}" ${cur==p.id?'selected':''}>${esc(p.name||'')}</option>`).join('');
+    }
+    // Fases
+    const selPh = document.getElementById('cv-doc-fphase');
+    if(selPh){
+      const cur = selPh.value;
+      const phases = window.CV_PHASES || [];
+      selPh.innerHTML = '<option value="">Todas las fases</option>' +
+        phases.map(p=>`<option value="${esc(p.code)}" ${cur===p.code?'selected':''}>${p.icon} ${esc(p.name)}</option>`).join('');
+    }
+  }
+
+  function _iconFor(mime, ext){
+    const m = (mime||'').toLowerCase();
+    const e = (ext||'').toLowerCase();
+    if(m.includes('pdf') || e==='pdf') return {icon:'📄', cls:'pdf'};
+    if(m.startsWith('image') || ['png','jpg','jpeg','webp','gif','svg'].includes(e)) return {icon:'🖼️', cls:'img'};
+    if(m.includes('word') || ['doc','docx','odt'].includes(e)) return {icon:'📝', cls:'doc'};
+    if(m.includes('sheet') || m.includes('excel') || ['xls','xlsx','csv','ods'].includes(e)) return {icon:'📊', cls:'xls'};
+    if(m.includes('zip') || m.includes('compressed') || ['zip','rar','7z','tar','gz'].includes(e)) return {icon:'🗜️', cls:'zip'};
+    if(m.includes('video') || ['mp4','mov','avi','mkv'].includes(e)) return {icon:'🎬', cls:'other'};
+    if(m.includes('audio') || ['mp3','wav','m4a'].includes(e)) return {icon:'🎵', cls:'other'};
+    return {icon:'📎', cls:'other'};
+  }
+
+  function _fmtSize(b){
+    if(!b) return '0 B';
+    if(b<1024) return b+' B';
+    if(b<1024*1024) return (b/1024).toFixed(1)+' KB';
+    if(b<1024*1024*1024) return (b/1024/1024).toFixed(1)+' MB';
+    return (b/1024/1024/1024).toFixed(2)+' GB';
+  }
+
+  function _docCardHTML(d){
+    const ext = (d.name||'').split('.').pop();
+    const ic = _iconFor(d.mime_type, ext);
+    const date = d.created_at ? new Date(d.created_at).toLocaleDateString('es') : '';
+    // Asociaciones
+    const assoc = [];
+    if(d.client_id){
+      const c = (window.CV.clients||[]).find(x=>x.id===d.client_id);
+      if(c) assoc.push(`<span class="chip">👤 ${esc(c.name)}</span>`);
+    }
+    if(d.legacy_client_id){
+      const c = (typeof cls!=='undefined' ? cls : []).find(x=>String(x.id)===String(d.legacy_client_id));
+      if(c) assoc.push(`<span class="chip">👤 ${esc(c.nm||c.name||'')}</span>`);
+    }
+    if(d.project_id){
+      const p = (window.CV.projects||[]).find(x=>x.id===d.project_id);
+      if(p) assoc.push(`<span class="chip" style="background:var(--blue-l);color:var(--blue)">🚀 ${esc(p.name)}</span>`);
+    }
+    if(d.phase_code){
+      const ph = (window.CV_PHASES||[]).find(x=>x.code===d.phase_code);
+      if(ph) assoc.push(`<span class="chip">${ph.icon} ${esc(ph.name)}</span>`);
+    }
+    if(d.category && d.category!=='general'){
+      assoc.push(`<span class="chip" style="background:var(--violet-l);color:var(--violet)">${esc(d.category)}</span>`);
+    }
+    return `<div class="cv-doc-card">
+      <div class="cv-doc-icon ${ic.cls}">${ic.icon}</div>
+      <div class="cv-doc-info">
+        <div class="cv-doc-name" title="${esc(d.name||'')}">${esc(d.name||'')}</div>
+        <div class="cv-doc-meta">
+          <span>${_fmtSize(d.size_bytes)}</span>
+          <span>📅 ${date}</span>
+          ${d.uploaded_email?`<span>👤 ${esc(d.uploaded_email)}</span>`:''}
+          ${assoc.join('')}
+        </div>
+        ${d.description?`<div style="font-size:11px;color:var(--muted);margin-top:3px">${esc(d.description)}</div>`:''}
+      </div>
+      <div class="cv-doc-actions">
+        <button onclick="cvPreviewDoc('${d.id}')" title="Vista previa">👁️</button>
+        <button onclick="cvDownloadDoc('${d.id}')" title="Descargar">⬇️</button>
+        <button onclick="cvDeleteDoc('${d.id}')" title="Eliminar" style="color:var(--red)">🗑️</button>
+      </div>
+    </div>`;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Subida de archivos
+  // ─────────────────────────────────────────────────────────────
+  function cvOpenDocUpload(opts){
+    // opts puede traer pre-selección: {clientId, projectId, phaseId, phaseCode, taskId, legacyClientId}
+    _currentDocCtx = opts || null;
+    _pendingFiles = [];
+    _renderPendingFiles();
+
+    // Poblar selects
+    const selC = document.getElementById('cv-doc-up-client');
+    const selP = document.getElementById('cv-doc-up-project');
+    const selPh = document.getElementById('cv-doc-up-phase');
+
+    const cvCli = (window.CV.clients||[]).map(c=>({id:c.id, name:c.name, isCv:true}));
+    const legacy = (typeof cls!=='undefined' ? cls : []).map(c=>({id:'L:'+c.id, name:(c.nm||c.name||'')+' (legacy)', isLegacy:true, raw:c.id}));
+    selC.innerHTML = '<option value="">— Sin asociar —</option>' +
+      cvCli.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('') +
+      legacy.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+
+    selP.innerHTML = '<option value="">— Sin asociar —</option>';
+    selPh.innerHTML = '<option value="">— Cualquier fase —</option>' +
+      (window.CV_PHASES||[]).map(p=>`<option value="${esc(p.code)}">${p.icon} ${esc(p.name)}</option>`).join('');
+
+    document.getElementById('cv-doc-up-cat').value = 'general';
+    document.getElementById('cv-doc-up-desc').value = '';
+
+    // Preset desde contexto
+    if(opts){
+      if(opts.clientId) selC.value = opts.clientId;
+      else if(opts.legacyClientId) selC.value = 'L:'+opts.legacyClientId;
+      cvUpdateProjectsForDocUp();
+      if(opts.projectId) selP.value = opts.projectId;
+      cvUpdatePhasesForDocUp();
+      if(opts.phaseCode) selPh.value = opts.phaseCode;
+    }
+
+    document.getElementById('cv-mod-doc-upload').classList.add('show');
+  }
+  window.cvOpenDocUpload = cvOpenDocUpload;
+
+  function cvUpdateProjectsForDocUp(){
+    const cliVal = document.getElementById('cv-doc-up-client').value;
+    const sel = document.getElementById('cv-doc-up-project');
+    if(!cliVal){
+      sel.innerHTML = '<option value="">— Sin asociar —</option>' +
+        (window.CV.projects||[]).map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+      return;
+    }
+    let projects;
+    if(cliVal.startsWith('L:')){
+      projects = []; // los proyectos de cv viven solo con cv_clients
+    } else {
+      projects = (window.CV.projects||[]).filter(p=>p.client_id===cliVal);
+    }
+    sel.innerHTML = '<option value="">— Sin asociar —</option>' +
+      projects.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  }
+  window.cvUpdateProjectsForDocUp = cvUpdateProjectsForDocUp;
+
+  function cvUpdatePhasesForDocUp(){
+    // Las fases se muestran independientes, pero podríamos filtrar por proyecto.
+    // De momento dejamos las 9 fases canónicas.
+  }
+  window.cvUpdatePhasesForDocUp = cvUpdatePhasesForDocUp;
+
+  function cvHandleFileSelection(files){
+    const arr = Array.from(files||[]);
+    arr.forEach(f=>{
+      if(f.size > MAX_BYTES){
+        alert('El archivo "'+f.name+'" supera 50 MB y no se puede subir.');
+        return;
+      }
+      _pendingFiles.push({file:f, status:'pending', progress:0});
+    });
+    _renderPendingFiles();
+  }
+  window.cvHandleFileSelection = cvHandleFileSelection;
+
+  function cvDropDocs(e){
+    e.preventDefault();
+    document.getElementById('cv-doc-dropzone').classList.remove('over');
+    const files = e.dataTransfer?.files;
+    if(!files || !files.length) return;
+    // Si el dropzone está visible (tab documents), abrimos el modal directo con esos archivos
+    cvOpenDocUpload();
+    cvHandleFileSelection(files);
+  }
+  window.cvDropDocs = cvDropDocs;
+
+  function _renderPendingFiles(){
+    const cont = document.getElementById('cv-doc-upload-files');
+    const counter = document.getElementById('cv-doc-up-count');
+    if(counter) counter.textContent = _pendingFiles.length || '';
+    if(!cont) return;
+    if(!_pendingFiles.length){
+      cont.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:8px;font-size:12px">Aún no hay archivos. Click en "Seleccionar archivos" abajo.</div>';
+      return;
+    }
+    cont.innerHTML = _pendingFiles.map((p, i)=>{
+      const ic = _iconFor(p.file.type, p.file.name.split('.').pop());
+      const sizeStr = _fmtSize(p.file.size);
+      let statusBadge = '';
+      if(p.status==='uploading') statusBadge = '<span style="color:var(--blue);font-size:11px">⏳ Subiendo '+(p.progress||0)+'%</span>';
+      else if(p.status==='done') statusBadge = '<span style="color:var(--green);font-size:11px">✓ Listo</span>';
+      else if(p.status==='error') statusBadge = '<span style="color:var(--red);font-size:11px;cursor:help" title="'+esc(p.error||'')+'">✗ Error</span>';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;background:var(--bg)">
+        <div class="cv-doc-icon ${ic.cls}" style="width:32px;height:32px;font-size:14px">${ic.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(p.file.name)}">${esc(p.file.name)}</div>
+          <div style="font-size:10.5px;color:var(--muted)">${sizeStr} ${statusBadge}</div>
+          ${p.status==='uploading'?`<div class="cv-doc-progress"><div style="width:${p.progress||0}%"></div></div>`:''}
+        </div>
+        ${p.status==='pending'?`<button onclick="cvRemovePending(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px">✕</button>`:''}
+      </div>`;
+    }).join('');
+  }
+
+  function cvRemovePending(i){
+    _pendingFiles.splice(i,1);
+    _renderPendingFiles();
+  }
+  window.cvRemovePending = cvRemovePending;
+
+  async function cvUploadDocuments(){
+    if(!_pendingFiles.length){ alert('No hay archivos seleccionados'); return; }
+    if(!window.supabase){ alert('Sin sesión Supabase. No se pueden subir archivos.'); return; }
+
+    const cliVal  = document.getElementById('cv-doc-up-client').value;
+    const projVal = document.getElementById('cv-doc-up-project').value;
+    const phVal   = document.getElementById('cv-doc-up-phase').value;
+    const catVal  = document.getElementById('cv-doc-up-cat').value || 'general';
+    const desc    = document.getElementById('cv-doc-up-desc').value || null;
+    const tags    = desc ? desc.split(',').map(s=>s.trim()).filter(Boolean) : [];
+
+    // Resolver client_id / legacy_client_id
+    let clientId = null, legacyClientId = null;
+    if(cliVal){
+      if(cliVal.startsWith('L:')) legacyClientId = cliVal.slice(2);
+      else clientId = cliVal;
+    }
+    // Buscar phase_id si se eligió phase_code y proyecto
+    let phaseId = null;
+    if(projVal && phVal){
+      const ph = (window.CV.phases||[]).find(p => String(p.project_id)===String(projVal) && p.phase_code===phVal);
+      if(ph) phaseId = ph.id;
+    }
+
+    const isUuid = (s)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s||''));
+    const u = window._currentUser;
+    const uid = u && isUuid(u.id) ? u.id : null;
+    const uemail = u?.email || null;
+
+    const btn = document.getElementById('cv-doc-up-btn');
+    if(btn){ btn.disabled = true; btn.textContent = 'Subiendo...'; }
+
+    let okCount = 0, failCount = 0;
+    for(let i=0; i<_pendingFiles.length; i++){
+      const item = _pendingFiles[i];
+      if(item.status === 'done') continue;
+      try{
+        item.status = 'uploading'; item.progress = 0; _renderPendingFiles();
+
+        // Generar path único
+        const safeName = item.file.name.replace(/[^\w.\-]+/g,'_');
+        const ts = Date.now();
+        const rand = Math.random().toString(36).slice(2,8);
+        let folder = 'misc';
+        if(clientId)        folder = 'client/'+clientId;
+        else if(legacyClientId) folder = 'legacy_client/'+legacyClientId;
+        if(projVal)         folder += '/project/'+projVal;
+        if(phVal)           folder += '/phase/'+phVal;
+        const storagePath = folder+'/'+ts+'_'+rand+'_'+safeName;
+
+        // Subir al bucket
+        const { error: upErr } = await window.supabase.storage.from(BUCKET).upload(storagePath, item.file, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: item.file.type || 'application/octet-stream'
+        });
+        if(upErr) throw upErr;
+        item.progress = 70; _renderPendingFiles();
+
+        // Insertar metadata
+        const meta = {
+          storage_path: storagePath,
+          name: item.file.name,
+          mime_type: item.file.type || null,
+          size_bytes: item.file.size,
+          description: desc,
+          tags,
+          client_id: clientId,
+          legacy_client_id: legacyClientId,
+          project_id: projVal || null,
+          phase_id: phaseId,
+          phase_code: phVal || null,
+          category: catVal,
+          uploaded_by: uid,
+          uploaded_email: uemail
+        };
+        const { data, error: metaErr } = await window.supabase.from('cv_documents').insert([meta]).select();
+        if(metaErr) throw metaErr;
+        if(data && data[0]) window.CV.documents.unshift(data[0]);
+
+        item.progress = 100; item.status = 'done';
+        okCount++;
+      }catch(e){
+        console.error('[CV-DOC] Error subiendo "'+item.file.name+'":', e);
+        item.status = 'error'; item.error = e.message || String(e);
+        failCount++;
+      }
+      _renderPendingFiles();
+    }
+
+    if(btn){ btn.disabled = false; btn.textContent = '📤 Subir'; }
+    if(typeof showSync==='function'){
+      if(failCount===0) showSync(true, okCount+' archivo(s) subido(s)');
+      else showSync(false, okCount+' subidos · '+failCount+' fallaron');
+    }
+    _refreshDocBadge();
+    cvRenderDocuments();
+
+    // Si todos exitosos, cerrar modal después de breve delay
+    if(failCount===0){
+      setTimeout(()=>{
+        closeM('cv-mod-doc-upload');
+        _pendingFiles = [];
+      }, 1200);
+    }
+  }
+  window.cvUploadDocuments = cvUploadDocuments;
+
+  // ─────────────────────────────────────────────────────────────
+  // Preview / Descarga
+  // ─────────────────────────────────────────────────────────────
+  async function _getSignedUrl(path, expirySec){
+    const { data, error } = await window.supabase.storage.from(BUCKET).createSignedUrl(path, expirySec || 600);
+    if(error) throw error;
+    return data?.signedUrl;
+  }
+
+  async function cvPreviewDoc(id){
+    const d = (window.CV.documents||[]).find(x=>String(x.id)===String(id));
+    if(!d){ alert('Documento no encontrado'); return; }
+    _currentDocId = id;
+
+    const titleEl = document.getElementById('cv-doc-prev-title');
+    const body    = document.getElementById('cv-doc-prev-body');
+    if(titleEl) titleEl.textContent = d.name;
+    if(body) body.innerHTML = '<div style="padding:40px;color:var(--muted)">⏳ Cargando preview...</div>';
+    document.getElementById('cv-mod-doc-preview').classList.add('show');
+
+    if(!window.supabase){
+      body.innerHTML = '<div style="padding:40px;color:var(--red)">Sin sesión Supabase</div>';
+      return;
+    }
+    try{
+      const url = await _getSignedUrl(d.storage_path, 600);
+      const mime = (d.mime_type||'').toLowerCase();
+      const ext = (d.name||'').split('.').pop().toLowerCase();
+      if(mime.startsWith('image') || ['png','jpg','jpeg','webp','gif','svg'].includes(ext)){
+        body.innerHTML = `<img src="${url}" alt="${esc(d.name)}" style="max-width:100%;max-height:65vh;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1)">`;
+      } else if(mime.includes('pdf') || ext==='pdf'){
+        body.innerHTML = `<iframe src="${url}" style="width:100%;height:70vh;border:1px solid var(--border);border-radius:8px"></iframe>`;
+      } else if(mime.startsWith('video')){
+        body.innerHTML = `<video src="${url}" controls style="max-width:100%;max-height:65vh"></video>`;
+      } else if(mime.startsWith('audio')){
+        body.innerHTML = `<audio src="${url}" controls style="width:100%;margin:20px 0"></audio>`;
+      } else if(mime.startsWith('text') || ['txt','md','csv','json','log'].includes(ext)){
+        try{
+          const r = await fetch(url); const txt = await r.text();
+          body.innerHTML = '<pre style="text-align:left;font-family:ui-monospace,monospace;font-size:12px;background:var(--bg2);padding:14px;border-radius:8px;max-height:65vh;overflow:auto;white-space:pre-wrap;word-break:break-word">'+esc(txt.slice(0,50000))+'</pre>';
+        }catch(e){ body.innerHTML = `<div style="padding:40px"><p>No se puede previsualizar este tipo. <a href="${url}" target="_blank" style="color:var(--blue)">Abrir en nueva pestaña</a></p></div>`; }
+      } else {
+        body.innerHTML = `<div style="padding:40px"><div style="font-size:48px;margin-bottom:10px">📎</div><p>No hay vista previa disponible para este formato.</p><p><a href="${url}" target="_blank" style="color:var(--blue)">Abrir en nueva pestaña</a></p></div>`;
+      }
+    }catch(e){
+      body.innerHTML = '<div style="padding:40px;color:var(--red)">Error: '+esc(e.message||e)+'</div>';
+    }
+  }
+  window.cvPreviewDoc = cvPreviewDoc;
+
+  async function cvDownloadDoc(id){
+    const d = (window.CV.documents||[]).find(x=>String(x.id)===String(id));
+    if(!d){ alert('Documento no encontrado'); return; }
+    if(!window.supabase){ alert('Sin sesión Supabase'); return; }
+    try{
+      const url = await _getSignedUrl(d.storage_path, 60);
+      // Descargar
+      const a = document.createElement('a');
+      a.href = url; a.download = d.name; a.target = '_blank';
+      document.body.appendChild(a); a.click(); a.remove();
+    }catch(e){
+      alert('Error al descargar: '+(e.message||e));
+    }
+  }
+  window.cvDownloadDoc = cvDownloadDoc;
+
+  function cvDownloadCurrentDoc(){
+    if(_currentDocId) cvDownloadDoc(_currentDocId);
+  }
+  window.cvDownloadCurrentDoc = cvDownloadCurrentDoc;
+
+  async function cvDeleteDoc(id){
+    const d = (window.CV.documents||[]).find(x=>String(x.id)===String(id));
+    if(!d) return;
+    if(!confirm('¿Eliminar el documento "'+d.name+'" permanentemente?')) return;
+
+    try{
+      // 1. Eliminar del storage
+      if(window.supabase && d.storage_path){
+        await window.supabase.storage.from(BUCKET).remove([d.storage_path]);
+      }
+      // 2. Eliminar la metadata
+      if(window.supabase){
+        const r = await window.supabase.from('cv_documents').delete().eq('id', id);
+        if(r.error) throw r.error;
+      }
+      window.CV.documents = (window.CV.documents||[]).filter(x=>String(x.id)!==String(id));
+      _refreshDocBadge();
+      cvRenderDocuments();
+      if(typeof showSync==='function') showSync(true,'Documento eliminado');
+    }catch(e){
+      alert('Error eliminando: '+(e.message||e));
+    }
+  }
+  window.cvDeleteDoc = cvDeleteDoc;
+
+  // ─────────────────────────────────────────────────────────────
+  // Helper: contar/listar docs por contexto
+  // ─────────────────────────────────────────────────────────────
+  window.cvDocsForClient = function(clientId, isLegacy){
+    return (window.CV.documents||[]).filter(d =>
+      isLegacy ? String(d.legacy_client_id)===String(clientId) : String(d.client_id)===String(clientId)
+    );
+  };
+  window.cvDocsForProject = function(projectId){
+    return (window.CV.documents||[]).filter(d => String(d.project_id)===String(projectId));
+  };
+  window.cvDocsForPhase = function(projectId, phaseCode){
+    return (window.CV.documents||[]).filter(d => String(d.project_id)===String(projectId) && d.phase_code===phaseCode);
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // Hook al setTab para cargar
+  // ─────────────────────────────────────────────────────────────
+  const _origSetTab = window.cvSetTab;
+  if(typeof _origSetTab === 'function'){
+    window.cvSetTab = function(tab){
+      _origSetTab(tab);
+      if(tab === 'documents'){
+        cvLoadDocuments();
+      }
+    };
+  }
+
+  // Cargar al iniciar
+  setTimeout(()=>{ try{ cvLoadDocuments(); }catch(e){} }, 1900);
+})();
 </script>
 
 </body>
