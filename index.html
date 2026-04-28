@@ -1233,6 +1233,201 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
 #tbl-o .dep-actions { vertical-align:middle; text-align:center; }
 #tbl-o .dep-phase-wrap { display:flex; align-items:center; justify-content:center; }
 </style>
+
+<!-- ═══ CADENA DE VALOR · STYLES ═══ -->
+<style>
+/* ════════════════════════════════════════════════════════════════════
+   CADENA DE VALOR · CONFIGURACIÓN DE DESPLIEGUE
+   Reutiliza variables CSS existentes (--bg, --border, --blue, etc.)
+   Compatible con dark mode automáticamente.
+═══════════════════════════════════════════════════════════════════ */
+#view-cadena{display:none}
+#view-cadena.active{display:block}
+
+/* SUBNAV */
+.cv-subnav{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:5px;margin-bottom:14px;overflow-x:auto;box-shadow:var(--sh)}
+.cv-tab{padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--muted);border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .15s;border:none;background:none;font-family:inherit}
+.cv-tab:hover{background:var(--bg2);color:var(--text)}
+.cv-tab.active{background:var(--blue);color:#fff}
+.cv-tab .badge{margin-left:6px;background:rgba(255,255,255,.22);font-size:10px;padding:1px 7px;border-radius:10px;font-weight:700}
+.cv-tab:not(.active) .badge{background:var(--blue-l);color:var(--blue)}
+
+/* PANELS */
+.cv-panel{display:none}
+.cv-panel.active{display:block}
+
+/* KPI ROW */
+.cv-kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:11px;margin-bottom:14px}
+.cv-kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.cv-kpi::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--ac,var(--blue))}
+.cv-kpi-l{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.cv-kpi-v{font-size:24px;font-weight:700;line-height:1.1;margin:5px 0 2px}
+.cv-kpi-n{font-size:11px;color:var(--muted)}
+
+/* TWO COLUMNS */
+.cv-grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:14px}
+.cv-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:1100px){.cv-grid-2,.cv-grid-3{grid-template-columns:1fr}}
+
+/* PHASE FLOW (horizontal) */
+.cv-flow{display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-x:auto;box-shadow:var(--sh);margin-bottom:14px}
+.cv-flow-step{flex:1;min-width:115px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);position:relative;cursor:pointer;transition:all .15s}
+.cv-flow-step:hover{border-color:var(--blue-m);background:var(--blue-l)}
+.cv-flow-step.done{background:var(--green-l);border-color:var(--green-b)}
+.cv-flow-step.curr{background:var(--blue-l);border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-m)}
+.cv-flow-step.pend{background:var(--bg2)}
+.cv-flow-step.late{background:var(--red-l);border-color:#fca5a5}
+.cv-flow-num{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.cv-flow-name{font-size:12px;font-weight:700;margin:3px 0 5px;color:var(--text)}
+.cv-flow-prog{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden}
+.cv-flow-bar{height:100%;background:var(--blue);border-radius:3px;transition:width .5s ease}
+.cv-flow-step.done .cv-flow-bar{background:var(--green)}
+.cv-flow-step.late .cv-flow-bar{background:var(--red)}
+
+/* SEMÁFORO BADGES */
+.sem-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.sem-verde{background:#16A34A;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+.sem-amber{background:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.sem-rojo{background:#DC2626;box-shadow:0 0 0 3px rgba(220,38,38,.18)}
+.sem-grey{background:#94A3B8;box-shadow:0 0 0 3px rgba(148,163,184,.18)}
+
+/* ALERTS BOX */
+.cv-alert{padding:11px 14px;border-radius:8px;font-size:12.5px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border-left:4px solid}
+.cv-alert.crit{background:var(--red-l);color:var(--red);border-color:var(--red)}
+.cv-alert.warn{background:var(--amber-l);color:var(--amber);border-color:var(--amber)}
+.cv-alert.info{background:var(--blue-l);color:var(--blue);border-color:var(--blue)}
+.cv-alert.ok  {background:var(--green-l);color:var(--green);border-color:var(--green)}
+
+/* COMPONENT CARDS */
+.cv-comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px}
+.cv-comp{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;position:relative;cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.cv-comp:hover{border-color:var(--blue-m);box-shadow:var(--sh2);transform:translateY(-1px)}
+.cv-comp.sel{border-color:var(--blue);background:var(--blue-l)}
+.cv-comp.req{border-color:var(--green-b)}
+.cv-comp.req::before{content:'★';position:absolute;top:8px;right:10px;color:var(--green);font-size:13px}
+.cv-comp-h{display:flex;gap:9px;align-items:center;margin-bottom:8px}
+.cv-comp-icon{width:34px;height:34px;border-radius:8px;background:var(--blue-l);display:flex;align-items:center;justify-content:center;font-size:18px}
+.cv-comp-name{font-weight:700;font-size:13px}
+.cv-comp-cat{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.cv-comp-d{font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:8px;min-height:48px}
+.cv-comp-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding-top:8px;border-top:1px solid var(--border)}
+.cv-comp-actions{display:flex;gap:5px;margin-top:8px}
+
+/* TEMPLATE CHIPS */
+.cv-tpl-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.cv-tpl{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;box-shadow:var(--sh);position:relative}
+.cv-tpl:hover{border-color:var(--blue);box-shadow:var(--sh2)}
+.cv-tpl.def{border-color:var(--blue);background:var(--blue-l)}
+.cv-tpl-name{font-weight:700;font-size:13.5px;margin-bottom:5px}
+.cv-tpl-d{font-size:11.5px;color:var(--muted);margin-bottom:9px;line-height:1.4;min-height:34px}
+.cv-tpl-tags{display:flex;flex-wrap:wrap;gap:4px}
+.cv-tpl-tag{background:var(--bg2);color:var(--muted);font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;border:1px solid var(--border)}
+.cv-tpl-tag.b{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cv-tpl-act{position:absolute;top:8px;right:8px;display:flex;gap:3px}
+
+/* GANTT */
+.gantt-wrap{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow-x:auto;overflow-y:auto;max-height:70vh;box-shadow:var(--sh)}
+.g-row{display:flex;border-bottom:1px solid var(--border);min-height:30px;align-items:center}
+.g-row:hover{background:var(--bg2)}
+.g-lbl{width:280px;min-width:280px;padding:6px 10px;border-right:1px solid var(--border);font-size:12px;background:var(--bg);position:sticky;left:0;z-index:2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-lbl.phase{font-weight:700;background:var(--bg2);color:var(--text)}
+.g-lbl.task{padding-left:24px;color:var(--muted)}
+.g-bars{flex:1;position:relative;height:30px;background:linear-gradient(to right,transparent 0,transparent calc(100% - 1px),#edf2f7 calc(100% - 1px),#edf2f7 100%),repeating-linear-gradient(to right,transparent 0,transparent 39px,#f1f5f9 39px,#f1f5f9 40px)}
+.g-bar{position:absolute;height:18px;top:6px;border-radius:4px;background:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.13);cursor:pointer;display:flex;align-items:center;padding:0 7px;color:#fff;font-size:10px;font-weight:600;overflow:hidden}
+.g-bar:hover{filter:brightness(1.06)}
+.g-bar.done{background:var(--green)}
+.g-bar.late{background:var(--red)}
+.g-bar.crit{background:var(--violet)}
+.g-bar-prog{position:absolute;left:0;top:0;height:100%;background:rgba(0,0,0,.18);border-radius:4px 0 0 4px}
+.g-today{position:absolute;top:0;width:2px;height:100%;background:var(--red);z-index:3}
+.g-head{position:sticky;top:0;background:var(--bg2);border-bottom:2px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:flex;z-index:3}
+.g-head .g-lbl{background:var(--bg2)}
+.g-head .g-bars{height:30px}
+.g-month{position:absolute;top:0;height:100%;border-right:1px solid var(--border);padding:7px 10px;font-size:10.5px;color:var(--muted);box-sizing:border-box}
+.g-week{position:absolute;top:18px;height:12px;font-size:9px;color:var(--subtle);padding-left:2px}
+
+/* CRONO LIST FORM */
+.cv-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.cv-form-grid.col2{grid-template-columns:1fr 1fr}
+.cv-form-grid label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.cv-form-grid input,.cv-form-grid select,.cv-form-grid textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;outline:none;background:var(--bg);color:var(--text);box-sizing:border-box}
+.cv-form-grid input:focus,.cv-form-grid select:focus,.cv-form-grid textarea:focus{border-color:var(--blue)}
+
+/* CHECKLIST */
+.cv-chk{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:all .15s}
+.cv-chk:hover{border-color:var(--blue-m);background:var(--bg2)}
+.cv-chk.done{background:var(--green-l);border-color:var(--green-b)}
+.cv-chk.done .cv-chk-name{text-decoration:line-through;color:var(--muted)}
+.cv-chk-cb{width:18px;height:18px;cursor:pointer;flex-shrink:0;accent-color:var(--blue)}
+.cv-chk-name{flex:1;font-size:13px;font-weight:500;color:var(--text)}
+.cv-chk-meta{font-size:10.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.cv-chk-tag{background:var(--bg2);padding:1px 7px;border-radius:8px;font-weight:600;font-size:10px;border:1px solid var(--border)}
+.cv-chk-tag.crit{background:var(--red-l);color:var(--red);border-color:#fca5a5}
+.cv-chk-tag.req{background:var(--blue-l);color:var(--blue);border-color:var(--blue-m)}
+
+/* RULES TABLE */
+.cv-rule{background:var(--bg);border-left:4px solid var(--border);padding:11px 14px;border-radius:6px;margin-bottom:7px;border:1px solid var(--border)}
+.cv-rule.error{border-left-color:var(--red)}
+.cv-rule.warn{border-left-color:var(--amber)}
+.cv-rule.info{border-left-color:var(--blue)}
+.cv-rule-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.cv-rule-name{font-weight:700;font-size:13px}
+.cv-rule-msg{font-size:12px;color:var(--muted)}
+
+/* CLIENT ROW IN DEPLOYMENT TABLE */
+.cv-cli-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px 16px;display:grid;grid-template-columns:1.3fr 1fr 1fr 1.4fr 90px;gap:12px;align-items:center;margin-bottom:8px;box-shadow:var(--sh);transition:all .15s}
+.cv-cli-card:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.cv-cli-h{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:7px}
+.cv-cli-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.cv-cli-meta{font-size:11.5px;color:var(--muted)}
+.cv-cli-prog-track{height:7px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-top:4px}
+.cv-cli-prog-bar{height:100%;background:var(--blue);border-radius:4px;transition:width .5s ease}
+
+/* MODAL EXTENSIONS */
+.cv-modal{max-width:760px}
+.cv-modal-xl{max-width:1100px;width:96vw}
+.cv-modal-section{padding:12px 0;border-bottom:1px solid var(--border)}
+.cv-modal-section:last-child{border-bottom:none}
+.cv-modal-section h4{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700}
+
+/* TIMELINE WIZARD */
+.cv-wiz-steps{display:flex;gap:6px;margin-bottom:18px;padding:0 4px}
+.cv-wiz-step{flex:1;text-align:center;padding:7px 0;font-size:11px;font-weight:700;color:var(--muted);border-bottom:3px solid var(--border);transition:all .15s}
+.cv-wiz-step.active{color:var(--blue);border-color:var(--blue)}
+.cv-wiz-step.done{color:var(--green);border-color:var(--green)}
+
+/* DARK MODE OVERRIDES */
+body.dark .cv-flow-step{background:#152033}
+body.dark .cv-flow-step.done{background:rgba(15,126,79,.18);border-color:var(--green)}
+body.dark .cv-flow-step.curr{background:rgba(27,79,216,.18);border-color:var(--blue)}
+body.dark .cv-flow-step.late{background:rgba(190,18,60,.18);border-color:#7f1d1d}
+body.dark .cv-tab.active{background:var(--blue);color:#fff}
+body.dark .cv-comp.sel{background:rgba(27,79,216,.18)}
+body.dark .cv-tpl.def{background:rgba(27,79,216,.18)}
+body.dark .cv-chk.done{background:rgba(15,126,79,.13)}
+body.dark .g-bars{background:linear-gradient(to right,transparent 0,transparent calc(100% - 1px),#1f2a3d calc(100% - 1px),#1f2a3d 100%),repeating-linear-gradient(to right,transparent 0,transparent 39px,#1a2438 39px,#1a2438 40px)}
+body.dark .g-lbl{background:var(--bg)}
+body.dark .g-lbl.phase{background:#152033}
+
+/* PROGRESS RINGS */
+.ring{width:42px;height:42px;border-radius:50%;background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#e5e7eb 0);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;position:relative}
+.ring::after{content:'';position:absolute;width:32px;height:32px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;z-index:1}
+body.dark .ring{background:conic-gradient(var(--blue) calc(var(--p,0)*1%),#243349 0)}
+
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:14px;font-size:10.5px;font-weight:600;background:var(--bg2);color:var(--muted);border:1px solid var(--border);margin-right:3px}
+.chip.b{background:var(--blue-l);color:var(--blue);border-color:var(--blue-m)}
+.chip.g{background:var(--green-l);color:var(--green);border-color:var(--green-b)}
+.chip.r{background:var(--red-l);color:var(--red);border-color:#fca5a5}
+.chip.a{background:var(--amber-l);color:var(--amber);border-color:#fcd34d}
+.chip.v{background:var(--violet-l);color:var(--violet);border-color:#c4b5fd}
+
+/* LOADER */
+.cv-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px}
+.cv-empty-ico{font-size:38px;margin-bottom:8px;opacity:.6}
+</style>
+
 </head>
 <body>
 
@@ -1278,6 +1473,7 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
     <div class="s-item" onclick="setV('operativos')" id="nav-operativos"><span>✅</span> Clientes Operativos <span class="s-badge g" id="bo">0</span></div>
     <div class="s-item" onclick="setV('inactivos')" id="nav-inactivos"><span>⛔</span> Clientes Inactivos <span class="s-badge r" id="bi">0</span></div>
     <div class="s-item" onclick="setV('capacidad')" id="nav-capacidad"><span>⚡</span> Capacidad Operativa</div>
+    <div class="s-item" onclick="setV('cadena')" id="nav-cadena"><span>🔗</span> Cadena de Valor <span class="s-badge" id="cv-side-proj">0</span></div>
     <div class="s-sec">CRM</div>
     <div class="s-item" onclick="setV('clientes')" id="nav-clientes"><span>👥</span> Clientes <span class="s-badge" id="bcl">0</span></div>
     <div class="s-item" onclick="setV('contratos')" id="nav-contratos"><span>📋</span> Contratos <span class="s-badge" id="bcont">0</span></div>
@@ -1885,7 +2081,12 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
       <div class="sec-hdr">
         <div><div class="sec-title">🗂 Gestión de Catálogos</div>
         <div class="sec-sub">Configura valores maestros del sistema · los cambios se reflejan en toda la app</div></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-g btn-sm" onclick="catDiagnose()" title="Verificar conexión con Supabase y estado de los datos">🔍 Diagnóstico</button>
+          <button class="btn btn-g btn-sm" onclick="catReloadFromSupabase()" title="Volver a cargar los catálogos desde Supabase">🔄 Recargar</button>
+        </div>
       </div>
+      <div id="cat-diag-box" style="display:none;margin:8px 0;padding:12px 14px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);font-size:12px;font-family:ui-monospace,monospace;white-space:pre-wrap;line-height:1.5;"></div>
 
       <!-- CSS-ONLY TABS via radio buttons trick replaced with simple sections -->
       <!-- Each section is always visible, collapsible -->
@@ -2200,6 +2401,419 @@ td.dep-col-fconf{width:115px;max-width:115px;overflow:hidden}
       </div>
     </div>
 
+<!-- ═══ CADENA DE VALOR · VIEW + MODALES ═══ -->
+<!-- ════════════════════════════════════════════════════════════════════
+     CADENA DE VALOR · Configuración de Despliegue
+═══════════════════════════════════════════════════════════════════ -->
+<div id="view-cadena" class="view">
+
+  <!-- SUBNAV -->
+  <div class="cv-subnav">
+    <button class="cv-tab active" data-cvtab="overview" onclick="cvSetTab('overview')">📊 Resumen</button>
+    <button class="cv-tab" data-cvtab="projects"  onclick="cvSetTab('projects')">🎯 Despliegues por Cliente <span class="badge" id="cv-bd-proj">0</span></button>
+    <button class="cv-tab" data-cvtab="components" onclick="cvSetTab('components')">🧩 Componentes <span class="badge" id="cv-bd-comp">0</span></button>
+    <button class="cv-tab" data-cvtab="templates" onclick="cvSetTab('templates')">🧱 Plantillas <span class="badge" id="cv-bd-tpl">0</span></button>
+    <button class="cv-tab" data-cvtab="checklists" onclick="cvSetTab('checklists')">✅ Checklists</button>
+    <button class="cv-tab" data-cvtab="rules" onclick="cvSetTab('rules')">⚙️ Reglas</button>
+    <button class="cv-tab" data-cvtab="gates" onclick="cvSetTab('gates')">🚦 Gates</button>
+    <button class="cv-tab" data-cvtab="gantt" onclick="cvSetTab('gantt')">📈 Cronograma</button>
+    <button class="cv-tab" data-cvtab="settings" onclick="cvSetTab('settings')">🔧 Configuración</button>
+  </div>
+
+  <!-- ════════════ PANEL OVERVIEW ════════════ -->
+  <div class="cv-panel active" data-cvpanel="overview">
+    <div id="cv-alerts-box"></div>
+
+    <div class="cv-kpi-row" id="cv-kpi-row"></div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-h" style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="card-title">Flujo Maestro de Fases</div>
+          <div class="card-sub">Avance global agregado de todos los despliegues activos</div>
+        </div>
+        <select class="fi" id="cv-flow-filter" onchange="cvRenderOverview()" style="font-size:12px;padding:5px 9px">
+          <option value="">Todos los proyectos</option>
+        </select>
+      </div>
+      <div class="card-b">
+        <div class="cv-flow" id="cv-flow"></div>
+      </div>
+    </div>
+
+    <div class="cv-grid-2">
+      <div class="card">
+        <div class="card-h" style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="card-title">Clientes en Despliegue</div>
+            <div class="card-sub">Estado y semáforo de cada proyecto</div>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="cvOpenWizard()">+ Nuevo Despliegue</button>
+        </div>
+        <div class="card-b" id="cv-deploy-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">Próximos Vencimientos</div>
+          <div class="card-sub">Tareas y gates que vencen en los próximos 14 días</div>
+        </div>
+        <div class="card-b" id="cv-upcoming"></div>
+      </div>
+    </div>
+
+    <div class="cv-grid-2">
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">Gates Pendientes</div>
+          <div class="card-sub">Puntos de control esperando aprobación</div>
+        </div>
+        <div class="card-b" id="cv-gates-pending"></div>
+      </div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">Semáforo de Salud</div>
+          <div class="card-sub">Distribución por estado de los proyectos</div>
+        </div>
+        <div class="card-b"><canvas id="cv-health-chart" style="max-height:230px"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ PANEL PROJECTS ════════════ -->
+  <div class="cv-panel" data-cvpanel="projects">
+    <div class="filter-bar">
+      <input class="fi" id="cv-proj-search" placeholder="🔍 Buscar cliente..." oninput="cvRenderProjects()">
+      <select class="fi" id="cv-proj-status" onchange="cvRenderProjects()">
+        <option value="">Todos los estados</option>
+        <option value="planificacion">Planificación</option>
+        <option value="activo">Activo</option>
+        <option value="pausado">Pausado</option>
+        <option value="finalizado">Finalizado</option>
+      </select>
+      <select class="fi" id="cv-proj-health" onchange="cvRenderProjects()">
+        <option value="">Toda salud</option>
+        <option value="verde">🟢 Verde</option>
+        <option value="amarillo">🟡 Amarillo</option>
+        <option value="rojo">🔴 Rojo</option>
+      </select>
+      <button class="btn btn-p btn-sm" onclick="cvOpenWizard()" style="margin-left:auto">+ Nuevo Despliegue</button>
+    </div>
+    <div id="cv-proj-list"></div>
+  </div>
+
+  <!-- ════════════ PANEL COMPONENTS ════════════ -->
+  <div class="cv-panel" data-cvpanel="components">
+    <div class="filter-bar">
+      <input class="fi" id="cv-comp-search" placeholder="🔍 Buscar componente..." oninput="cvRenderComponents()">
+      <select class="fi" id="cv-comp-cat" onchange="cvRenderComponents()">
+        <option value="">Todas las categorías</option>
+        <option value="core">Core</option>
+        <option value="modulo">Módulo</option>
+        <option value="addon">Add-on</option>
+      </select>
+      <button class="btn btn-p btn-sm" onclick="cvOpenComponent(null)" style="margin-left:auto">+ Nuevo Componente</button>
+    </div>
+    <div class="cv-comp-grid" id="cv-comp-grid"></div>
+  </div>
+
+  <!-- ════════════ PANEL TEMPLATES ════════════ -->
+  <div class="cv-panel" data-cvpanel="templates">
+    <div class="filter-bar">
+      <span style="font-size:12px;color:var(--muted)">Plantillas pre-armadas para acelerar la creación de despliegues. Editables.</span>
+      <button class="btn btn-p btn-sm" onclick="cvOpenTemplate(null)" style="margin-left:auto">+ Nueva Plantilla</button>
+    </div>
+    <div class="cv-tpl-row" id="cv-tpl-row"></div>
+  </div>
+
+  <!-- ════════════ PANEL CHECKLISTS ════════════ -->
+  <div class="cv-panel" data-cvpanel="checklists">
+    <div class="filter-bar">
+      <label>Componente:</label>
+      <select class="fi" id="cv-chk-comp" onchange="cvRenderChecklistMaster()"></select>
+      <label>Fase:</label>
+      <select class="fi" id="cv-chk-phase" onchange="cvRenderChecklistMaster()">
+        <option value="">Todas las fases</option>
+      </select>
+      <button class="btn btn-p btn-sm" onclick="cvOpenChecklistItem(null)" style="margin-left:auto">+ Nuevo Item</button>
+    </div>
+    <div id="cv-chk-list"></div>
+  </div>
+
+  <!-- ════════════ PANEL RULES ════════════ -->
+  <div class="cv-panel" data-cvpanel="rules">
+    <div class="filter-bar">
+      <span style="font-size:12px;color:var(--muted)">Motor de reglas. Las reglas se evalúan al activar/editar módulos de un cliente.</span>
+      <button class="btn btn-p btn-sm" onclick="cvOpenRule(null)" style="margin-left:auto">+ Nueva Regla</button>
+    </div>
+    <div id="cv-rules-list"></div>
+  </div>
+
+  <!-- ════════════ PANEL GATES ════════════ -->
+  <div class="cv-panel" data-cvpanel="gates">
+    <div class="filter-bar">
+      <span style="font-size:12px;color:var(--muted)">Puntos de control oficiales del proceso de despliegue.</span>
+      <button class="btn btn-p btn-sm" onclick="cvOpenGate(null)" style="margin-left:auto">+ Nuevo Gate</button>
+    </div>
+    <div class="cv-tpl-row" id="cv-gates-list"></div>
+  </div>
+
+  <!-- ════════════ PANEL GANTT ════════════ -->
+  <div class="cv-panel" data-cvpanel="gantt">
+    <div class="filter-bar">
+      <label>Proyecto:</label>
+      <select class="fi" id="cv-gantt-proj" onchange="cvRenderGantt()" style="min-width:280px"></select>
+      <button class="btn btn-g btn-sm" onclick="cvGenerateGantt()">🔄 Regenerar</button>
+      <button class="btn btn-g btn-sm" onclick="cvExportGanttHTML()">📤 Exportar HTML</button>
+      <button class="btn btn-g btn-sm" onclick="cvExportGanttCSV()">📊 Exportar CSV</button>
+      <button class="btn btn-g btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+    <div class="gantt-wrap" id="cv-gantt-wrap"><div class="cv-empty"><div class="cv-empty-ico">📈</div>Selecciona un proyecto para ver su Gantt</div></div>
+  </div>
+
+  <!-- ════════════ PANEL SETTINGS ════════════ -->
+  <div class="cv-panel" data-cvpanel="settings">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-h"><div class="card-title">Feriados</div><div class="card-sub">Días no laborables que se descuentan del Gantt</div></div>
+      <div class="card-b" id="cv-holidays-list"></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-h"><div class="card-title">Auditoría · Últimos cambios</div><div class="card-sub">Quién hizo qué y cuándo</div></div>
+      <div class="card-b" id="cv-audit-list" style="max-height:380px;overflow-y:auto"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-title">Datos persistentes</div></div>
+      <div class="card-b" style="font-size:13px;color:var(--muted);line-height:1.6">
+        Toda la información de Cadena de Valor se guarda en Supabase (tablas <code>components_catalog</code>, <code>deployment_projects</code>, <code>deployment_phases</code>, <code>deployment_tasks</code>, etc.). LocalStorage solo se usa como caché temporal para trabajo offline.
+        <div style="margin-top:10px"><button class="btn btn-g btn-sm" onclick="cvSyncNow()">🔄 Sincronizar ahora</button>
+        <button class="btn btn-g btn-sm" onclick="cvSeedDemo()" style="margin-left:6px">🌱 Cargar datos demo</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── MODALES CADENA DE VALOR ─── -->
+
+  </div>
+</div>
+
+
+<div class="modal-ov" id="cv-mod-comp">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-comp-mt">Nuevo Componente</span><button class="m-close" onclick="closeM('cv-mod-comp')">✕</button></div>
+    <div class="cv-form-grid">
+      <div><label>Código (slug)</label><input id="cv-comp-code" placeholder="admin_web"></div>
+      <div><label>Nombre</label><input id="cv-comp-name" placeholder="Administrador Web"></div>
+      <div><label>Categoría</label><select id="cv-comp-cat-i"><option value="core">Core</option><option value="modulo">Módulo</option><option value="addon">Add-on</option></select></div>
+    </div>
+    <div class="cv-form-grid">
+      <div><label>Color</label><input id="cv-comp-color" type="color" value="#1B4FD8"></div>
+      <div><label>Ícono</label><input id="cv-comp-icon" placeholder="🛠️"></div>
+      <div><label>Duración estimada (días)</label><input id="cv-comp-dur" type="number" value="7" min="1"></div>
+    </div>
+    <div class="cv-form-grid col2">
+      <div><label>Orden</label><input id="cv-comp-sort" type="number" value="10"></div>
+      <div style="display:flex;gap:18px;align-items:center;padding-top:18px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="cv-comp-req" style="width:auto"> Es obligatorio
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="cv-comp-act" style="width:auto" checked> Activo
+        </label>
+      </div>
+    </div>
+    <div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción</label>
+      <textarea id="cv-comp-desc" class="ei" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;min-height:60px;background:var(--bg);color:var(--text)" placeholder="Descripción breve del componente..."></textarea>
+    </div>
+    <div class="cv-form-grid col2">
+      <div><label>Depende de (códigos sep. coma)</label><input id="cv-comp-deps" placeholder="admin_web"></div>
+      <div><label>Incompatible con</label><input id="cv-comp-incomp" placeholder="bot_normal"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-comp-del-btn" onclick="cvDeleteComponent()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-comp')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveComponent()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE EDITOR -->
+<div class="modal-ov" id="cv-mod-tpl">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-tpl-mt">Nueva Plantilla</span><button class="m-close" onclick="closeM('cv-mod-tpl')">✕</button></div>
+    <div class="cv-form-grid col2">
+      <div><label>Nombre</label><input id="cv-tpl-name" placeholder="Tipo 1 · Operación Bot"></div>
+      <div><label>Orden</label><input id="cv-tpl-sort" type="number" value="10"></div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción</label>
+      <textarea id="cv-tpl-desc" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;min-height:50px;background:var(--bg);color:var(--text)"></textarea>
+    </div>
+    <div class="cv-modal-section">
+      <h4>Componentes incluidos (Admin Web es obligatorio)</h4>
+      <div id="cv-tpl-comps" class="cv-comp-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-tpl-del-btn" onclick="cvDeleteTemplate()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-tpl')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveTemplate()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIZARD: NUEVO DESPLIEGUE -->
+<div class="modal-ov" id="cv-mod-wiz">
+  <div class="modal cv-modal-xl">
+    <div class="m-title"><span>🚀 Nuevo Despliegue</span><button class="m-close" onclick="closeM('cv-mod-wiz')">✕</button></div>
+    <div class="cv-wiz-steps" id="cv-wiz-steps">
+      <div class="cv-wiz-step active" data-s="1">1 · Cliente</div>
+      <div class="cv-wiz-step" data-s="2">2 · Plantilla</div>
+      <div class="cv-wiz-step" data-s="3">3 · Módulos</div>
+      <div class="cv-wiz-step" data-s="4">4 · Cronograma</div>
+      <div class="cv-wiz-step" data-s="5">5 · Confirmar</div>
+    </div>
+    <div id="cv-wiz-body" style="min-height:340px"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+      <button class="btn btn-g" id="cv-wiz-prev" onclick="cvWizPrev()">← Atrás</button>
+      <div id="cv-wiz-status" style="font-size:12px;color:var(--muted);align-self:center"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-p" id="cv-wiz-next" onclick="cvWizNext()">Siguiente →</button>
+        <button class="btn btn-p" id="cv-wiz-finish" onclick="cvWizFinish()" style="display:none;background:var(--green);">✓ Crear despliegue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT DETAIL -->
+<div class="modal-ov" id="cv-mod-proj">
+  <div class="modal cv-modal-xl">
+    <div class="m-title"><span id="cv-proj-mt">Detalle del Despliegue</span><button class="m-close" onclick="closeM('cv-mod-proj')">✕</button></div>
+    <div id="cv-proj-body"></div>
+  </div>
+</div>
+
+<!-- CHECKLIST ITEM -->
+<div class="modal-ov" id="cv-mod-chk">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-chk-mt">Nuevo item de checklist</span><button class="m-close" onclick="closeM('cv-mod-chk')">✕</button></div>
+    <div class="cv-form-grid col2">
+      <div><label>Componente</label><select id="cv-chk-i-comp"></select></div>
+      <div><label>Fase</label><select id="cv-chk-i-phase"></select></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Nombre</label>
+      <input id="cv-chk-i-name" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)" placeholder="Configurar geocerca de la ciudad">
+    </div>
+    <div class="cv-form-grid">
+      <div><label>Duración (días)</label><input id="cv-chk-i-dur" type="number" value="1" min="1"></div>
+      <div><label>Responsable rol</label>
+        <select id="cv-chk-i-role"><option value="">Sin asignar</option><option value="launcher">Launcher</option><option value="comercial">Comercial</option><option value="soporte">Soporte</option><option value="operaciones">Operaciones</option></select>
+      </div>
+      <div><label>Orden</label><input id="cv-chk-i-sort" type="number" value="10"></div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;margin-bottom:12px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="cv-chk-i-req" style="width:auto"> Obligatorio</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="cv-chk-i-crit" style="width:auto"> Crítico</label>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-chk-del-btn" onclick="cvDeleteChecklist()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-chk')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveChecklist()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RULE EDITOR -->
+<div class="modal-ov" id="cv-mod-rule">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-rule-mt">Nueva Regla</span><button class="m-close" onclick="closeM('cv-mod-rule')">✕</button></div>
+    <div class="cv-form-grid col2">
+      <div><label>Nombre</label><input id="cv-rule-name" placeholder="Admin Web obligatorio"></div>
+      <div><label>Severidad</label>
+        <select id="cv-rule-sev">
+          <option value="info">Info</option>
+          <option value="warn">Warning</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción</label>
+      <textarea id="cv-rule-desc" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;min-height:48px;background:var(--bg);color:var(--text)"></textarea>
+    </div>
+    <div class="cv-form-grid">
+      <div><label>Condición · tipo</label>
+        <select id="cv-rule-cif">
+          <option value="missing">Si NO tiene componente</option>
+          <option value="has">Si TIENE componente</option>
+          <option value="both">Si TIENE ambos</option>
+        </select>
+      </div>
+      <div><label>Componente(s) (códigos sep. coma)</label><input id="cv-rule-cval" placeholder="admin_web"></div>
+      <div><label>Acción</label>
+        <select id="cv-rule-act">
+          <option value="block">Bloquear</option>
+          <option value="warn">Advertir</option>
+          <option value="info">Informar</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Mensaje al usuario</label>
+      <input id="cv-rule-msg" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;background:var(--bg);color:var(--text)" placeholder="Mensaje que se mostrará...">
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" id="cv-rule-act-i" style="width:auto" checked> Regla activa</label>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-rule-del-btn" onclick="cvDeleteRule()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-rule')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveRule()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GATE EDITOR -->
+<div class="modal-ov" id="cv-mod-gate">
+  <div class="modal cv-modal">
+    <div class="m-title"><span id="cv-gate-mt">Nuevo Gate</span><button class="m-close" onclick="closeM('cv-mod-gate')">✕</button></div>
+    <div class="cv-form-grid col2">
+      <div><label>Código</label><input id="cv-gate-code" placeholder="gate_X"></div>
+      <div><label>Nombre</label><input id="cv-gate-name" placeholder="Contrato Aprobado"></div>
+    </div>
+    <div class="cv-form-grid col2">
+      <div><label>Fase asociada</label>
+        <select id="cv-gate-phase">
+          <option value="prospecto">Prospecto</option>
+          <option value="contrato">Contrato</option>
+          <option value="alta_tecnica">Alta técnica</option>
+          <option value="configuracion_base">Configuración base</option>
+          <option value="configuracion_mod">Configuración módulos</option>
+          <option value="capacitacion">Capacitación</option>
+          <option value="piloto">Piloto</option>
+          <option value="produccion">Producción</option>
+          <option value="soporte">Soporte continuo</option>
+        </select>
+      </div>
+      <div><label>Orden</label><input id="cv-gate-sort" type="number" value="10"></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px">Descripción</label>
+      <textarea id="cv-gate-desc" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;min-height:60px;background:var(--bg);color:var(--text)"></textarea>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-d" id="cv-gate-del-btn" onclick="cvDeleteGate()" style="display:none">🗑️ Eliminar</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-g" onclick="closeM('cv-mod-gate')">Cancelar</button>
+        <button class="btn btn-p" onclick="cvSaveGate()">Guardar</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3173,7 +3787,7 @@ function syncDeploySubnav(){
 
 function setV(v){
   curV=v;
-  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.29'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
+  const TITLES={'dashboard':['Dashboard Ejecutivo','Resumen operativo · Clipp · '+new Date().toLocaleDateString('es-EC',{month:'long',year:'numeric'})],'timeline':['Línea de Tiempo','Historial y proyección por categoría'],'despliegues':['Despliegues','Seguimiento operativo de implementaciones'],'operativos':['Clientes Operativos','Clientes con despliegue finalizado'],'inactivos':['Clientes Inactivos','Clientes deshabilitados y perdidos'],'capacidad':['Capacidad Operativa','Carga del equipo en tiempo real'],'cadena':['Cadena de Valor','Configuración de despliegue · Centro maestro'],'clientes':['Gestión de Clientes','Los cambios se sincronizan automáticamente'],'contratos':['Contratos','Condiciones de cobro por cliente'],'cobranzas':['Cobranzas','Facturación y cobros mensuales'],'estrategia':['Estrategia de Despliegue','Fases y complejidad por cliente'],'catalogos':['Gestión de Catálogos','Aplicativos, Tipos, Módulos y más'],'manual':['Manual de Uso','Guía de referencia · Ops Center v5.29'],'usuarios':['Usuarios y Roles','Gestiona accesos y permisos por módulo']};
   if(TITLES[v]){
     const tEl=document.getElementById('tb-t');if(tEl)tEl.textContent=TITLES[v][0];
     const sEl=document.getElementById('tb-s');if(sEl)sEl.textContent=TITLES[v][1];
@@ -3203,7 +3817,8 @@ function setV(v){
     estrategia:renderEstrategia,
     catalogos:renderCats,
     manual:()=>{},
-    usuarios:renderUsuarios
+    usuarios:renderUsuarios,
+    cadena:()=>{ if(window.cvLoadAll) window.cvLoadAll(); else if(window.cvRefreshCurrent) window.cvRefreshCurrent(); }
   };
   if(actions[v])actions[v]();
   setTimeout(function(){ applyAllHeaderTooltips(); }, 80);
@@ -5689,15 +6304,14 @@ function renderCats(){
   const lazyRender=[['Categorías',renderCatMods],['Aplicativos',renderAps],['Tipos de Cliente',renderTps],['Modalidades',renderModDeps],['Tipos de Cobro',renderBTs],['Estados de Riesgo',renderRisks]];
   const failed=[];
   alwaysRender.forEach(([name,fn])=>{ try{fn();}catch(err){failed.push(name);console.error('Render catálogo falló:',name,err);} });
-  // Para los lazy: chequear si su sección está abierta
-  const openSections=new Set([...sections].filter(s=>s.classList.contains('open')).map(s=>{
-    const h=s.querySelector('.cat-section-hdr span');return h?h.textContent.trim():'';
-  }));
+  // FIX: renderizar TODAS las secciones siempre — antes era "lazy" (solo si estaban abiertas)
+  // Eso provocaba que aparecieran vacías hasta que el usuario las abriera por primera vez.
+  // Con pocos elementos por sección no hay problema de performance.
   lazyRender.forEach(([name,fn])=>{
-    if(openSections.has(name)){ try{fn();}catch(err){failed.push(name);console.error('Render catálogo falló:',name,err);} }
+    try{ fn(); }catch(err){ failed.push(name); console.error('Render catálogo falló:',name,err); }
   });
   if(failed.length) showCatalogError('Se cargó Catálogos, pero fallaron estas secciones: '+failed.join(', ')+'. Revisa la consola para el detalle.');
-  // Cuando el usuario abre una sección lazy, renderizarla
+  // Mantener listener de click para re-render por si el dato cambia mientras está abierto.
   sections.forEach(function(sec){
     if(!sec._catLazyListener){
       sec._catLazyListener=true;
@@ -5712,6 +6326,154 @@ function renderCats(){
   });
   setTimeout(function(){ applyAllHeaderTooltips(view); }, 50);
 }
+
+// ════════════════════════════════════════════════════════════════
+// DIAGNÓSTICO Y RECARGA DE CATÁLOGOS
+// ════════════════════════════════════════════════════════════════
+async function catDiagnose(){
+  const box = document.getElementById('cat-diag-box');
+  if(!box) return;
+  box.style.display = 'block';
+  box.innerHTML = '⏳ Ejecutando diagnóstico...';
+  const lines = [];
+  const ok  = (m)=>lines.push('✅ '+m);
+  const bad = (m)=>lines.push('❌ '+m);
+  const warn= (m)=>lines.push('⚠️  '+m);
+  const info= (m)=>lines.push('ℹ️  '+m);
+  const sep = ()=>lines.push('─────────────────────────────────────────');
+
+  // 1. Sesión y supabase
+  sep();
+  info('1. CONEXIÓN');
+  if(typeof supabase === 'undefined' || !supabase){
+    bad('No hay cliente Supabase activo. Probable: no estás logueado.');
+    box.innerHTML = lines.join('\n'); return;
+  }
+  ok('Cliente Supabase activo');
+  if(_currentUser){
+    ok('Usuario logueado: '+(_currentUser.email||_currentUser.id||'desconocido'));
+  } else {
+    warn('No se identificó al usuario actual');
+  }
+
+  // 2. Lectura de ops_data
+  sep();
+  info('2. LECTURA DE ops_data');
+  let allRows = null;
+  try{
+    const r = await supabase.from('ops_data').select('key,updated_at').order('key');
+    if(r.error) throw r.error;
+    allRows = r.data || [];
+    ok('Filas en ops_data: '+allRows.length);
+    allRows.forEach(row=>lines.push('   · '+row.key+'  ('+(row.updated_at||'sin fecha')+')'));
+  }catch(e){
+    bad('Error al leer ops_data: '+(e.message||e));
+    if((e.message||'').toLowerCase().includes('permission')||(e.message||'').toLowerCase().includes('policy')){
+      bad('PROBABLE CAUSA: RLS bloqueando lectura. Ejecutá el BLOQUE 7 del SQL de diagnóstico.');
+    }
+    box.innerHTML = lines.join('\n'); return;
+  }
+
+  // 3. Fila key='cats'
+  sep();
+  info('3. FILA key=\'cats\'');
+  const hasCats = allRows.some(r=>r.key==='cats');
+  if(!hasCats){
+    bad('No existe fila con key=\'cats\' en ops_data');
+    bad('SOLUCIÓN: Ejecutá el BLOQUE 5 del SQL de diagnóstico para crearla.');
+  } else {
+    ok('Fila \'cats\' existe');
+    try{
+      const r = await supabase.from('ops_data').select('value').eq('key','cats').single();
+      if(r.error) throw r.error;
+      const v = r.value || r.data?.value || {};
+      const expected = ['ap','tp','md','modal','risk','implTimes','phases','catmod','billingTypes','complexity','launchers','vendors','colTips'];
+      const present = Object.keys(v||{});
+      const missing = expected.filter(k=>!(k in (v||{})));
+      ok('Llaves encontradas: '+present.length+' / '+expected.length);
+      expected.forEach(k=>{
+        const arr = (v||{})[k];
+        if(arr === undefined){
+          bad('   '+k+' → FALTA');
+        } else if(Array.isArray(arr)){
+          if(arr.length===0) warn('   '+k+' → array vacío');
+          else ok('   '+k+' → '+arr.length+' elementos');
+        } else if(typeof arr === 'object' && arr !== null){
+          ok('   '+k+' → objeto con '+Object.keys(arr).length+' llaves');
+        } else {
+          warn('   '+k+' → tipo inesperado: '+typeof arr);
+        }
+      });
+      if(missing.length){
+        bad('Faltan llaves: '+missing.join(', '));
+        bad('SOLUCIÓN: Ejecutá el BLOQUE 4 del SQL de diagnóstico.');
+      }
+    }catch(e){
+      bad('Error al leer fila cats: '+(e.message||e));
+    }
+  }
+
+  // 4. Variable cats en memoria
+  sep();
+  info('4. VARIABLE \'cats\' EN MEMORIA (lo que tiene la app cargado)');
+  const memKeys = Object.keys(cats||{});
+  ok('Llaves en memoria: '+memKeys.length);
+  memKeys.forEach(k=>{
+    const v = cats[k];
+    if(Array.isArray(v)) lines.push('   · '+k+' → '+v.length);
+    else if(v && typeof v==='object') lines.push('   · '+k+' → objeto ('+Object.keys(v).length+' llaves)');
+    else lines.push('   · '+k+' → '+typeof v);
+  });
+
+  // 5. Recomendaciones finales
+  sep();
+  info('5. RESUMEN');
+  const memEmpty = ['ap','tp','md','phases','launchers','complexity','catmod','billingTypes'].filter(k=>!cats[k]||!cats[k].length);
+  if(memEmpty.length){
+    warn('Categorías vacías en memoria: '+memEmpty.join(', '));
+    info('Probá hacer click en "🔄 Recargar" o ejecutar los bloques de SQL recomendados arriba.');
+  } else {
+    ok('Todo en orden. Las secciones se rendean automáticamente al cargar.');
+    info('Si una sección sigue vacía: hacé click en "🔄 Recargar" o recargá la página.');
+  }
+
+  box.innerHTML = lines.join('\n');
+}
+
+async function catReloadFromSupabase(){
+  const box = document.getElementById('cat-diag-box');
+  if(box){ box.style.display='block'; box.innerHTML='⏳ Recargando catálogos desde Supabase...'; }
+  if(typeof supabase==='undefined' || !supabase){
+    if(box) box.innerHTML='❌ Sin sesión Supabase';
+    return;
+  }
+  try{
+    const r = await supabase.from('ops_data').select('value').eq('key','cats').single();
+    if(r.error) throw r.error;
+    const remoteCats = r.data?.value || {};
+    // Merge sin perder nada local: si remoto tiene valor, sobreescribe local
+    Object.keys(remoteCats).forEach(k=>{
+      const v = remoteCats[k];
+      if(Array.isArray(v) && v.length>0) cats[k] = v;
+      else if(v && typeof v==='object' && !Array.isArray(v)) cats[k] = v;
+      else if(Array.isArray(v) && (!cats[k]||!cats[k].length)) cats[k] = v;
+    });
+    localStorage.setItem('ct27', JSON.stringify(cats));
+    // Re-render
+    if(typeof renderCats === 'function') renderCats();
+    if(box){
+      const totals = ['ap','tp','md','phases','launchers','complexity','catmod','billingTypes','modal','risk','vendors','implTimes']
+        .map(k=>k+': '+((cats[k]||[]).length))
+        .join('  |  ');
+      box.innerHTML = '✅ Catálogos recargados.\n\n' + totals + '\n\nSi sigue sin mostrarse: hacé click en cada sección para abrirla.';
+    }
+  }catch(e){
+    if(box) box.innerHTML = '❌ Error: '+(e.message||e);
+  }
+}
+
+window.catDiagnose = catDiagnose;
+window.catReloadFromSupabase = catReloadFromSupabase;
 function renderMds(){
   const el=document.getElementById('md-tbody');if(!el)return;
   if(!cats.md||!cats.md.length)cats.md=BASE_MD.map(x=>Object.assign({},x));
@@ -7856,6 +8618,8 @@ function bootApp(){
       setSyncStatus('✓ Sincronizado','#0F7E4F');
       setTimeout(()=>setSyncStatus(''),3000);
       subscribeRealtime();
+      // ═══ Cadena de Valor: cargar datos del módulo ═══
+      try{ if(window.cvLoadAll) window.cvLoadAll(); }catch(e){ console.warn('cvLoadAll',e); }
     }).catch(function(e){
       setSyncStatus('⚠ Sin conexión','#B45309');
       console.error(e);
@@ -7863,6 +8627,7 @@ function bootApp(){
   } else {
     // Sin Supabase — renderizar desde localStorage
     renderDash();updBadges();updTrashBadge();setV('dashboard');
+    try{ if(window.cvLoadAll) window.cvLoadAll(); }catch(e){ console.warn('cvLoadAll',e); }
   }
 }
 
@@ -8587,6 +9352,2230 @@ if(location.search.includes('demo=1')){
     });
   }
 })();
+</script>
+
+
+<!-- ═══ CADENA DE VALOR · JS ═══ -->
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   CADENA DE VALOR · MOTOR JS
+   Reutiliza: supabase, _currentUser, showSync, esc, fmtD, isD, closeM
+   No rompe nada del index.html original.
+═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  // ─── Estado interno (cache) ───
+  const CV = {
+    components: [],
+    templates:  [],
+    checklists: [],
+    rules:      [],
+    gates:      [],
+    projects:   [],
+    phases:     [],
+    tasks:      [],
+    holidays:   [],
+    clients:    [],
+    audit:      [],
+    currentTab: 'overview',
+    wiz:        { step:1, clientId:null, clientName:'', country:'', city:'', templateId:null, components:[], startDate:'', responsible:'' },
+    selectedProject: null
+  };
+  window.CV = CV; // expuesto para debug
+
+  // Fases canónicas (alineadas al manual)
+  const PHASES = [
+    {code:'prospecto',          name:'Prospecto',           icon:'🔍'},
+    {code:'contrato',           name:'Contrato',            icon:'📋'},
+    {code:'alta_tecnica',       name:'Alta técnica',        icon:'🛠️'},
+    {code:'configuracion_base', name:'Config. Base',        icon:'⚙️'},
+    {code:'configuracion_mod',  name:'Config. Módulos',     icon:'🧩'},
+    {code:'capacitacion',       name:'Capacitación',        icon:'🎓'},
+    {code:'piloto',             name:'Piloto',              icon:'🧪'},
+    {code:'produccion',         name:'Producción',          icon:'🚀'},
+    {code:'soporte',            name:'Soporte continuo',    icon:'🤝'}
+  ];
+  window.CV_PHASES = PHASES;
+
+  // ════════════════════════════════════════════════════════════════
+  // SUPABASE HELPERS · todas las operaciones pasan por aquí.
+  // Si supabase no está listo: usa caché local en localStorage 'cv_cache'.
+  // ════════════════════════════════════════════════════════════════
+  const CACHE_KEY = 'cv_cache_v1';
+  function loadCache(){
+    try{ const r = localStorage.getItem(CACHE_KEY); if(r) return JSON.parse(r); }catch(e){}
+    return null;
+  }
+  function saveCache(){
+    try{
+      const obj = {
+        components:CV.components, templates:CV.templates, checklists:CV.checklists,
+        rules:CV.rules, gates:CV.gates, projects:CV.projects,
+        phases:CV.phases, tasks:CV.tasks, holidays:CV.holidays,
+        clients:CV.clients,
+        ts:Date.now()
+      };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(obj));
+    }catch(e){}
+  }
+
+  function _userMeta(){
+    const u = (typeof _currentUser!=='undefined' && _currentUser) ? _currentUser : null;
+    return {
+      created_by: u && u.id ? u.id : null,
+      updated_by: u && u.id ? u.id : null,
+      _email: u && u.email ? u.email : 'sistema'
+    };
+  }
+
+  async function sbAll(table){
+    if(typeof supabase==='undefined' || !supabase) return [];
+    try{
+      const r = await supabase.from(table).select('*').order('sort_order',{ascending:true,nullsFirst:false});
+      if(r.error) throw r.error;
+      return r.data || [];
+    }catch(e){
+      // Si la tabla no existe (404) lo manejamos silenciosamente
+      console.warn('CV ['+table+']:', e.message||e);
+      return [];
+    }
+  }
+
+  async function sbInsert(table, payload){
+    if(typeof supabase==='undefined' || !supabase) return {data:null,error:'sin sesión'};
+    const m = _userMeta();
+    payload.created_by = payload.created_by || m.created_by;
+    payload.updated_by = m.updated_by;
+    const r = await supabase.from(table).insert(payload).select().single();
+    return r;
+  }
+  async function sbUpdate(table, id, payload){
+    if(typeof supabase==='undefined' || !supabase) return {data:null,error:'sin sesión'};
+    payload.updated_by = _userMeta().updated_by;
+    payload.updated_at = new Date().toISOString();
+    const r = await supabase.from(table).update(payload).eq('id', id).select().single();
+    return r;
+  }
+  async function sbDelete(table, id){
+    if(typeof supabase==='undefined' || !supabase) return {error:'sin sesión'};
+    return await supabase.from(table).delete().eq('id', id);
+  }
+
+  async function logAudit(module, entity, entity_id, action, changes){
+    try{
+      if(typeof supabase==='undefined' || !supabase) return;
+      const m = _userMeta();
+      await supabase.from('activity_logs').insert({
+        user_id: m.created_by, user_email: m._email,
+        module, entity, entity_id: String(entity_id||''),
+        action, changes: changes||{}
+      });
+    }catch(e){ /* silencioso */ }
+  }
+
+  // Exponer helpers globalmente para uso desde otros módulos (part2, part3)
+  window.cvSaveCache = saveCache;
+  window.cvLoadCache = loadCache;
+  window.CV_userMeta = _userMeta;
+  window.cvLogAudit = function(action, entity, entity_id, changes){
+    return logAudit('cadena_valor', entity, entity_id, action, changes);
+  };
+  window.cvSbAll = sbAll; window.cvSbInsert = sbInsert; window.cvSbUpdate = sbUpdate; window.cvSbDelete = sbDelete;
+
+  // ════════════════════════════════════════════════════════════════
+  // CARGA INICIAL
+  // ════════════════════════════════════════════════════════════════
+  async function cvLoadAll(){
+    // Pre-llena con cache para velocidad
+    const c = loadCache();
+    if(c){
+      CV.components = c.components||[]; CV.templates = c.templates||[];
+      CV.checklists = c.checklists||[]; CV.rules = c.rules||[];
+      CV.gates = c.gates||[];           CV.projects = c.projects||[];
+      CV.phases = c.phases||[];         CV.tasks = c.tasks||[];
+      CV.holidays = c.holidays||[];     CV.clients = c.clients||[];
+    }
+
+    if(typeof supabase==='undefined' || !supabase){
+      // Sin Supabase → usar cache + datos demo si vacío
+      if(!CV.components.length) cvSeedLocal();
+      cvRefreshCurrent();
+      return;
+    }
+
+    const [comp, tpl, chk, rls, gts, prj, phs, tsk, hol, cli] = await Promise.all([
+      sbAll('components_catalog'),
+      sbAll('deployment_templates'),
+      sbAll('checklist_templates'),
+      sbAll('deployment_rules'),
+      sbAll('deployment_gates'),
+      sbAll('deployment_projects'),
+      sbAll('deployment_phases'),
+      sbAll('deployment_tasks'),
+      sbAll('holidays'),
+      sbAll('cv_clients')
+    ]);
+
+    if(comp.length) CV.components = comp;
+    if(tpl.length)  CV.templates  = tpl;
+    if(chk.length)  CV.checklists = chk;
+    if(rls.length)  CV.rules      = rls;
+    if(gts.length)  CV.gates      = gts;
+    if(prj.length)  CV.projects   = prj;
+    if(phs.length)  CV.phases     = phs;
+    if(tsk.length)  CV.tasks      = tsk;
+    if(hol.length)  CV.holidays   = hol;
+    if(cli.length)  CV.clients    = cli;
+
+    // Si todo está vacío en supabase y no en cache → siembra demo en memoria
+    if(!CV.components.length) cvSeedLocal();
+
+    saveCache();
+    cvRefreshBadges();
+    cvRefreshCurrent();
+  }
+  window.cvLoadAll = cvLoadAll;
+
+  function cvRefreshBadges(){
+    const a = document.getElementById('cv-bd-comp'); if(a) a.textContent = CV.components.filter(c=>c.is_active!==false).length;
+    const b = document.getElementById('cv-bd-tpl');  if(b) b.textContent = CV.templates.filter(t=>t.is_active!==false).length;
+    const d = document.getElementById('cv-bd-proj'); if(d) d.textContent = CV.projects.filter(p=>p.status!=='finalizado').length;
+    const sd = document.getElementById('cv-side-proj'); if(sd) sd.textContent = CV.projects.filter(p=>p.status!=='finalizado').length;
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // SEED DEMO (sin red)
+  // ════════════════════════════════════════════════════════════════
+  function cvSeedLocal(){
+    CV.components = [
+      {id:'c1',code:'admin_web',     name:'Administrador Web',        category:'core',  description:'Panel maestro. Obligatorio.',                       color:'#1B4FD8',icon:'🛠️',is_required:true, is_active:true,sort_order:10,duration_days:5,dependencies:[],incompatible:[]},
+      {id:'c2',code:'app_conductor', name:'App Conductor',             category:'modulo',description:'App móvil para conductores.',                        color:'#0F7E4F',icon:'🚖',is_required:false,is_active:true,sort_order:20,duration_days:8,dependencies:[{code:'admin_web'}],incompatible:[]},
+      {id:'c3',code:'app_cliente',   name:'App Cliente',               category:'modulo',description:'App móvil para usuarios finales.',                   color:'#5B21B6',icon:'📱',is_required:false,is_active:true,sort_order:30,duration_days:7,dependencies:[{code:'admin_web'}],incompatible:[]},
+      {id:'c4',code:'bot_normal',    name:'Bot WhatsApp Normal',       category:'modulo',description:'Bot WhatsApp dedicado para solicitudes.',           color:'#0891B2',icon:'💬',is_required:false,is_active:true,sort_order:40,duration_days:4,dependencies:[{code:'admin_web'}],incompatible:[{code:'bot_coexistencia'}]},
+      {id:'c5',code:'bot_coexistencia',name:'Bot WhatsApp Coexistencia',category:'modulo',description:'Bot que coexiste con otros bots.',                  color:'#0891B2',icon:'🔁',is_required:false,is_active:true,sort_order:45,duration_days:5,dependencies:[{code:'admin_web'}],incompatible:[{code:'bot_normal'}]},
+      {id:'c6',code:'callcenter',    name:'Callcenter',                category:'modulo',description:'Sistema operativo telefónico con líneas.',           color:'#B45309',icon:'📞',is_required:false,is_active:true,sort_order:50,duration_days:6,dependencies:[{code:'admin_web'}],incompatible:[]},
+      {id:'c7',code:'counter',       name:'Counter',                   category:'modulo',description:'Punto de venta físico con agencia y reservas.',     color:'#C2410C',icon:'🏬',is_required:false,is_active:true,sort_order:60,duration_days:5,dependencies:[{code:'admin_web'}],incompatible:[]}
+    ];
+    CV.templates = [
+      {id:'t1',name:'Tipo 1 · Operación Bot',          description:'Admin Web + App Conductor + Bot Normal',                                   components:['admin_web','app_conductor','bot_normal'], is_default:true,  sort_order:1,is_active:true},
+      {id:'t2',name:'Tipo 2 · Bot + App Cliente',      description:'Admin Web + App Conductor + Bot + App Cliente',                            components:['admin_web','app_conductor','bot_normal','app_cliente'], is_default:false, sort_order:2,is_active:true},
+      {id:'t3',name:'Tipo 3 · Operación Completa',     description:'Admin Web + App Conductor + Bot + App Cliente + Callcenter',               components:['admin_web','app_conductor','bot_normal','app_cliente','callcenter'], is_default:false, sort_order:3,is_active:true},
+      {id:'t4',name:'Tipo 4 · Conductor + Callcenter', description:'Admin Web + App Conductor + Callcenter',                                   components:['admin_web','app_conductor','callcenter'], is_default:false, sort_order:4,is_active:true},
+      {id:'t5',name:'Tipo 5 · Callcenter + Bot',       description:'Admin Web + Callcenter + Bot Normal',                                      components:['admin_web','callcenter','bot_normal'], is_default:false, sort_order:5,is_active:true},
+      {id:'t6',name:'Tipo 6 · Solo Callcenter',        description:'Admin Web + Callcenter',                                                   components:['admin_web','callcenter'], is_default:false, sort_order:6,is_active:true},
+      {id:'t7',name:'Tipo 7 · Cliente + Conductor',    description:'Admin Web + App Cliente + App Conductor',                                  components:['admin_web','app_cliente','app_conductor'], is_default:false, sort_order:7,is_active:true},
+      {id:'t8',name:'Tipo 8 · Counter Mixto',          description:'Admin Web + Bot + Callcenter + Counter',                                   components:['admin_web','bot_normal','callcenter','counter'], is_default:false, sort_order:8,is_active:true}
+    ];
+    CV.gates = [
+      {id:'g1',code:'gate_1',name:'Contrato Aprobado',       phase_code:'contrato',          description:'Contrato firmado y aprobado.',           sort_order:1,is_active:true},
+      {id:'g2',code:'gate_2',name:'Datos Base Completos',    phase_code:'alta_tecnica',      description:'Información del cliente cargada.',       sort_order:2,is_active:true},
+      {id:'g3',code:'gate_3',name:'Configuración Terminada', phase_code:'configuracion_mod', description:'Módulos configurados.',                  sort_order:3,is_active:true},
+      {id:'g4',code:'gate_4',name:'Capacitación Aprobada',   phase_code:'capacitacion',      description:'Equipo del cliente entrenado.',          sort_order:4,is_active:true},
+      {id:'g5',code:'gate_5',name:'Piloto Exitoso',          phase_code:'piloto',            description:'Ambiente piloto sin incidencias.',       sort_order:5,is_active:true},
+      {id:'g6',code:'gate_6',name:'Paso a Producción',       phase_code:'produccion',        description:'Cliente liberado en producción.',        sort_order:6,is_active:true}
+    ];
+    CV.rules = [
+      {id:'r1',name:'Admin Web Obligatorio',         description:'Todo cliente requiere Admin Web', condition:{if:'missing',value:'admin_web'},                action:{type:'block'}, severity:'error',message:'El cliente debe tener Administrador Web.',is_active:true,sort_order:1},
+      {id:'r2',name:'Bot único',                     description:'Bot Normal y Coexistencia no pueden estar juntos', condition:{if:'both',values:['bot_normal','bot_coexistencia']}, action:{type:'block'}, severity:'error',message:'No puedes activar Bot Normal y Coexistencia simultáneamente.',is_active:true,sort_order:2},
+      {id:'r3',name:'Counter requiere Agencia',      description:'Counter activo: registrar Agencia', condition:{if:'has',value:'counter'}, action:{type:'warn'}, severity:'warn',message:'Counter activo: recordá crear Establecimiento + Agencia.',is_active:true,sort_order:3},
+      {id:'r4',name:'Callcenter requiere Operadores',description:'Callcenter activo: asignar operadores',condition:{if:'has',value:'callcenter'}, action:{type:'warn'},severity:'warn',message:'Callcenter activo: asignar usuarios operadores y conectar líneas.',is_active:true,sort_order:4},
+      {id:'r5',name:'App Conductor requiere Vehículos',description:'App Conductor activo: registrar vehículos',condition:{if:'has',value:'app_conductor'}, action:{type:'info'},severity:'info',message:'App Conductor activo: completar pre-registro de vehículos.',is_active:true,sort_order:5}
+    ];
+    CV.checklists = cvBuildSeedChecklists();
+    CV.holidays = [
+      {id:'h1',date:'2026-01-01',name:'Año Nuevo',country:'EC',is_active:true},
+      {id:'h2',date:'2026-04-03',name:'Viernes Santo',country:'EC',is_active:true},
+      {id:'h3',date:'2026-05-01',name:'Día del Trabajo',country:'EC',is_active:true},
+      {id:'h4',date:'2026-08-10',name:'Independencia',country:'EC',is_active:true},
+      {id:'h5',date:'2026-10-09',name:'Independencia GYE',country:'EC',is_active:true},
+      {id:'h6',date:'2026-12-25',name:'Navidad',country:'EC',is_active:true}
+    ];
+    saveCache();
+  }
+
+  function cvBuildSeedChecklists(){
+    const data = [
+      // ADMIN WEB
+      ['admin_web','configuracion_base','Creación de la Ciudad',true,true,1],
+      ['admin_web','configuracion_base','Definir Geocerca de la ciudad',true,true,1],
+      ['admin_web','configuracion_base','Definir aplicativos donde estará la ciudad',true,false,1],
+      ['admin_web','configuracion_mod','Verificar formas de pago / credenciales',true,false,1],
+      ['admin_web','configuracion_mod','Verificar tipos de vehículo personalizados',true,false,1],
+      ['admin_web','configuracion_mod','Crear tipos de servicio + íconos',true,false,1],
+      ['admin_web','configuracion_mod','Configurar algoritmo por tipo de servicio',true,true,1],
+      ['admin_web','configuracion_mod','Configurar zona de cobertura',true,false,1],
+      ['admin_web','configuracion_mod','Configurar tarifarios por tipo de servicio',true,true,2],
+      ['admin_web','configuracion_mod','Configurar vista app cliente (Clipp/Ktaxi)',true,false,1],
+      ['admin_web','configuracion_mod','Configurar Preguntas Frecuentes',false,false,1],
+      ['admin_web','configuracion_mod','Configurar Barrios y Sitios',false,false,1],
+      ['admin_web','configuracion_mod','Configurar sección servicio TAXI (voucher)',true,true,1],
+      ['admin_web','configuracion_mod','Configurar formas de pago en sección',true,true,1],
+      ['admin_web','configuracion_mod','Configurar banners de marketing',false,false,1],
+      ['admin_web','configuracion_mod','Definir wallet en sección',false,false,1],
+      ['admin_web','configuracion_mod','Mensajes predeterminados y TIPS',false,false,1],
+      // APP CONDUCTOR
+      ['app_conductor','configuracion_mod','Creación de características',true,false,1],
+      ['app_conductor','configuracion_mod','Creación de establecimiento',true,true,1],
+      ['app_conductor','configuracion_mod','Asignar zona al establecimiento',true,false,1],
+      ['app_conductor','configuracion_mod','Asignar conductores al establecimiento',true,true,2],
+      ['app_conductor','configuracion_mod','Configurar modelo de negocio',true,true,1],
+      ['app_conductor','configuracion_mod','Crear suscripciones requeridas',false,false,1],
+      ['app_conductor','configuracion_mod','Pre-registro de conductores',true,false,2],
+      ['app_conductor','configuracion_mod','Registro de vehículo y usuario',true,false,2],
+      ['app_conductor','capacitacion','Aprobación de perfil del conductor',true,true,1],
+      ['app_conductor','capacitacion','Aprobación de vehículo',true,true,1],
+      ['app_conductor','capacitacion','Activación de dispositivo',true,false,1],
+      ['app_conductor','capacitacion','Asignar características al conductor',true,false,1],
+      // APP CLIENTE
+      ['app_cliente','configuracion_mod','Configurar splash y branding',true,false,1],
+      ['app_cliente','configuracion_mod','Configurar promociones y descuentos',false,false,1],
+      ['app_cliente','configuracion_mod','Definir flow de pago',true,true,2],
+      ['app_cliente','configuracion_mod','QA del flujo solicitud → carrera',true,true,2],
+      // BOT NORMAL
+      ['bot_normal','configuracion_mod','Provisionar número WhatsApp Business',true,true,2],
+      ['bot_normal','configuracion_mod','Configurar plantillas de mensajes',true,false,1],
+      ['bot_normal','configuracion_mod','Definir flow de solicitudes',true,true,1],
+      // BOT COEXISTENCIA
+      ['bot_coexistencia','configuracion_mod','Configurar coexistencia con bot existente',true,true,2],
+      ['bot_coexistencia','configuracion_mod','Validar palabras clave de derivación',true,false,1],
+      // CALLCENTER
+      ['callcenter','configuracion_mod','Generar instalador del callcenter',true,true,1],
+      ['callcenter','configuracion_mod','Vincular vehículos al callcenter',true,true,1],
+      ['callcenter','configuracion_mod','Conectar líneas móviles',true,true,1],
+      ['callcenter','configuracion_mod','Vincular usuarios operadores',true,true,1],
+      ['callcenter','configuracion_mod','Crear características de callcenter',true,false,1],
+      ['callcenter','capacitacion','Capacitación de operadores',true,true,2],
+      // COUNTER
+      ['counter','configuracion_mod','Crear establecimiento',true,true,1],
+      ['counter','configuracion_mod','Crear Agencia',true,true,1],
+      ['counter','configuracion_mod','Notificar si requiere WEB de reservas',false,false,1],
+      ['counter','configuracion_mod','Asignar usuarios counter',true,true,1],
+      ['counter','configuracion_mod','Definir tarifarios counter',true,true,1],
+      ['counter','configuracion_mod','Configurar comandos personalizados',false,false,1]
+    ];
+    return data.map((row,i)=>({
+      id:'chk'+i,
+      component_code:row[0], phase_code:row[1], name:row[2],
+      is_required:row[3], is_critical:row[4], duration_days:row[5],
+      sort_order:(i+1)*10, is_active:true
+    }));
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // TABS
+  // ════════════════════════════════════════════════════════════════
+  function cvSetTab(t){
+    CV.currentTab = t;
+    document.querySelectorAll('#view-cadena .cv-tab').forEach(el=>el.classList.toggle('active', el.dataset.cvtab===t));
+    document.querySelectorAll('#view-cadena .cv-panel').forEach(el=>el.classList.toggle('active', el.dataset.cvpanel===t));
+    cvRefreshCurrent();
+  }
+  window.cvSetTab = cvSetTab;
+
+  function cvRefreshCurrent(){
+    cvRefreshBadges();
+    const t = CV.currentTab;
+    if(t==='overview')   cvRenderOverview();
+    if(t==='projects')   cvRenderProjects();
+    if(t==='components') cvRenderComponents();
+    if(t==='templates')  cvRenderTemplates();
+    if(t==='checklists') cvRenderChecklistMaster();
+    if(t==='rules')      cvRenderRules();
+    if(t==='gates')      cvRenderGates();
+    if(t==='gantt')      cvRenderGantt();
+    if(t==='settings')   cvRenderSettings();
+  }
+  window.cvRefreshCurrent = cvRefreshCurrent;
+
+  // ════════════════════════════════════════════════════════════════
+  // OVERVIEW
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderOverview(){
+    // KPIs
+    const active   = CV.projects.filter(p=>p.status==='activo' || p.status==='planificacion');
+    const finished = CV.projects.filter(p=>p.status==='finalizado');
+    const blocked  = CV.projects.filter(p=>p.health==='rojo');
+    const today    = new Date().toISOString().slice(0,10);
+    const lateTasks = CV.tasks.filter(t=>t.end_date && t.end_date<today && t.status!=='completada');
+    const pendGates = CV.phases.filter(ph=>ph.gate_code && ph.status!=='completada').length;
+
+    const kpis = [
+      {l:'Despliegues activos', v:active.length,    n:'En curso o planificación', c:'var(--blue)'},
+      {l:'Finalizados',         v:finished.length,  n:'Total clientes en producción', c:'var(--green)'},
+      {l:'Salud crítica',       v:blocked.length,   n:'Proyectos en rojo', c:'var(--red)'},
+      {l:'Tareas vencidas',     v:lateTasks.length, n:'Vencen y no completadas', c:'var(--amber)'},
+      {l:'Gates pendientes',    v:pendGates,        n:'Esperando aprobación', c:'var(--violet)'},
+      {l:'Componentes',         v:CV.components.filter(c=>c.is_active!==false).length, n:'Catálogo activo', c:'var(--blue)'}
+    ];
+    document.getElementById('cv-kpi-row').innerHTML = kpis.map(k=>
+      `<div class="cv-kpi" style="--ac:${k.c}">
+         <div class="cv-kpi-l">${k.l}</div>
+         <div class="cv-kpi-v">${k.v}</div>
+         <div class="cv-kpi-n">${esc(k.n)}</div>
+       </div>`).join('');
+
+    // ALERTS
+    const alerts = [];
+    blocked.slice(0,3).forEach(p=>alerts.push({lvl:'crit',ico:'🔴',msg:`<b>${esc(p.name||'(sin nombre)')}</b> · proyecto en estado crítico`}));
+    if(lateTasks.length) alerts.push({lvl:'warn',ico:'🟡',msg:`<b>${lateTasks.length} tarea${lateTasks.length>1?'s':''} vencida${lateTasks.length>1?'s':''}</b> sin completar`});
+    if(pendGates)        alerts.push({lvl:'info',ico:'🚦',msg:`<b>${pendGates} gate${pendGates>1?'s':''}</b> esperando aprobación`});
+    if(!alerts.length)   alerts.push({lvl:'ok',ico:'✅',msg:'Sin alertas críticas. Todo bajo control.'});
+    document.getElementById('cv-alerts-box').innerHTML = alerts.map(a=>
+      `<div class="cv-alert ${a.lvl}"><span style="font-size:18px">${a.ico}</span><span>${a.msg}</span></div>`).join('');
+
+    // FLOW (filtrado opcional por proyecto)
+    const filterEl = document.getElementById('cv-flow-filter');
+    const opts = ['<option value="">Todos los proyectos</option>'].concat(
+      CV.projects.map(p=>`<option value="${p.id}" ${filterEl && filterEl.value===p.id?'selected':''}>${esc(p.name||'')}</option>`)
+    );
+    filterEl.innerHTML = opts.join('');
+
+    let phaseProgress = {};
+    PHASES.forEach(ph=>phaseProgress[ph.code]={total:0,done:0,curr:0,late:0});
+    const projFilter = filterEl.value;
+    const projs = projFilter ? CV.projects.filter(p=>p.id===projFilter) : CV.projects;
+    projs.forEach(pr=>{
+      PHASES.forEach(ph=>{
+        const found = CV.phases.find(x=>x.project_id===pr.id && x.phase_code===ph.code);
+        phaseProgress[ph.code].total++;
+        if(found){
+          if(found.status==='completada') phaseProgress[ph.code].done++;
+          else if(found.status==='curso') phaseProgress[ph.code].curr++;
+          if(found.end_date && found.end_date<today && found.status!=='completada') phaseProgress[ph.code].late++;
+        }
+      });
+    });
+    document.getElementById('cv-flow').innerHTML = PHASES.map(ph=>{
+      const stats = phaseProgress[ph.code];
+      const pct = stats.total ? Math.round((stats.done/stats.total)*100) : 0;
+      let cls = 'pend';
+      if(stats.late) cls = 'late';
+      else if(stats.done && stats.done===stats.total) cls = 'done';
+      else if(stats.curr) cls = 'curr';
+      return `<div class="cv-flow-step ${cls}" title="${stats.done}/${stats.total} completadas">
+        <div class="cv-flow-num">${ph.icon} ${ph.name}</div>
+        <div class="cv-flow-name">${stats.done}/${stats.total}</div>
+        <div class="cv-flow-prog"><div class="cv-flow-bar" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+
+    // DEPLOY LIST CARDS
+    const dl = document.getElementById('cv-deploy-list');
+    if(!CV.projects.length){
+      dl.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">🎯</div>No hay despliegues registrados aún.<br><br><button class="btn btn-p btn-sm" onclick="cvOpenWizard()">+ Crear primero</button></div>';
+    } else {
+      dl.innerHTML = CV.projects.slice(0,8).map(pr=>{
+        const phs = CV.phases.filter(x=>x.project_id===pr.id);
+        const total = phs.length || PHASES.length;
+        const done = phs.filter(x=>x.status==='completada').length;
+        const pct = total ? Math.round((done/total)*100) : 0;
+        const sem = pr.health==='rojo'?'rojo':pr.health==='amarillo'?'amber':'verde';
+        return `<div class="cv-cli-card" onclick="cvOpenProject('${pr.id}')">
+          <div>
+            <div class="cv-cli-h"><span class="sem-dot sem-${sem}"></span> ${esc(pr.name||'(sin nombre)')}</div>
+            <div class="cv-cli-sub">${esc(pr.responsible||'Sin asignar')} · ${esc((pr.current_phase||'').replace(/_/g,' '))}</div>
+          </div>
+          <div class="cv-cli-meta"><b>${pct}%</b> avance<div class="cv-cli-prog-track"><div class="cv-cli-prog-bar" style="width:${pct}%"></div></div></div>
+          <div class="cv-cli-meta">${pr.start_date?fmtD(pr.start_date):'—'} → ${pr.end_date?fmtD(pr.end_date):'—'}</div>
+          <div>${cvProjectChips(pr)}</div>
+          <div style="text-align:right"><button class="btn btn-g btn-xs" onclick="event.stopPropagation();cvOpenProject('${pr.id}')">Abrir →</button></div>
+        </div>`;
+      }).join('');
+    }
+
+    // UPCOMING (próximos 14 días)
+    const in14 = new Date(); in14.setDate(in14.getDate()+14);
+    const upc = CV.tasks.filter(t=>t.end_date && t.end_date>=today && t.end_date<=in14.toISOString().slice(0,10) && t.status!=='completada')
+      .sort((a,b)=>a.end_date.localeCompare(b.end_date)).slice(0,10);
+    const upcEl = document.getElementById('cv-upcoming');
+    if(!upc.length){
+      upcEl.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">📅</div>Sin vencimientos próximos.</div>';
+    } else {
+      upcEl.innerHTML = upc.map(t=>{
+        const pr = CV.projects.find(p=>p.id===t.project_id);
+        return `<div class="cv-chk">
+          <div style="flex:1">
+            <div style="font-weight:600;font-size:12.5px">${esc(t.name||'')}</div>
+            <div class="cv-chk-meta"><span class="chip b">${esc(pr?pr.name:'?')}</span><span>📅 ${fmtD(t.end_date)}</span>${t.is_critical?'<span class="chip r">CRÍTICO</span>':''}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // GATES PENDING
+    const gpEl = document.getElementById('cv-gates-pending');
+    const pgs = [];
+    CV.phases.forEach(ph=>{
+      if(ph.gate_code && ph.status!=='completada'){
+        const g = CV.gates.find(x=>x.code===ph.gate_code);
+        const pr = CV.projects.find(x=>x.id===ph.project_id);
+        if(g) pgs.push({phase:ph,gate:g,proj:pr});
+      }
+    });
+    if(!pgs.length){
+      gpEl.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">🚦</div>Sin gates pendientes.</div>';
+    } else {
+      gpEl.innerHTML = pgs.slice(0,8).map(x=>`<div class="cv-rule warn">
+        <div class="cv-rule-h"><span class="cv-rule-name">${esc(x.gate.name)}</span><span class="chip b">${esc(x.proj?x.proj.name:'?')}</span></div>
+        <div class="cv-rule-msg">Fase: ${esc((x.phase.phase_name||'').replace(/_/g,' '))}</div>
+      </div>`).join('');
+    }
+
+    // HEALTH CHART
+    cvRenderHealthChart();
+  }
+  window.cvRenderOverview = cvRenderOverview;
+
+  function cvProjectChips(pr){
+    let chips = '';
+    chips += `<span class="chip ${pr.status==='activo'?'g':pr.status==='pausado'?'a':pr.status==='finalizado'?'b':''}">${esc(pr.status||'planificación')}</span>`;
+    return chips;
+  }
+
+  let _hcChart = null;
+  function cvRenderHealthChart(){
+    const cv = document.getElementById('cv-health-chart');
+    if(!cv) return;
+    const counts = {verde:0,amarillo:0,rojo:0,gris:0};
+    CV.projects.forEach(p=>{
+      const h = p.health||'verde';
+      counts[h] = (counts[h]||0)+1;
+    });
+    if(typeof Chart==='undefined') return;
+    if(_hcChart){ try{_hcChart.destroy();}catch(e){} }
+    _hcChart = new Chart(cv, {
+      type:'doughnut',
+      data:{
+        labels:['Verde','Amarillo','Rojo'],
+        datasets:[{data:[counts.verde||0,counts.amarillo||0,counts.rojo||0],backgroundColor:['#16A34A','#F59E0B','#DC2626'],borderWidth:0}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}
+    });
+  }
+})(); // fin IIFE PARTE 1
+</script>
+
+<script>
+/* CADENA DE VALOR · MOTOR JS · PARTE 2
+   Componentes / Plantillas / Checklists / Reglas / Gates / Settings */
+(function(){
+  'use strict';
+  const CV = window.CV;
+  const PHASES = window.CV_PHASES;
+  if(!CV) return;
+
+  // helpers locales
+  function $(id){return document.getElementById(id);}
+  function _userMeta(){
+    const u = (typeof _currentUser!=='undefined' && _currentUser) ? _currentUser : null;
+    return { id: u && u.id ? u.id : null, email: u && u.email ? u.email : 'sistema' };
+  }
+  async function _saveCacheAndRefresh(){
+    try{ localStorage.setItem('cv_cache_v1', JSON.stringify({
+      components:CV.components,templates:CV.templates,checklists:CV.checklists,
+      rules:CV.rules,gates:CV.gates,projects:CV.projects,phases:CV.phases,tasks:CV.tasks,
+      holidays:CV.holidays,ts:Date.now()
+    })); }catch(e){}
+    if(window.cvRefreshCurrent) window.cvRefreshCurrent();
+  }
+  async function _logAudit(module, entity, entity_id, action, changes){
+    try{
+      if(typeof supabase==='undefined' || !supabase) return;
+      const m = _userMeta();
+      await supabase.from('activity_logs').insert({
+        user_id:m.id,user_email:m.email,module,entity,entity_id:String(entity_id||''),action,changes:changes||{}
+      });
+    }catch(e){}
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // COMPONENTES
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderComponents(){
+    const q = ($('cv-comp-search').value||'').toLowerCase();
+    const cat = $('cv-comp-cat').value;
+    const list = CV.components.filter(c=>{
+      if(q && !((c.name||'').toLowerCase().includes(q) || (c.code||'').toLowerCase().includes(q))) return false;
+      if(cat && c.category!==cat) return false;
+      return true;
+    });
+    const grid = $('cv-comp-grid');
+    if(!list.length){
+      grid.innerHTML = '<div class="cv-empty" style="grid-column:1/-1"><div class="cv-empty-ico">🧩</div>Sin componentes. <button class="btn btn-p btn-sm" onclick="cvOpenComponent(null)">+ Crear el primero</button></div>';
+      return;
+    }
+    grid.innerHTML = list.map(c=>{
+      const reqCls = c.is_required?'req':'';
+      const inactiveStyle = c.is_active===false?'opacity:.55':'';
+      return `<div class="cv-comp ${reqCls}" style="${inactiveStyle}" onclick="cvOpenComponent('${c.id}')">
+        <div class="cv-comp-h">
+          <div class="cv-comp-icon" style="background:${(c.color||'#1B4FD8')}22;color:${c.color||'#1B4FD8'}">${c.icon||'🧩'}</div>
+          <div>
+            <div class="cv-comp-name">${esc(c.name||'')}</div>
+            <div class="cv-comp-cat">${esc(c.category||'modulo')} · ${esc(c.code||'')}</div>
+          </div>
+        </div>
+        <div class="cv-comp-d">${esc(c.description||'')}</div>
+        <div class="cv-comp-meta">
+          <span>⏱️ ${c.duration_days||0} días</span>
+          <span>${c.is_active===false?'<span class="chip r">Inactivo</span>':'<span class="chip g">Activo</span>'}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderComponents = cvRenderComponents;
+
+  let _editCompId = null;
+  function cvOpenComponent(id){
+    _editCompId = id;
+    const c = id ? CV.components.find(x=>x.id===id) : null;
+    $('cv-comp-mt').textContent = id ? 'Editar Componente' : 'Nuevo Componente';
+    $('cv-comp-code').value  = c?c.code||'':'';
+    $('cv-comp-name').value  = c?c.name||'':'';
+    $('cv-comp-cat-i').value = c?(c.category||'modulo'):'modulo';
+    $('cv-comp-color').value = c?(c.color||'#1B4FD8'):'#1B4FD8';
+    $('cv-comp-icon').value  = c?(c.icon||'🧩'):'🧩';
+    $('cv-comp-dur').value   = c?(c.duration_days||7):7;
+    $('cv-comp-sort').value  = c?(c.sort_order||10):10;
+    $('cv-comp-req').checked = c?!!c.is_required:false;
+    $('cv-comp-act').checked = c?(c.is_active!==false):true;
+    $('cv-comp-desc').value  = c?(c.description||''):'';
+    $('cv-comp-deps').value  = c?(c.dependencies||[]).map(x=>x.code).join(','):'';
+    $('cv-comp-incomp').value= c?(c.incompatible||[]).map(x=>x.code).join(','):'';
+    $('cv-comp-del-btn').style.display = id?'':'none';
+    document.getElementById('cv-mod-comp').classList.add('open');
+  }
+  window.cvOpenComponent = cvOpenComponent;
+
+  async function cvSaveComponent(){
+    const code = $('cv-comp-code').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'_');
+    const name = $('cv-comp-name').value.trim();
+    if(!code || !name){ alert('Código y Nombre son requeridos'); return; }
+    const payload = {
+      code, name,
+      category: $('cv-comp-cat-i').value,
+      color: $('cv-comp-color').value,
+      icon: $('cv-comp-icon').value || '🧩',
+      duration_days: parseInt($('cv-comp-dur').value)||7,
+      sort_order: parseInt($('cv-comp-sort').value)||10,
+      is_required: $('cv-comp-req').checked,
+      is_active: $('cv-comp-act').checked,
+      description: $('cv-comp-desc').value,
+      dependencies: ($('cv-comp-deps').value.split(',').map(s=>s.trim()).filter(Boolean)).map(c=>({code:c})),
+      incompatible: ($('cv-comp-incomp').value.split(',').map(s=>s.trim()).filter(Boolean)).map(c=>({code:c}))
+    };
+
+    if(typeof supabase!=='undefined' && supabase){
+      const m = _userMeta();
+      if(_editCompId && CV.components.find(x=>x.id===_editCompId)){
+        const r = await supabase.from('components_catalog').update({...payload, updated_by:m.id, updated_at:new Date().toISOString()}).eq('id',_editCompId).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        const idx = CV.components.findIndex(x=>x.id===_editCompId);
+        if(idx>=0) CV.components[idx] = r.data;
+        _logAudit('cadena_valor','components_catalog',_editCompId,'update',payload);
+      } else {
+        const r = await supabase.from('components_catalog').insert({...payload, created_by:m.id, updated_by:m.id}).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        CV.components.push(r.data);
+        _logAudit('cadena_valor','components_catalog',r.data.id,'create',payload);
+      }
+    } else {
+      // offline mode
+      if(_editCompId){
+        const idx = CV.components.findIndex(x=>x.id===_editCompId);
+        if(idx>=0) CV.components[idx] = {...CV.components[idx], ...payload};
+      } else {
+        CV.components.push({id:'c'+Date.now(),...payload});
+      }
+    }
+    closeM('cv-mod-comp');
+    if(typeof showSync==='function') showSync(true,'Componente guardado');
+    _saveCacheAndRefresh();
+  }
+  window.cvSaveComponent = cvSaveComponent;
+
+  async function cvDeleteComponent(){
+    if(!_editCompId) return;
+    if(!confirm('¿Eliminar componente? Esta acción es irreversible.')) return;
+    if(typeof supabase!=='undefined' && supabase){
+      const r = await supabase.from('components_catalog').delete().eq('id',_editCompId);
+      if(r.error){ alert('Error: '+r.error.message); return; }
+    }
+    CV.components = CV.components.filter(x=>x.id!==_editCompId);
+    _logAudit('cadena_valor','components_catalog',_editCompId,'delete',{});
+    closeM('cv-mod-comp');
+    if(typeof showSync==='function') showSync(true,'Componente eliminado');
+    _saveCacheAndRefresh();
+  }
+  window.cvDeleteComponent = cvDeleteComponent;
+
+  // ════════════════════════════════════════════════════════════════
+  // PLANTILLAS
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderTemplates(){
+    const row = $('cv-tpl-row');
+    if(!CV.templates.length){
+      row.innerHTML = '<div class="cv-empty" style="grid-column:1/-1"><div class="cv-empty-ico">🧱</div>Sin plantillas configuradas</div>';
+      return;
+    }
+    row.innerHTML = CV.templates.map(t=>{
+      const comps = (t.components||[]).map(code=>{
+        const c = CV.components.find(x=>x.code===code);
+        return c ? `<span class="chip ${c.is_required?'b':''}">${c.icon||'🧩'} ${esc(c.name||code)}</span>` : `<span class="chip">${esc(code)}</span>`;
+      }).join('');
+      return `<div class="cv-tpl ${t.is_default?'def':''}" onclick="cvOpenTemplate('${t.id}')">
+        <div class="cv-tpl-act">${t.is_default?'<span class="chip b">★ Default</span>':''}</div>
+        <div class="cv-tpl-name">${esc(t.name||'')}</div>
+        <div class="cv-tpl-d">${esc(t.description||'')}</div>
+        <div class="cv-tpl-tags">${comps}</div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderTemplates = cvRenderTemplates;
+
+  let _editTplId = null;
+  function cvOpenTemplate(id){
+    _editTplId = id;
+    const t = id ? CV.templates.find(x=>x.id===id) : null;
+    $('cv-tpl-mt').textContent = id ? 'Editar Plantilla' : 'Nueva Plantilla';
+    $('cv-tpl-name').value = t?t.name||'':'';
+    $('cv-tpl-desc').value = t?t.description||'':'';
+    $('cv-tpl-sort').value = t?t.sort_order||10:10;
+    const selected = new Set(t?(t.components||[]):['admin_web']);
+    const grid = $('cv-tpl-comps');
+    grid.innerHTML = CV.components.filter(c=>c.is_active!==false).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(c=>{
+      const sel = selected.has(c.code);
+      return `<div class="cv-comp ${sel?'sel':''} ${c.is_required?'req':''}" onclick="cvToggleTplComp('${c.code}', this)" data-code="${c.code}">
+        <div class="cv-comp-h">
+          <div class="cv-comp-icon" style="background:${(c.color||'#1B4FD8')}22;color:${c.color||'#1B4FD8'}">${c.icon||'🧩'}</div>
+          <div><div class="cv-comp-name">${esc(c.name||'')}</div><div class="cv-comp-cat">${esc(c.code||'')}</div></div>
+        </div>
+      </div>`;
+    }).join('');
+    $('cv-tpl-del-btn').style.display = id?'':'none';
+    document.getElementById('cv-mod-tpl').classList.add('open');
+  }
+  window.cvOpenTemplate = cvOpenTemplate;
+
+  function cvToggleTplComp(code, el){
+    const c = CV.components.find(x=>x.code===code);
+    if(c && c.is_required){
+      // No se puede deseleccionar admin_web
+      if(!el.classList.contains('sel')) el.classList.add('sel');
+      return;
+    }
+    el.classList.toggle('sel');
+  }
+  window.cvToggleTplComp = cvToggleTplComp;
+
+  async function cvSaveTemplate(){
+    const name = $('cv-tpl-name').value.trim();
+    if(!name){ alert('Nombre requerido'); return; }
+    const codes = Array.from(document.querySelectorAll('#cv-tpl-comps .cv-comp.sel')).map(el=>el.dataset.code);
+    if(!codes.includes('admin_web')) codes.unshift('admin_web');
+    const payload = {
+      name,
+      description: $('cv-tpl-desc').value,
+      components: codes,
+      sort_order: parseInt($('cv-tpl-sort').value)||10,
+      is_active: true
+    };
+    if(typeof supabase!=='undefined' && supabase){
+      const m = _userMeta();
+      if(_editTplId){
+        const r = await supabase.from('deployment_templates').update({...payload, updated_by:m.id, updated_at:new Date().toISOString()}).eq('id',_editTplId).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        const idx = CV.templates.findIndex(x=>x.id===_editTplId);
+        if(idx>=0) CV.templates[idx] = r.data;
+        _logAudit('cadena_valor','deployment_templates',_editTplId,'update',payload);
+      } else {
+        const r = await supabase.from('deployment_templates').insert({...payload, created_by:m.id, updated_by:m.id}).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        CV.templates.push(r.data);
+        _logAudit('cadena_valor','deployment_templates',r.data.id,'create',payload);
+      }
+    } else {
+      if(_editTplId){
+        const idx = CV.templates.findIndex(x=>x.id===_editTplId);
+        if(idx>=0) CV.templates[idx] = {...CV.templates[idx], ...payload};
+      } else {
+        CV.templates.push({id:'t'+Date.now(),...payload});
+      }
+    }
+    closeM('cv-mod-tpl');
+    if(typeof showSync==='function') showSync(true,'Plantilla guardada');
+    _saveCacheAndRefresh();
+  }
+  window.cvSaveTemplate = cvSaveTemplate;
+
+  async function cvDeleteTemplate(){
+    if(!_editTplId) return;
+    if(!confirm('¿Eliminar plantilla?')) return;
+    if(typeof supabase!=='undefined' && supabase){
+      const r = await supabase.from('deployment_templates').delete().eq('id',_editTplId);
+      if(r.error){ alert('Error: '+r.error.message); return; }
+    }
+    CV.templates = CV.templates.filter(x=>x.id!==_editTplId);
+    _logAudit('cadena_valor','deployment_templates',_editTplId,'delete',{});
+    closeM('cv-mod-tpl');
+    if(typeof showSync==='function') showSync(true,'Plantilla eliminada');
+    _saveCacheAndRefresh();
+  }
+  window.cvDeleteTemplate = cvDeleteTemplate;
+
+  // ════════════════════════════════════════════════════════════════
+  // CHECKLISTS MAESTROS
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderChecklistMaster(){
+    // selectores
+    const compSel = $('cv-chk-comp');
+    if(compSel && !compSel.options.length){
+      compSel.innerHTML = '<option value="">Todos los componentes</option>'+
+        CV.components.map(c=>`<option value="${c.code}">${c.icon||'🧩'} ${esc(c.name||'')}</option>`).join('');
+    } else {
+      // refresh options if components changed
+      const cur = compSel.value;
+      compSel.innerHTML = '<option value="">Todos los componentes</option>'+
+        CV.components.map(c=>`<option value="${c.code}" ${cur===c.code?'selected':''}>${c.icon||'🧩'} ${esc(c.name||'')}</option>`).join('');
+    }
+    const phaseSel = $('cv-chk-phase');
+    if(phaseSel && phaseSel.options.length<=1){
+      PHASES.forEach(p=>phaseSel.add(new Option(p.icon+' '+p.name, p.code)));
+    }
+    const compF = compSel.value;
+    const phaseF = phaseSel.value;
+    const list = CV.checklists.filter(x=>{
+      if(compF && x.component_code!==compF) return false;
+      if(phaseF && x.phase_code!==phaseF) return false;
+      return true;
+    }).sort((a,b)=>{
+      if(a.component_code!==b.component_code) return (a.component_code||'').localeCompare(b.component_code||'');
+      return (a.sort_order||0)-(b.sort_order||0);
+    });
+    const el = $('cv-chk-list');
+    if(!list.length){
+      el.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">✅</div>Sin items para los filtros seleccionados.</div>';
+      return;
+    }
+    let html = '';
+    let lastComp = '';
+    list.forEach(x=>{
+      if(x.component_code!==lastComp){
+        const c = CV.components.find(cc=>cc.code===x.component_code);
+        html += `<div style="margin:14px 0 8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${c?(c.icon+' '+esc(c.name)):esc(x.component_code||'')}</div>`;
+        lastComp = x.component_code;
+      }
+      html += `<div class="cv-chk" onclick="cvOpenChecklistItem('${x.id}')" style="cursor:pointer">
+        <input type="checkbox" class="cv-chk-cb" ${x.is_required?'checked':''} disabled>
+        <div style="flex:1">
+          <div class="cv-chk-name">${esc(x.name||'')}</div>
+          <div class="cv-chk-meta">
+            <span class="cv-chk-tag">${esc((x.phase_code||'').replace(/_/g,' '))}</span>
+            ${x.is_required?'<span class="cv-chk-tag req">OBLIGATORIO</span>':''}
+            ${x.is_critical?'<span class="cv-chk-tag crit">CRÍTICO</span>':''}
+            <span>⏱️ ${x.duration_days||1} d</span>
+            ${x.responsible_role?`<span>👤 ${esc(x.responsible_role)}</span>`:''}
+          </div>
+        </div>
+        <button class="icon-btn edit" title="Editar">✏️</button>
+      </div>`;
+    });
+    el.innerHTML = html;
+  }
+  window.cvRenderChecklistMaster = cvRenderChecklistMaster;
+
+  let _editChkId = null;
+  function cvOpenChecklistItem(id){
+    _editChkId = id;
+    const x = id ? CV.checklists.find(c=>c.id===id) : null;
+    const compI = $('cv-chk-i-comp');
+    compI.innerHTML = CV.components.map(c=>`<option value="${c.code}">${c.icon||'🧩'} ${esc(c.name||'')}</option>`).join('');
+    const phaseI = $('cv-chk-i-phase');
+    phaseI.innerHTML = PHASES.map(p=>`<option value="${p.code}">${p.icon} ${p.name}</option>`).join('');
+    $('cv-chk-mt').textContent = id ? 'Editar item de checklist' : 'Nuevo item de checklist';
+    if(x){
+      compI.value = x.component_code||'admin_web';
+      phaseI.value = x.phase_code||'configuracion_mod';
+      $('cv-chk-i-name').value = x.name||'';
+      $('cv-chk-i-dur').value = x.duration_days||1;
+      $('cv-chk-i-role').value = x.responsible_role||'';
+      $('cv-chk-i-sort').value = x.sort_order||10;
+      $('cv-chk-i-req').checked = !!x.is_required;
+      $('cv-chk-i-crit').checked = !!x.is_critical;
+    } else {
+      $('cv-chk-i-name').value = '';
+      $('cv-chk-i-dur').value = 1;
+      $('cv-chk-i-role').value = '';
+      $('cv-chk-i-sort').value = (CV.checklists.length+1)*10;
+      $('cv-chk-i-req').checked = false;
+      $('cv-chk-i-crit').checked = false;
+      // pre-seleccionar filtros vigentes
+      if($('cv-chk-comp').value) compI.value = $('cv-chk-comp').value;
+      if($('cv-chk-phase').value) phaseI.value = $('cv-chk-phase').value;
+    }
+    $('cv-chk-del-btn').style.display = id?'':'none';
+    document.getElementById('cv-mod-chk').classList.add('open');
+  }
+  window.cvOpenChecklistItem = cvOpenChecklistItem;
+
+  async function cvSaveChecklist(){
+    const name = $('cv-chk-i-name').value.trim();
+    if(!name){ alert('Nombre requerido'); return; }
+    const payload = {
+      component_code: $('cv-chk-i-comp').value,
+      phase_code: $('cv-chk-i-phase').value,
+      name,
+      duration_days: parseInt($('cv-chk-i-dur').value)||1,
+      responsible_role: $('cv-chk-i-role').value || null,
+      sort_order: parseInt($('cv-chk-i-sort').value)||10,
+      is_required: $('cv-chk-i-req').checked,
+      is_critical: $('cv-chk-i-crit').checked,
+      is_active: true
+    };
+    if(typeof supabase!=='undefined' && supabase){
+      const m = _userMeta();
+      if(_editChkId){
+        const r = await supabase.from('checklist_templates').update({...payload, updated_by:m.id, updated_at:new Date().toISOString()}).eq('id',_editChkId).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        const idx = CV.checklists.findIndex(x=>x.id===_editChkId);
+        if(idx>=0) CV.checklists[idx] = r.data;
+      } else {
+        const r = await supabase.from('checklist_templates').insert({...payload, created_by:m.id, updated_by:m.id}).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        CV.checklists.push(r.data);
+      }
+    } else {
+      if(_editChkId){
+        const idx = CV.checklists.findIndex(x=>x.id===_editChkId);
+        if(idx>=0) CV.checklists[idx] = {...CV.checklists[idx], ...payload};
+      } else {
+        CV.checklists.push({id:'chk'+Date.now(),...payload});
+      }
+    }
+    closeM('cv-mod-chk');
+    if(typeof showSync==='function') showSync(true,'Item guardado');
+    _saveCacheAndRefresh();
+  }
+  window.cvSaveChecklist = cvSaveChecklist;
+
+  async function cvDeleteChecklist(){
+    if(!_editChkId) return;
+    if(!confirm('¿Eliminar item del checklist?')) return;
+    if(typeof supabase!=='undefined' && supabase){
+      await supabase.from('checklist_templates').delete().eq('id',_editChkId);
+    }
+    CV.checklists = CV.checklists.filter(x=>x.id!==_editChkId);
+    closeM('cv-mod-chk');
+    if(typeof showSync==='function') showSync(true,'Item eliminado');
+    _saveCacheAndRefresh();
+  }
+  window.cvDeleteChecklist = cvDeleteChecklist;
+
+  // ════════════════════════════════════════════════════════════════
+  // REGLAS
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderRules(){
+    const el = $('cv-rules-list');
+    if(!CV.rules.length){
+      el.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">⚙️</div>Sin reglas configuradas</div>';
+      return;
+    }
+    el.innerHTML = CV.rules.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(r=>{
+      const sev = r.severity||'info';
+      let descCond = 'condición personalizada';
+      try{
+        const c = r.condition;
+        if(c.if==='missing') descCond = `Si NO tiene <code>${esc(c.value)}</code>`;
+        else if(c.if==='has') descCond = `Si TIENE <code>${esc(c.value)}</code>`;
+        else if(c.if==='both') descCond = `Si TIENE ambos: <code>${(c.values||[]).map(esc).join('</code>, <code>')}</code>`;
+      }catch(e){}
+      return `<div class="cv-rule ${sev}" onclick="cvOpenRule('${r.id}')" style="cursor:pointer">
+        <div class="cv-rule-h">
+          <span class="cv-rule-name">${esc(r.name||'')}</span>
+          <span class="chip ${sev==='error'?'r':sev==='warn'?'a':'b'}">${sev.toUpperCase()}</span>
+        </div>
+        <div class="cv-rule-msg">${descCond} → ${esc(r.message||'')}</div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderRules = cvRenderRules;
+
+  let _editRuleId = null;
+  function cvOpenRule(id){
+    _editRuleId = id;
+    const r = id ? CV.rules.find(x=>x.id===id) : null;
+    $('cv-rule-mt').textContent = id ? 'Editar Regla' : 'Nueva Regla';
+    $('cv-rule-name').value = r?r.name||'':'';
+    $('cv-rule-desc').value = r?r.description||'':'';
+    $('cv-rule-sev').value  = r?(r.severity||'info'):'info';
+    $('cv-rule-act').value  = r?(r.action&&r.action.type||'warn'):'warn';
+    $('cv-rule-msg').value  = r?r.message||'':'';
+    $('cv-rule-act-i').checked = r?(r.is_active!==false):true;
+    if(r && r.condition){
+      $('cv-rule-cif').value = r.condition.if || 'has';
+      if(r.condition.if==='both') $('cv-rule-cval').value = (r.condition.values||[]).join(',');
+      else $('cv-rule-cval').value = r.condition.value || '';
+    } else {
+      $('cv-rule-cif').value = 'missing';
+      $('cv-rule-cval').value = '';
+    }
+    $('cv-rule-del-btn').style.display = id?'':'none';
+    document.getElementById('cv-mod-rule').classList.add('open');
+  }
+  window.cvOpenRule = cvOpenRule;
+
+  async function cvSaveRule(){
+    const name = $('cv-rule-name').value.trim();
+    if(!name){ alert('Nombre requerido'); return; }
+    const cif = $('cv-rule-cif').value;
+    const cval = $('cv-rule-cval').value.trim();
+    let condition;
+    if(cif==='both') condition = {if:'both', values: cval.split(',').map(s=>s.trim()).filter(Boolean)};
+    else condition = {if:cif, value:cval};
+    const payload = {
+      name,
+      description: $('cv-rule-desc').value,
+      severity: $('cv-rule-sev').value,
+      action: {type: $('cv-rule-act').value},
+      message: $('cv-rule-msg').value,
+      condition,
+      is_active: $('cv-rule-act-i').checked
+    };
+    if(typeof supabase!=='undefined' && supabase){
+      const m = _userMeta();
+      if(_editRuleId){
+        const r = await supabase.from('deployment_rules').update({...payload, updated_by:m.id, updated_at:new Date().toISOString()}).eq('id',_editRuleId).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        const idx = CV.rules.findIndex(x=>x.id===_editRuleId);
+        if(idx>=0) CV.rules[idx] = r.data;
+      } else {
+        const r = await supabase.from('deployment_rules').insert({...payload, created_by:m.id, updated_by:m.id}).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        CV.rules.push(r.data);
+      }
+    } else {
+      if(_editRuleId){
+        const idx = CV.rules.findIndex(x=>x.id===_editRuleId);
+        if(idx>=0) CV.rules[idx] = {...CV.rules[idx], ...payload};
+      } else {
+        CV.rules.push({id:'r'+Date.now(),...payload});
+      }
+    }
+    closeM('cv-mod-rule');
+    if(typeof showSync==='function') showSync(true,'Regla guardada');
+    _saveCacheAndRefresh();
+  }
+  window.cvSaveRule = cvSaveRule;
+
+  async function cvDeleteRule(){
+    if(!_editRuleId) return;
+    if(!confirm('¿Eliminar regla?')) return;
+    if(typeof supabase!=='undefined' && supabase){
+      await supabase.from('deployment_rules').delete().eq('id',_editRuleId);
+    }
+    CV.rules = CV.rules.filter(x=>x.id!==_editRuleId);
+    closeM('cv-mod-rule');
+    if(typeof showSync==='function') showSync(true,'Regla eliminada');
+    _saveCacheAndRefresh();
+  }
+  window.cvDeleteRule = cvDeleteRule;
+
+  // Evaluador de reglas (devuelve array de issues)
+  window.cvEvaluateRules = function(componentCodes){
+    const issues = [];
+    const set = new Set(componentCodes||[]);
+    CV.rules.filter(r=>r.is_active!==false).forEach(r=>{
+      try{
+        const c = r.condition || {};
+        let triggered = false;
+        if(c.if==='missing' && !set.has(c.value)) triggered = true;
+        else if(c.if==='has' && set.has(c.value)) triggered = true;
+        else if(c.if==='both' && (c.values||[]).every(v=>set.has(v))) triggered = true;
+        if(triggered) issues.push({severity:r.severity||'info', message:r.message||r.name, name:r.name});
+      }catch(e){}
+    });
+    return issues;
+  };
+
+  // ════════════════════════════════════════════════════════════════
+  // GATES
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderGates(){
+    const el = $('cv-gates-list');
+    if(!CV.gates.length){
+      el.innerHTML = '<div class="cv-empty" style="grid-column:1/-1"><div class="cv-empty-ico">🚦</div>Sin gates</div>';
+      return;
+    }
+    el.innerHTML = CV.gates.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(g=>{
+      return `<div class="cv-tpl" onclick="cvOpenGate('${g.id}')">
+        <div class="cv-tpl-name">${esc(g.code||'')} · ${esc(g.name||'')}</div>
+        <div class="cv-tpl-d">${esc(g.description||'')}</div>
+        <div class="cv-tpl-tags">
+          <span class="chip b">Fase: ${esc((g.phase_code||'').replace(/_/g,' '))}</span>
+          <span class="chip">Orden: ${g.sort_order||0}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window.cvRenderGates = cvRenderGates;
+
+  let _editGateId = null;
+  function cvOpenGate(id){
+    _editGateId = id;
+    const g = id ? CV.gates.find(x=>x.id===id) : null;
+    $('cv-gate-mt').textContent = id?'Editar Gate':'Nuevo Gate';
+    $('cv-gate-code').value  = g?g.code||'':'';
+    $('cv-gate-name').value  = g?g.name||'':'';
+    $('cv-gate-phase').value = g?(g.phase_code||'contrato'):'contrato';
+    $('cv-gate-sort').value  = g?(g.sort_order||10):10;
+    $('cv-gate-desc').value  = g?g.description||'':'';
+    $('cv-gate-del-btn').style.display = id?'':'none';
+    document.getElementById('cv-mod-gate').classList.add('open');
+  }
+  window.cvOpenGate = cvOpenGate;
+
+  async function cvSaveGate(){
+    const code = $('cv-gate-code').value.trim().toLowerCase().replace(/\s+/g,'_');
+    const name = $('cv-gate-name').value.trim();
+    if(!code || !name){ alert('Código y nombre requeridos'); return; }
+    const payload = {
+      code, name,
+      phase_code: $('cv-gate-phase').value,
+      description: $('cv-gate-desc').value,
+      sort_order: parseInt($('cv-gate-sort').value)||10,
+      is_active: true
+    };
+    if(typeof supabase!=='undefined' && supabase){
+      const m = _userMeta();
+      if(_editGateId){
+        const r = await supabase.from('deployment_gates').update({...payload, updated_by:m.id, updated_at:new Date().toISOString()}).eq('id',_editGateId).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        const idx = CV.gates.findIndex(x=>x.id===_editGateId);
+        if(idx>=0) CV.gates[idx] = r.data;
+      } else {
+        const r = await supabase.from('deployment_gates').insert({...payload, created_by:m.id, updated_by:m.id}).select().single();
+        if(r.error){ alert('Error: '+r.error.message); return; }
+        CV.gates.push(r.data);
+      }
+    } else {
+      if(_editGateId){
+        const idx = CV.gates.findIndex(x=>x.id===_editGateId);
+        if(idx>=0) CV.gates[idx] = {...CV.gates[idx], ...payload};
+      } else {
+        CV.gates.push({id:'g'+Date.now(),...payload});
+      }
+    }
+    closeM('cv-mod-gate');
+    if(typeof showSync==='function') showSync(true,'Gate guardado');
+    _saveCacheAndRefresh();
+  }
+  window.cvSaveGate = cvSaveGate;
+
+  async function cvDeleteGate(){
+    if(!_editGateId) return;
+    if(!confirm('¿Eliminar gate?')) return;
+    if(typeof supabase!=='undefined' && supabase){
+      await supabase.from('deployment_gates').delete().eq('id',_editGateId);
+    }
+    CV.gates = CV.gates.filter(x=>x.id!==_editGateId);
+    closeM('cv-mod-gate');
+    if(typeof showSync==='function') showSync(true,'Gate eliminado');
+    _saveCacheAndRefresh();
+  }
+  window.cvDeleteGate = cvDeleteGate;
+
+  // ════════════════════════════════════════════════════════════════
+  // SETTINGS / Holidays / Audit
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderSettings(){
+    const hl = $('cv-holidays-list');
+    if(!CV.holidays.length){
+      hl.innerHTML = '<div class="cv-empty" style="padding:18px"><div class="cv-empty-ico" style="font-size:30px">📅</div>Sin feriados configurados</div>';
+    } else {
+      hl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">${
+        CV.holidays.sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(h=>
+          `<div class="cv-chk" style="margin:0">
+            <span style="font-size:14px">📅</span>
+            <div style="flex:1"><div style="font-weight:600;font-size:12px">${fmtD(h.date)}</div><div style="font-size:11px;color:var(--muted)">${esc(h.name||'')} · ${esc(h.country||'')}</div></div>
+          </div>`).join('')}</div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <input id="cv-new-hol-date" type="date" class="fi" style="font-size:12px">
+          <input id="cv-new-hol-name" placeholder="Nombre del feriado" class="fi" style="font-size:12px;flex:1">
+          <button class="btn btn-p btn-sm" onclick="cvAddHoliday()">+ Agregar</button>
+        </div>`;
+    }
+    // AUDIT
+    const al = $('cv-audit-list');
+    if(typeof supabase!=='undefined' && supabase){
+      supabase.from('activity_logs').select('*').eq('module','cadena_valor').order('created_at',{ascending:false}).limit(50).then(r=>{
+        const rows = r.data||[];
+        if(!rows.length){ al.innerHTML='<div class="cv-empty"><div class="cv-empty-ico">📜</div>Sin registros de auditoría aún</div>'; return; }
+        al.innerHTML = rows.map(x=>{
+          const dt = new Date(x.created_at);
+          return `<div class="cv-chk" style="margin-bottom:5px">
+            <span style="font-size:14px">${x.action==='create'?'➕':x.action==='update'?'✏️':x.action==='delete'?'🗑️':'•'}</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600">${esc(x.entity||'')} · ${esc(x.action||'')}</div>
+              <div class="cv-chk-meta"><span>${esc(x.user_email||'sistema')}</span><span>${dt.toLocaleString('es-EC')}</span></div>
+            </div>
+          </div>`;
+        }).join('');
+      });
+    } else {
+      al.innerHTML = '<div class="cv-empty"><div class="cv-empty-ico">📜</div>Activa Supabase para ver auditoría</div>';
+    }
+  }
+  window.cvRenderSettings = cvRenderSettings;
+
+  async function cvAddHoliday(){
+    const d = $('cv-new-hol-date').value;
+    const n = $('cv-new-hol-name').value.trim();
+    if(!d || !n){ alert('Fecha y nombre requeridos'); return; }
+    const payload = {date:d, name:n, country:'EC', is_active:true};
+    if(typeof supabase!=='undefined' && supabase){
+      const r = await supabase.from('holidays').insert(payload).select().single();
+      if(r.error){ alert('Error: '+r.error.message); return; }
+      CV.holidays.push(r.data);
+    } else {
+      CV.holidays.push({id:'h'+Date.now(),...payload});
+    }
+    if(typeof showSync==='function') showSync(true,'Feriado agregado');
+    _saveCacheAndRefresh();
+  }
+  window.cvAddHoliday = cvAddHoliday;
+
+  async function cvSyncNow(){
+    if(window.cvLoadAll) await window.cvLoadAll();
+    if(typeof showSync==='function') showSync(true,'Sincronizado');
+  }
+  window.cvSyncNow = cvSyncNow;
+
+  async function cvSeedDemo(){
+    if(!confirm('Esto cargará un cliente demo y un proyecto de ejemplo. ¿Continuar?')) return;
+    if(window.cvCreateDemoProject) await window.cvCreateDemoProject();
+    if(typeof showSync==='function') showSync(true,'Demo cargado');
+  }
+  window.cvSeedDemo = cvSeedDemo;
+
+})(); // fin IIFE PARTE 2
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   CADENA DE VALOR · MOTOR JS · PARTE 3
+   Proyectos, Wizard de despliegue, detalle de proyecto, Gantt completo
+   Depende de: window.CV, window.CV_PHASES, window.cvEvaluateRules, etc.
+═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  const CV = window.CV;
+  const PHASES = window.CV_PHASES || [];
+  if(!CV){ console.warn('CV no inicializado'); return; }
+
+  // ────────────────────────────────────────────────────────────────
+  // HELPERS de fecha · respeta feriados + fines de semana
+  // ────────────────────────────────────────────────────────────────
+  function _toDate(d){ if(!d) return null; if(d instanceof Date) return d; const x=new Date(d); return isNaN(x)?null:x; }
+  function _ymd(d){ if(!d) return ''; const x=_toDate(d); if(!x) return ''; return x.toISOString().slice(0,10); }
+  function _isWeekend(d){ const w=d.getDay(); return w===0||w===6; }
+  function _isHoliday(d, holidaysSet){ return holidaysSet.has(_ymd(d)); }
+  function _holidaysSet(){ const s=new Set(); (CV.holidays||[]).forEach(h=>{ if(h&&h.date) s.add(h.date); }); return s; }
+  function firstBD(d, hSet){ const x=_toDate(d); if(!x) return null; while(_isWeekend(x)||_isHoliday(x,hSet)){ x.setDate(x.getDate()+1); } return x; }
+  function addBD(start, days, hSet){
+    if(!days||days<=0) return _toDate(start);
+    const x=firstBD(start,hSet); let added=0;
+    while(added<days-1){ x.setDate(x.getDate()+1); if(!_isWeekend(x)&&!_isHoliday(x,hSet)) added++; }
+    return x;
+  }
+  function nextBD(d, hSet){ const x=_toDate(d); if(!x) return null; x.setDate(x.getDate()+1); return firstBD(x,hSet); }
+  function _daysBetween(a,b){ const da=_toDate(a), db=_toDate(b); if(!da||!db) return 0; return Math.round((db-da)/86400000); }
+
+  // ════════════════════════════════════════════════════════════════
+  // PANEL DE PROYECTOS · lista filtrable
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderProjects(){
+    const cont = document.getElementById('cv-proj-list');
+    if(!cont) return;
+    const search = (document.getElementById('cv-proj-search')?.value||'').toLowerCase().trim();
+    const fStatus = document.getElementById('cv-proj-status')?.value||'';
+    const fHealth = document.getElementById('cv-proj-health')?.value||'';
+
+    const list = (CV.projects||[]).filter(p=>{
+      if(search){
+        const c = (CV.clients||[]).find(x=>x.id===p.client_id);
+        const txt = (p.name||'')+' '+(c?.name||'')+' '+(p.template_code||'');
+        if(!txt.toLowerCase().includes(search)) return false;
+      }
+      if(fStatus && p.status!==fStatus) return false;
+      if(fHealth && p.health!==fHealth) return false;
+      return true;
+    });
+
+    if(!list.length){
+      cont.innerHTML = '<div class="cv-empty">No hay proyectos. Crea uno con el botón <b>+ Nuevo Despliegue</b>.</div>';
+      return;
+    }
+
+    cont.innerHTML = list.map(p=>{
+      const client = (CV.clients||[]).find(x=>x.id===p.client_id);
+      const phaseObj = PHASES.find(f=>f.code===p.current_phase) || PHASES[0];
+      const sem = p.health==='verde'?'sem-verde':p.health==='amber'?'sem-amber':p.health==='rojo'?'sem-rojo':'sem-grey';
+      const prog = Math.round(p.progress||0);
+      const startStr = p.start_date ? new Date(p.start_date).toLocaleDateString('es') : '—';
+      const endStr   = p.end_date   ? new Date(p.end_date).toLocaleDateString('es')   : '—';
+      return `
+        <div class="cv-cli-card" onclick="cvOpenProject('${p.id}')">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:15px;">${esc(p.name||'(sin nombre)')}</div>
+              <div style="color:var(--muted); font-size:12px; margin-top:3px;">
+                ${esc(client?.name||'Cliente')} · ${esc(client?.country||'')} ${client?.city?'· '+esc(client.city):''} · Plantilla ${esc(p.template_code||'—')}
+              </div>
+            </div>
+            <span class="sem-dot ${sem}" title="Salud"></span>
+            <span class="chip">${phaseObj.icon} ${esc(phaseObj.name)}</span>
+            <span class="chip" style="background:var(--blue-l); color:var(--blue);">${prog}%</span>
+          </div>
+          <div style="margin-top:10px; height:6px; background:var(--bg2); border-radius:3px; overflow:hidden;">
+            <div style="height:100%; width:${prog}%; background:var(--blue); transition:width .3s;"></div>
+          </div>
+          <div style="margin-top:8px; display:flex; justify-content:space-between; color:var(--muted); font-size:11px;">
+            <span>Inicio: ${startStr}</span>
+            <span>Fin estimado: ${endStr}</span>
+            <span>Estado: <b style="color:var(--text);">${esc(p.status||'activo')}</b></span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  window.cvRenderProjects = cvRenderProjects;
+
+  // ════════════════════════════════════════════════════════════════
+  // WIZARD · 5 pasos
+  // ════════════════════════════════════════════════════════════════
+  function cvOpenWizard(){
+    CV.wiz = { step:1, clientId:null, clientName:'', country:'Ecuador', city:'', templateId:null, components:[], startDate:_ymd(new Date()), responsible: (window._currentUser?.email)||'', notes:'' };
+    cvRenderWizard();
+    const m = document.getElementById('cv-mod-wiz'); if(m) m.classList.add('show');
+  }
+  window.cvOpenWizard = cvOpenWizard;
+
+  function cvRenderWizard(){
+    const w = CV.wiz;
+    // pasos visuales
+    const steps = ['Cliente','Plantilla','Módulos','Cronograma','Confirmar'];
+    const stepsEl = document.getElementById('cv-wiz-steps');
+    if(stepsEl){
+      stepsEl.innerHTML = steps.map((s,i)=>{
+        const n=i+1; const cls = n===w.step?'active':(n<w.step?'done':'');
+        return `<div class="cv-wiz-step ${cls}"><span class="cv-wiz-num">${n}</span> ${s}</div>`;
+      }).join('<span class="cv-wiz-sep">›</span>');
+    }
+    const body = document.getElementById('cv-wiz-body');
+    if(!body) return;
+
+    if(w.step===1){
+      body.innerHTML = `
+        <div class="cv-form-grid">
+          <div>
+            <label>Nombre del cliente *</label>
+            <input id="wz-cli-name" type="text" value="${esc(w.clientName||'')}" placeholder="Ej: Royal Taxi Quito" />
+          </div>
+          <div>
+            <label>País *</label>
+            <input id="wz-cli-country" type="text" value="${esc(w.country||'Ecuador')}" />
+          </div>
+          <div>
+            <label>Ciudad</label>
+            <input id="wz-cli-city" type="text" value="${esc(w.city||'')}" placeholder="Quito" />
+          </div>
+          <div>
+            <label>Contacto principal</label>
+            <input id="wz-cli-contact" type="text" value="${esc(w.contact||'')}" placeholder="Nombre · email · teléfono" />
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Notas</label>
+            <textarea id="wz-cli-notes" rows="2" placeholder="Información comercial relevante...">${esc(w.notes||'')}</textarea>
+          </div>
+        </div>`;
+    }
+    else if(w.step===2){
+      const tpls = CV.templates||[];
+      body.innerHTML = `
+        <p style="color:var(--muted); margin:0 0 14px;">Elige una plantilla base. Podrás editar los módulos en el siguiente paso.</p>
+        <div class="cv-tpl-row">
+          ${tpls.map(t=>{
+            const sel = t.id===w.templateId?'selected':'';
+            const comps = ((t.components||t.component_codes)||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join(' ');
+            return `<div class="cv-tpl ${sel}" onclick="cvWizPickTpl('${t.id}')">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>${esc(t.code||'')}</b>
+                <span class="chip" style="background:var(--blue-l); color:var(--blue);">${((t.components||t.component_codes)||[]).length} módulos</span>
+              </div>
+              <div style="margin-top:6px; font-weight:600;">${esc(t.name||'')}</div>
+              <div style="margin-top:6px; color:var(--muted); font-size:12px;">${esc(t.description||'')}</div>
+              <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:4px;">${comps}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="margin-top:14px; padding:10px; background:var(--bg2); border-radius:8px; font-size:12px; color:var(--muted);">
+          💡 Si ninguna plantilla calza, elige la más cercana y personalízala en el siguiente paso.
+        </div>`;
+    }
+    else if(w.step===3){
+      const comps = (CV.components||[]).filter(c=>c.is_active!==false && c.active!==false);
+      const selSet = new Set(w.components||[]);
+      // forzar admin_web siempre
+      selSet.add('admin_web');
+      const ev = window.cvEvaluateRules ? window.cvEvaluateRules(Array.from(selSet)) : {messages:[]};
+      const msgs = ev.messages||[];
+      const msgsHtml = msgs.length ? `
+        <div style="margin-bottom:14px;">
+          ${msgs.map(m=>{
+            const bg = m.severity==='block'?'var(--red-l)':m.severity==='warn'?'var(--amber-l)':'var(--blue-l)';
+            const fg = m.severity==='block'?'var(--red)':m.severity==='warn'?'var(--amber)':'var(--blue)';
+            const ic = m.severity==='block'?'⛔':m.severity==='warn'?'⚠️':'ℹ️';
+            return `<div style="padding:10px 12px; background:${bg}; color:${fg}; border-radius:8px; margin-bottom:6px; font-size:13px;">${ic} ${esc(m.text)}</div>`;
+          }).join('')}
+        </div>` : '';
+      body.innerHTML = `
+        <p style="color:var(--muted); margin:0 0 14px;">Activa o desactiva módulos. <b>Admin Web</b> es obligatorio.</p>
+        ${msgsHtml}
+        <div class="cv-comp-grid">
+          ${comps.map(c=>{
+            const isAdmin = c.code==='admin_web';
+            const checked = selSet.has(c.code) || isAdmin;
+            return `<label class="cv-comp ${checked?'on':''}" style="cursor:${isAdmin?'not-allowed':'pointer'}; ${isAdmin?'opacity:.85':''}">
+              <input type="checkbox" ${checked?'checked':''} ${isAdmin?'disabled':''} onchange="cvWizToggleComp('${c.code}', this.checked)" />
+              <span style="font-size:22px;">${esc(c.icon||'🧩')}</span>
+              <div style="flex:1;">
+                <div style="font-weight:600;">${esc(c.name||c.code)}${isAdmin?' <span class="chip" style="background:var(--violet-l); color:var(--violet); font-size:10px;">obligatorio</span>':''}</div>
+                <div style="color:var(--muted); font-size:11px;">${esc(c.category||'')} · ${c.duration_days||0}d est.</div>
+              </div>
+            </label>`;
+          }).join('')}
+        </div>`;
+    }
+    else if(w.step===4){
+      const sel = w.components||[];
+      const totalDays = sel.reduce((acc,code)=>{
+        const c=(CV.components||[]).find(x=>x.code===code);
+        return acc + (c?.duration_days||0);
+      },0);
+      // calcular preview de fechas
+      const hSet = _holidaysSet();
+      let cursor = firstBD(w.startDate||new Date(), hSet);
+      const phasePrev = PHASES.map(ph=>{
+        const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===ph.code && (t.module==='_todos' || sel.includes(t.module)));
+        const days = phaseTasks.reduce((a,t)=>a+(t.duration_days||1),0) || 1;
+        const start = new Date(cursor);
+        const end = addBD(cursor, days, hSet);
+        cursor = nextBD(end, hSet);
+        return { phase:ph, start:_ymd(start), end:_ymd(end), days };
+      });
+      const finalEnd = phasePrev[phasePrev.length-1].end;
+      body.innerHTML = `
+        <div class="cv-form-grid">
+          <div>
+            <label>Fecha de inicio *</label>
+            <input id="wz-start" type="date" value="${esc(w.startDate||'')}" onchange="CV.wiz.startDate=this.value; cvRenderWizard();" />
+          </div>
+          <div>
+            <label>Responsable principal *</label>
+            <input id="wz-resp" type="text" value="${esc(w.responsible||'')}" placeholder="email o nombre" />
+          </div>
+          <div>
+            <label>Nombre del proyecto</label>
+            <input id="wz-proj-name" type="text" value="${esc(w.projectName||(w.clientName+' · Despliegue'))}" />
+          </div>
+          <div>
+            <label>Estimación total</label>
+            <input type="text" value="${totalDays} días estimados · termina ${finalEnd?new Date(finalEnd).toLocaleDateString('es'):'—'}" disabled />
+          </div>
+        </div>
+        <div style="margin-top:18px;">
+          <label style="display:block; margin-bottom:8px; font-weight:600;">Preview de fases</label>
+          <div style="border:1px solid var(--border); border-radius:8px; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+              <thead style="background:var(--bg2);">
+                <tr><th style="padding:8px; text-align:left;">Fase</th><th style="padding:8px; text-align:left;">Inicio</th><th style="padding:8px; text-align:left;">Fin</th><th style="padding:8px; text-align:right;">Días</th></tr>
+              </thead>
+              <tbody>
+                ${phasePrev.map(r=>`
+                  <tr style="border-top:1px solid var(--border);">
+                    <td style="padding:8px;">${r.phase.icon} ${esc(r.phase.name)}</td>
+                    <td style="padding:8px;">${new Date(r.start).toLocaleDateString('es')}</td>
+                    <td style="padding:8px;">${new Date(r.end).toLocaleDateString('es')}</td>
+                    <td style="padding:8px; text-align:right;"><b>${r.days}</b></td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+    }
+    else if(w.step===5){
+      const sel = w.components||[];
+      const tpl = (CV.templates||[]).find(t=>t.id===w.templateId);
+      const taskCount = (CV.checklists||[]).filter(t=>t.module==='_todos' || sel.includes(t.module)).length;
+      body.innerHTML = `
+        <div style="text-align:center; padding:20px 0;">
+          <div style="font-size:42px;">🚀</div>
+          <h3 style="margin:6px 0;">Listo para crear</h3>
+          <p style="color:var(--muted); margin:0;">Revisa el resumen y confirma para generar el despliegue.</p>
+        </div>
+        <div style="background:var(--bg2); border-radius:10px; padding:16px; margin-top:12px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Cliente</b><div>${esc(w.clientName||'—')}</div></div>
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">País / Ciudad</b><div>${esc(w.country||'—')} ${w.city?' · '+esc(w.city):''}</div></div>
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Plantilla</b><div>${esc(tpl?.code||'—')} ${tpl?.name?'· '+esc(tpl.name):''}</div></div>
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Módulos</b><div>${sel.length} activos</div></div>
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Inicio</b><div>${w.startDate?new Date(w.startDate).toLocaleDateString('es'):'—'}</div></div>
+            <div><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Tareas a generar</b><div>${taskCount}</div></div>
+            <div style="grid-column:1/-1;"><b style="color:var(--muted); font-size:11px; text-transform:uppercase;">Componentes</b><div style="margin-top:4px;">${sel.map(c=>`<span class="chip">${esc(c)}</span>`).join(' ')}</div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px; padding:10px; background:var(--green-l); color:var(--green); border-radius:8px; font-size:12px;">
+          ✓ Se generarán automáticamente las 9 fases, los gates correspondientes y todas las tareas del checklist según los módulos seleccionados.
+        </div>`;
+    }
+    // botones
+    const btnPrev = document.getElementById('cv-wiz-prev');
+    const btnNext = document.getElementById('cv-wiz-next');
+    const btnFin  = document.getElementById('cv-wiz-finish');
+    if(btnPrev) btnPrev.style.display = w.step>1 ? 'inline-block' : 'none';
+    if(btnNext) btnNext.style.display = w.step<5 ? 'inline-block' : 'none';
+    if(btnFin)  btnFin.style.display  = w.step===5 ? 'inline-block' : 'none';
+  }
+  window.cvRenderWizard = cvRenderWizard;
+
+  function cvWizPickTpl(id){
+    const t = (CV.templates||[]).find(x=>x.id===id); if(!t) return;
+    CV.wiz.templateId = id;
+    CV.wiz.components = Array.from(new Set([...((t.components||t.component_codes)||[]), 'admin_web']));
+    cvRenderWizard();
+  }
+  window.cvWizPickTpl = cvWizPickTpl;
+
+  function cvWizToggleComp(code, on){
+    if(code==='admin_web') return; // forzado
+    const set = new Set(CV.wiz.components||[]);
+    if(on) set.add(code); else set.delete(code);
+    set.add('admin_web');
+    CV.wiz.components = Array.from(set);
+    cvRenderWizard();
+  }
+  window.cvWizToggleComp = cvWizToggleComp;
+
+  function _captureWizStep(){
+    const w = CV.wiz;
+    if(w.step===1){
+      w.clientName = (document.getElementById('wz-cli-name')?.value||'').trim();
+      w.country    = (document.getElementById('wz-cli-country')?.value||'').trim();
+      w.city       = (document.getElementById('wz-cli-city')?.value||'').trim();
+      w.contact    = (document.getElementById('wz-cli-contact')?.value||'').trim();
+      w.notes      = (document.getElementById('wz-cli-notes')?.value||'').trim();
+    } else if(w.step===4){
+      w.startDate   = (document.getElementById('wz-start')?.value||w.startDate);
+      w.responsible = (document.getElementById('wz-resp')?.value||'').trim();
+      w.projectName = (document.getElementById('wz-proj-name')?.value||'').trim();
+    }
+  }
+
+  function _validateWizStep(){
+    const w = CV.wiz;
+    if(w.step===1){
+      if(!w.clientName){ alert('Ingresa el nombre del cliente'); return false; }
+      if(!w.country){ alert('Ingresa el país'); return false; }
+    }
+    if(w.step===2){ if(!w.templateId){ alert('Selecciona una plantilla'); return false; } }
+    if(w.step===3){
+      const ev = window.cvEvaluateRules ? window.cvEvaluateRules(w.components||[]) : null;
+      if(ev && (ev.messages||[]).some(m=>m.severity==='block')){
+        if(!confirm('Hay reglas BLOQUEANTES. ¿Continuar de todos modos?')) return false;
+      }
+    }
+    if(w.step===4){
+      if(!w.startDate){ alert('Define la fecha de inicio'); return false; }
+      if(!w.responsible){ alert('Define el responsable'); return false; }
+    }
+    return true;
+  }
+
+  function cvWizNext(){ _captureWizStep(); if(!_validateWizStep()) return; if(CV.wiz.step<5){ CV.wiz.step++; cvRenderWizard(); } }
+  function cvWizPrev(){ _captureWizStep(); if(CV.wiz.step>1){ CV.wiz.step--; cvRenderWizard(); } }
+  window.cvWizNext = cvWizNext;
+  window.cvWizPrev = cvWizPrev;
+
+  // ════════════════════════════════════════════════════════════════
+  // CREAR PROYECTO · genera cliente, proyecto, fases, tareas
+  // ════════════════════════════════════════════════════════════════
+  async function cvWizFinish(){
+    _captureWizStep();
+    const w = CV.wiz;
+    if(!w.clientName || !w.startDate || !w.responsible){ alert('Faltan datos'); return; }
+
+    try{
+      if(typeof showSync==='function') showSync(true,'Generando despliegue...');
+      const meta = (window.CV_userMeta && window.CV_userMeta()) || { created_by: window._currentUser?.email||null, updated_by: window._currentUser?.email||null };
+      const now = new Date().toISOString();
+      const useSb = !!window.supabase;
+
+      // 1) Cliente
+      let clientId = w.clientId;
+      if(!clientId){
+        const cli = { name:w.clientName, country:w.country||null, city:w.city||null, contact:w.contact||null, notes:w.notes||null, status:'activo', created_at:now, updated_at:now, ...meta };
+        if(useSb){
+          try{
+            const { data, error } = await window.supabase.from('cv_clients').insert([cli]).select();
+            if(error) throw error;
+            clientId = data[0].id; cli.id = clientId;
+          }catch(e){ console.warn('Insert cliente fallo, uso local',e); clientId = 'cli_'+Date.now(); cli.id=clientId; }
+        } else { clientId = 'cli_'+Date.now(); cli.id=clientId; }
+        CV.clients = CV.clients || [];
+        CV.clients.push(cli);
+      }
+
+      // 2) Proyecto
+      const tpl = (CV.templates||[]).find(t=>t.id===w.templateId);
+      const projId = (typeof crypto!=='undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('prj_'+Date.now());
+      const proj = {
+        id: projId, client_id: clientId,
+        name: w.projectName || (w.clientName+' · Despliegue'),
+        template_id: w.templateId, template_code: tpl?.code || tpl?.name?.split('·')[0]?.trim() || null,
+        component_codes: w.components||[],
+        components: w.components||[],
+        start_date: w.startDate, end_date: null,
+        responsible: w.responsible, status:'activo', current_phase:'prospecto',
+        progress:0, health:'verde', notes:w.notes||null,
+        created_at:now, updated_at:now, ...meta
+      };
+
+      // 3) Fases con scheduling
+      const hSet = _holidaysSet();
+      let cursor = firstBD(w.startDate, hSet);
+      const phasesGen = PHASES.map((ph,idx)=>{
+        const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===ph.code && (t.module==='_todos' || (w.components||[]).includes(t.module)));
+        const days = phaseTasks.reduce((a,t)=>a+(t.duration_days||1),0) || 1;
+        const start = new Date(cursor);
+        const end   = addBD(cursor, days, hSet);
+        cursor = nextBD(end, hSet);
+        return {
+          id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('ph_'+Date.now()+'_'+idx),
+          project_id:projId, phase_code:ph.code, phase_name:ph.name, order_idx:idx,
+          start_date:_ymd(start), end_date:_ymd(end), status: idx===0?'activa':'pendiente',
+          progress:0, responsible:w.responsible, gate_id:null, gate_status:'pendiente',
+          created_at:now, updated_at:now, ...meta
+        };
+      });
+      proj.end_date = phasesGen[phasesGen.length-1].end_date;
+
+      // 4) Tareas a partir de checklists filtradas
+      const tasksGen = [];
+      phasesGen.forEach(phRow=>{
+        const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===phRow.phase_code && (t.module==='_todos' || (w.components||[]).includes(t.module)));
+        // fechas dentro de la fase, secuencial respetando duración
+        let tCursor = firstBD(phRow.start_date, hSet);
+        phaseTasks.forEach((tplT,k)=>{
+          const dur = tplT.duration_days||1;
+          const tStart = new Date(tCursor);
+          const tEnd   = addBD(tCursor, dur, hSet);
+          tCursor = nextBD(tEnd, hSet);
+          tasksGen.push({
+            id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('tk_'+Date.now()+'_'+phRow.phase_code+'_'+k),
+            project_id:projId, phase_id:phRow.id, phase_code:phRow.phase_code,
+            checklist_id:tplT.id||null, name:tplT.name, description:tplT.description||null,
+            module:tplT.module, mandatory:tplT.mandatory!==false, critical:!!tplT.critical,
+            duration_days:dur, responsible: tplT.responsible||w.responsible,
+            order_idx:k, depends_on:tplT.depends_on||null,
+            start_date:_ymd(tStart), end_date:_ymd(tEnd),
+            status:'pendiente', progress:0,
+            created_at:now, updated_at:now, ...meta
+          });
+        });
+      });
+
+      // 5) Persistir
+      if(useSb){
+        try{
+          await window.supabase.from('deployment_projects').insert([proj]);
+          if(phasesGen.length) await window.supabase.from('deployment_phases').insert(phasesGen);
+          if(tasksGen.length){
+            // batch en bloques de 200 por seguridad
+            for(let i=0;i<tasksGen.length;i+=200){
+              await window.supabase.from('deployment_tasks').insert(tasksGen.slice(i,i+200));
+            }
+          }
+        }catch(e){ console.warn('Insert proyecto/fases/tareas fallo, queda local',e); }
+      }
+      CV.projects = CV.projects || []; CV.projects.push(proj);
+      CV.phases   = CV.phases   || []; CV.phases.push(...phasesGen);
+      CV.tasks    = CV.tasks    || []; CV.tasks.push(...tasksGen);
+
+      // 6) Auditoría
+      if(window.cvLogAudit) window.cvLogAudit('create','project', projId, { name:proj.name, components:w.components });
+
+      // 7) UI
+      const m = document.getElementById('cv-mod-wiz'); if(m) m.classList.remove('show');
+      if(typeof showSync==='function') showSync(true,'Despliegue creado');
+      cvSetTab && cvSetTab('projects');
+      cvRenderProjects && cvRenderProjects();
+      // saveCache
+      if(window.cvSaveCache) window.cvSaveCache();
+      // abrir detalle
+      setTimeout(()=>cvOpenProject(projId), 300);
+    }catch(e){
+      console.error(e);
+      alert('Error creando despliegue: '+(e.message||e));
+    }
+  }
+  window.cvWizFinish = cvWizFinish;
+
+  // ════════════════════════════════════════════════════════════════
+  // DEMO PROJECT
+  // ════════════════════════════════════════════════════════════════
+  async function cvCreateDemoProject(){
+    const tpl = (CV.templates||[]).find(t=>t.code==='Tipo 1' || (t.name||'').startsWith('Tipo 1')) || (CV.templates||[])[0];
+    if(!tpl){ alert('Cargá primero los componentes y plantillas'); return; }
+    CV.wiz = {
+      step:5, clientId:null, clientName:'Demo Royal Taxi',
+      country:'Ecuador', city:'Quito', contact:'demo@royal.ec',
+      templateId:tpl.id, components:Array.from(new Set([...((tpl.components||tpl.component_codes)||[]),'admin_web'])),
+      startDate:_ymd(new Date()), responsible:(window._currentUser?.email)||'demo@ops.com',
+      projectName:'Demo Royal Taxi · Despliegue Tipo 1', notes:'Cliente demo generado automáticamente.'
+    };
+    await cvWizFinish();
+  }
+  window.cvCreateDemoProject = cvCreateDemoProject;
+
+  // ════════════════════════════════════════════════════════════════
+  // DETALLE DE PROYECTO
+  // ════════════════════════════════════════════════════════════════
+  function cvOpenProject(id){
+    const p = (CV.projects||[]).find(x=>x.id===id);
+    if(!p){ alert('Proyecto no encontrado'); return; }
+    CV.selectedProject = id;
+    const m = document.getElementById('cv-mod-proj'); if(!m) return;
+    cvRenderProjectDetail();
+    m.classList.add('show');
+  }
+  window.cvOpenProject = cvOpenProject;
+
+  function cvRenderProjectDetail(){
+    const id = CV.selectedProject;
+    const p = (CV.projects||[]).find(x=>x.id===id); if(!p) return;
+    const cli = (CV.clients||[]).find(x=>x.id===p.client_id);
+    const phases = (CV.phases||[]).filter(x=>x.project_id===id).sort((a,b)=>(a.order_idx||0)-(b.order_idx||0));
+    const tasks  = (CV.tasks||[]).filter(x=>x.project_id===id);
+
+    // recalcular progreso global
+    const doneTasks = tasks.filter(t=>t.status==='completada' || (t.progress||0)>=100).length;
+    const prog = tasks.length ? Math.round(doneTasks*100/tasks.length) : 0;
+    p.progress = prog;
+    // health simple: si hay tareas vencidas
+    const today = new Date(); today.setHours(0,0,0,0);
+    const overdue = tasks.filter(t=>t.status!=='completada' && t.end_date && new Date(t.end_date) < today).length;
+    p.health = overdue>3?'rojo':overdue>0?'amber':'verde';
+
+    const title = document.getElementById('cv-proj-mt');
+    if(title) title.textContent = p.name;
+    const body = document.getElementById('cv-proj-body');
+    if(!body) return;
+
+    const sem = p.health==='verde'?'sem-verde':p.health==='amber'?'sem-amber':'sem-rojo';
+
+    body.innerHTML = `
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px 16px; background:var(--bg2); border-radius:10px; margin-bottom:14px;">
+        <span class="sem-dot ${sem}"></span>
+        <div style="flex:1; min-width:200px;">
+          <div style="font-weight:700;">${esc(cli?.name||'Cliente')}</div>
+          <div style="color:var(--muted); font-size:12px;">${esc(cli?.country||'')}${cli?.city?' · '+esc(cli.city):''} · ${esc(p.template_code||'—')}</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:22px; font-weight:800; color:var(--blue);">${prog}%</div>
+          <div style="font-size:10px; color:var(--muted); text-transform:uppercase;">Avance</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:22px; font-weight:800; color:${overdue?'var(--red)':'var(--green)'};">${overdue}</div>
+          <div style="font-size:10px; color:var(--muted); text-transform:uppercase;">Vencidas</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:14px; font-weight:700;">${p.start_date?new Date(p.start_date).toLocaleDateString('es'):'—'}</div>
+          <div style="font-size:10px; color:var(--muted); text-transform:uppercase;">Inicio</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:14px; font-weight:700;">${p.end_date?new Date(p.end_date).toLocaleDateString('es'):'—'}</div>
+          <div style="font-size:10px; color:var(--muted); text-transform:uppercase;">Fin estimado</div>
+        </div>
+      </div>
+
+      <div class="cv-flow" style="margin-bottom:18px;">
+        ${phases.map(ph=>{
+          const phMeta = PHASES.find(x=>x.code===ph.phase_code) || {icon:'•', name:ph.phase_name};
+          const cls = ph.status==='completada'?'done':ph.status==='activa'?'curr':'pend';
+          return `<div class="cv-flow-step ${cls}">
+            <div style="font-size:18px;">${phMeta.icon}</div>
+            <div style="font-size:11px; font-weight:600; margin-top:2px;">${esc(phMeta.name)}</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:1px;">${ph.start_date?new Date(ph.start_date).toLocaleDateString('es',{day:'2-digit',month:'short'}):''}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+        <div style="background:var(--bg2); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:8px;">📋 Fases & Gates</div>
+          ${phases.map(ph=>{
+            const phMeta = PHASES.find(x=>x.code===ph.phase_code) || {icon:'•', name:ph.phase_name};
+            const phTasks = tasks.filter(t=>t.phase_id===ph.id);
+            const phDone  = phTasks.filter(t=>t.status==='completada').length;
+            const phProg  = phTasks.length?Math.round(phDone*100/phTasks.length):0;
+            const gate = (CV.gates||[]).find(g=>g.phase_code===ph.phase_code);
+            return `<div style="padding:8px 0; border-bottom:1px solid var(--border);">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span>${phMeta.icon}</span>
+                <b style="flex:1;">${esc(phMeta.name)}</b>
+                <span class="chip">${phProg}%</span>
+                <span class="chip" style="background:${ph.status==='completada'?'var(--green-l)':ph.status==='activa'?'var(--blue-l)':'var(--bg2)'}; color:${ph.status==='completada'?'var(--green)':ph.status==='activa'?'var(--blue)':'var(--muted)'};">${esc(ph.status||'pendiente')}</span>
+              </div>
+              ${gate?`<div style="margin-top:5px; font-size:11px; color:var(--muted);">🚪 ${esc(gate.name)}
+                <button class="btn-sm" style="margin-left:6px;" onclick="cvApprovePhase('${ph.id}')">${ph.gate_status==='aprobado'?'✓ aprobado':'Aprobar'}</button>
+              </div>`:''}
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:var(--bg2); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:8px;">🧩 Módulos activos</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            ${((p.components||p.component_codes)||[]).map(code=>{
+              const c=(CV.components||[]).find(x=>x.code===code);
+              return `<span class="chip" style="background:var(--blue-l); color:var(--blue);">${c?.icon||'🧩'} ${esc(c?.name||code)}</span>`;
+            }).join('')}
+          </div>
+          <div style="font-weight:700; margin:14px 0 6px;">👤 Responsable</div>
+          <div style="color:var(--muted); font-size:13px;">${esc(p.responsible||'—')}</div>
+          <div style="font-weight:700; margin:14px 0 6px;">📝 Notas</div>
+          <div style="color:var(--muted); font-size:13px; white-space:pre-wrap;">${esc(p.notes||'—')}</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2); border-radius:10px; padding:14px; margin-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <div style="font-weight:700; flex:1;">✅ Tareas (${tasks.length})</div>
+          <select id="cv-tk-filter" onchange="cvRenderProjectDetail()" style="padding:6px 10px;">
+            <option value="">Todas las fases</option>
+            ${PHASES.map(p=>`<option value="${p.code}">${p.icon} ${p.name}</option>`).join('')}
+          </select>
+        </div>
+        <div style="max-height:340px; overflow:auto;">
+          ${tasks.length?(()=>{
+            const fp = document.getElementById('cv-tk-filter')?.value||'';
+            const fil = fp ? tasks.filter(t=>t.phase_code===fp) : tasks;
+            return fil.map(t=>{
+              const isDone = t.status==='completada';
+              const ph = PHASES.find(x=>x.code===t.phase_code) || {icon:'•'};
+              const overdueT = !isDone && t.end_date && new Date(t.end_date) < today;
+              return `<div style="display:flex; gap:10px; align-items:center; padding:8px 6px; border-bottom:1px solid var(--border); ${overdueT?'background:rgba(239,68,68,.05);':''}">
+                <input type="checkbox" ${isDone?'checked':''} onchange="cvToggleTask('${t.id}', this.checked)" style="cursor:pointer;" />
+                <span title="${esc(ph.name||'')}">${ph.icon}</span>
+                <div style="flex:1; ${isDone?'text-decoration:line-through; color:var(--muted);':''}">
+                  <div style="font-weight:600; font-size:13px;">${esc(t.name)} ${t.critical?'<span class="chip" style="background:var(--red-l); color:var(--red); font-size:9px;">crítica</span>':''}</div>
+                  <div style="color:var(--muted); font-size:11px;">${t.start_date?new Date(t.start_date).toLocaleDateString('es'):''} → ${t.end_date?new Date(t.end_date).toLocaleDateString('es'):''} · ${t.duration_days||1}d · ${esc(t.responsible||'')}${overdueT?' · <b style="color:var(--red);">VENCIDA</b>':''}</div>
+                </div>
+              </div>`;
+            }).join('')||'<div class="cv-empty">Sin tareas en esta fase.</div>';
+          })():'<div class="cv-empty">Aún no hay tareas. Genera el cronograma.</div>'}
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; padding-top:6px;">
+        <button class="btn" onclick="cvDeleteProject('${id}')" style="background:var(--red-l); color:var(--red); border-color:var(--red-l);">🗑️ Eliminar</button>
+        <button class="btn" onclick="cvGoGantt('${id}')">📊 Ver Gantt</button>
+        <button class="btn primary" onclick="closeM('cv-mod-proj')">Cerrar</button>
+      </div>`;
+  }
+  window.cvRenderProjectDetail = cvRenderProjectDetail;
+
+  async function cvToggleTask(id, done){
+    const t = (CV.tasks||[]).find(x=>x.id===id); if(!t) return;
+    t.status = done?'completada':'pendiente';
+    t.progress = done?100:0;
+    t.updated_at = new Date().toISOString();
+    if(window._currentUser) t.updated_by = window._currentUser.email;
+    if(window.supabase){
+      try{ await window.supabase.from('deployment_tasks').update({status:t.status,progress:t.progress,updated_at:t.updated_at,updated_by:t.updated_by}).eq('id',id); }catch(e){console.warn(e);}
+    }
+    if(window.cvLogAudit) window.cvLogAudit(done?'complete':'reopen','task',id,{name:t.name});
+    if(window.cvSaveCache) window.cvSaveCache();
+    cvRenderProjectDetail();
+  }
+  window.cvToggleTask = cvToggleTask;
+
+  async function cvApprovePhase(phaseId){
+    const ph = (CV.phases||[]).find(x=>x.id===phaseId); if(!ph) return;
+    if(ph.gate_status==='aprobado'){ alert('Gate ya aprobado'); return; }
+    if(!confirm('¿Aprobar el gate de esta fase?')) return;
+    ph.gate_status='aprobado';
+    ph.status='completada';
+    ph.progress=100;
+    ph.updated_at = new Date().toISOString();
+    if(window.supabase){
+      try{ await window.supabase.from('deployment_phases').update({gate_status:'aprobado', status:'completada', progress:100, updated_at:ph.updated_at}).eq('id', phaseId); }catch(e){console.warn(e);}
+    }
+    // activar siguiente fase
+    const phs = (CV.phases||[]).filter(x=>x.project_id===ph.project_id).sort((a,b)=>(a.order_idx||0)-(b.order_idx||0));
+    const idx = phs.findIndex(x=>x.id===phaseId);
+    if(idx>=0 && idx<phs.length-1){
+      const next = phs[idx+1];
+      next.status='activa';
+      if(window.supabase){ try{ await window.supabase.from('deployment_phases').update({status:'activa'}).eq('id', next.id); }catch(e){} }
+      // proyecto current_phase
+      const proj = (CV.projects||[]).find(p=>p.id===ph.project_id);
+      if(proj){ proj.current_phase = next.phase_code; if(window.supabase) try{ await window.supabase.from('deployment_projects').update({current_phase:next.phase_code}).eq('id',proj.id);}catch(e){} }
+    }
+    if(window.cvLogAudit) window.cvLogAudit('approve','gate', phaseId, {phase:ph.phase_code});
+    if(window.cvSaveCache) window.cvSaveCache();
+    cvRenderProjectDetail();
+  }
+  window.cvApprovePhase = cvApprovePhase;
+
+  async function cvDeleteProject(id){
+    if(!confirm('Eliminar este despliegue, sus fases y todas sus tareas?')) return;
+    if(window.supabase){
+      try{
+        await window.supabase.from('deployment_tasks').delete().eq('project_id', id);
+        await window.supabase.from('deployment_phases').delete().eq('project_id', id);
+        await window.supabase.from('deployment_projects').delete().eq('id', id);
+      }catch(e){console.warn(e);}
+    }
+    CV.tasks    = (CV.tasks||[]).filter(t=>t.project_id!==id);
+    CV.phases   = (CV.phases||[]).filter(p=>p.project_id!==id);
+    CV.projects = (CV.projects||[]).filter(p=>p.id!==id);
+    if(window.cvLogAudit) window.cvLogAudit('delete','project',id,{});
+    if(window.cvSaveCache) window.cvSaveCache();
+    closeM('cv-mod-proj');
+    cvRenderProjects();
+  }
+  window.cvDeleteProject = cvDeleteProject;
+
+  function cvGoGantt(id){
+    closeM('cv-mod-proj');
+    cvSetTab && cvSetTab('gantt');
+    setTimeout(()=>{
+      const sel = document.getElementById('cv-gantt-proj');
+      if(sel){ sel.value = id; cvRenderGantt(); }
+    },120);
+  }
+  window.cvGoGantt = cvGoGantt;
+
+  // ════════════════════════════════════════════════════════════════
+  // GANTT · render visual basado en gestor-cronogramas_17
+  // ════════════════════════════════════════════════════════════════
+  function cvRenderGantt(){
+    const sel = document.getElementById('cv-gantt-proj');
+    const wrap = document.getElementById('cv-gantt-wrap');
+    if(!sel || !wrap) return;
+    // poblar select
+    const projs = CV.projects||[];
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Selecciona un proyecto —</option>' + projs.map(p=>{
+      const c=(CV.clients||[]).find(x=>x.id===p.client_id);
+      return `<option value="${p.id}" ${p.id===cur?'selected':''}>${esc(p.name)} · ${esc(c?.name||'')}</option>`;
+    }).join('');
+    const projId = sel.value;
+    if(!projId){
+      wrap.innerHTML = '<div class="cv-empty">Selecciona un proyecto para ver su Gantt.</div>';
+      return;
+    }
+    const proj = projs.find(x=>x.id===projId); if(!proj){ wrap.innerHTML='<div class="cv-empty">Proyecto no encontrado.</div>'; return; }
+    const phases = (CV.phases||[]).filter(p=>p.project_id===projId).sort((a,b)=>(a.order_idx||0)-(b.order_idx||0));
+    const tasks  = (CV.tasks||[]).filter(t=>t.project_id===projId);
+    if(!tasks.length){ wrap.innerHTML='<div class="cv-empty">Sin tareas para graficar.</div>'; return; }
+
+    // rango de fechas
+    const allDates = tasks.flatMap(t=>[_toDate(t.start_date), _toDate(t.end_date)]).filter(Boolean);
+    const phDates  = phases.flatMap(p=>[_toDate(p.start_date), _toDate(p.end_date)]).filter(Boolean);
+    const allD = [...allDates, ...phDates];
+    if(!allD.length){ wrap.innerHTML='<div class="cv-empty">Sin fechas válidas.</div>'; return; }
+    const minD = new Date(Math.min(...allD.map(d=>d.getTime())));
+    const maxD = new Date(Math.max(...allD.map(d=>d.getTime())));
+    minD.setDate(minD.getDate()-2);
+    maxD.setDate(maxD.getDate()+2);
+    const totalDays = Math.max(1, _daysBetween(minD,maxD)+1);
+    const dayPx = 28; // ancho por día
+    const totalW = totalDays * dayPx;
+    const labelW = 280;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const todayOffset = (_daysBetween(minD, today)) * dayPx;
+    const showToday = today>=minD && today<=maxD;
+
+    // Header con meses y días
+    const monthsRow = [];
+    let mCursor = new Date(minD); mCursor.setHours(0,0,0,0);
+    let curMonth = mCursor.getMonth(), curYear = mCursor.getFullYear(), monthStart = 0;
+    for(let i=0;i<totalDays;i++){
+      const d = new Date(minD); d.setDate(minD.getDate()+i);
+      if(d.getMonth()!==curMonth || d.getFullYear()!==curYear){
+        monthsRow.push({label: new Date(curYear, curMonth, 1).toLocaleDateString('es',{month:'long',year:'numeric'}), span:i-monthStart});
+        curMonth = d.getMonth(); curYear = d.getFullYear(); monthStart = i;
+      }
+    }
+    monthsRow.push({label:new Date(curYear,curMonth,1).toLocaleDateString('es',{month:'long',year:'numeric'}), span:totalDays-monthStart});
+
+    const daysRow = [];
+    for(let i=0;i<totalDays;i++){
+      const d = new Date(minD); d.setDate(minD.getDate()+i);
+      const w = d.getDay();
+      const isWE = w===0||w===6;
+      const isHol = _holidaysSet().has(_ymd(d));
+      daysRow.push({n:d.getDate(), w, isWE, isHol, full:_ymd(d)});
+    }
+
+    // construir filas (fase con tareas)
+    const rows = [];
+    phases.forEach(ph=>{
+      rows.push({type:'phase', data:ph});
+      const phTasks = tasks.filter(t=>t.phase_id===ph.id).sort((a,b)=>(a.order_idx||0)-(b.order_idx||0));
+      phTasks.forEach(t=>rows.push({type:'task', data:t}));
+    });
+
+    const phaseColors = {
+      prospecto:'#94a3b8', contrato:'#8b5cf6', alta_tecnica:'#06b6d4',
+      configuracion_base:'#3b82f6', configuracion_mod:'#0ea5e9',
+      capacitacion:'#f59e0b', piloto:'#ec4899', produccion:'#10b981', soporte:'#64748b'
+    };
+
+    let html = `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px; padding:8px 10px; background:var(--bg2); border-radius:8px; font-size:12px;">
+        <b>${esc(proj.name)}</b>
+        <span class="chip">${tasks.length} tareas</span>
+        <span class="chip">${phases.length} fases</span>
+        <span style="margin-left:auto; color:var(--muted);">📅 ${minD.toLocaleDateString('es')} → ${maxD.toLocaleDateString('es')}</span>
+      </div>
+      <div class="gantt-wrap">
+        <div class="g-grid" style="min-width:${labelW+totalW}px;">
+          <div class="g-head" style="display:grid; grid-template-columns:${labelW}px ${totalW}px;">
+            <div class="g-lbl g-head-lbl" style="font-weight:700; padding:8px 10px; background:var(--bg2); border-bottom:1px solid var(--border); border-right:1px solid var(--border); position:sticky; left:0; z-index:3;">Tarea / Fase</div>
+            <div style="position:relative;">
+              <div class="g-month-row" style="display:flex; border-bottom:1px solid var(--border); background:var(--bg2);">
+                ${monthsRow.map(m=>`<div class="g-month" style="width:${m.span*dayPx}px; padding:6px 8px; font-weight:700; font-size:12px; text-transform:capitalize; border-right:1px solid var(--border);">${esc(m.label)}</div>`).join('')}
+              </div>
+              <div class="g-day-row" style="display:flex; border-bottom:1px solid var(--border);">
+                ${daysRow.map(d=>{
+                  const bg = d.isWE?'var(--bg2)':d.isHol?'var(--amber-l)':'transparent';
+                  const cl = d.isHol?'var(--amber)':d.isWE?'var(--muted)':'var(--text)';
+                  return `<div style="width:${dayPx}px; text-align:center; font-size:10px; padding:4px 0; background:${bg}; color:${cl}; border-right:1px solid var(--border);" title="${d.full}${d.isHol?' · Feriado':''}">${d.n}</div>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="g-body" style="position:relative;">
+            ${showToday?`<div class="g-today" style="position:absolute; top:0; bottom:0; left:${labelW+todayOffset}px; width:2px; background:var(--red); z-index:5; pointer-events:none;"></div>`:''}
+            ${rows.map((r,idx)=>{
+              if(r.type==='phase'){
+                const ph = r.data;
+                const phMeta = PHASES.find(x=>x.code===ph.phase_code) || {icon:'•',name:ph.phase_name};
+                const sd = _toDate(ph.start_date), ed = _toDate(ph.end_date);
+                const off = sd ? _daysBetween(minD, sd)*dayPx : 0;
+                const w = (sd&&ed) ? Math.max(dayPx, (_daysBetween(sd,ed)+1)*dayPx) : dayPx;
+                const color = phaseColors[ph.phase_code]||'#3b82f6';
+                return `<div class="g-row g-row-phase" style="display:grid; grid-template-columns:${labelW}px ${totalW}px; min-height:32px; background:var(--bg2);">
+                  <div class="g-lbl" style="padding:6px 10px; font-weight:700; border-right:1px solid var(--border); border-bottom:1px solid var(--border); position:sticky; left:0; background:var(--bg2); z-index:2; display:flex; align-items:center; gap:6px;">
+                    <span>${phMeta.icon}</span><span>${esc(phMeta.name)}</span>
+                  </div>
+                  <div class="g-bars" style="position:relative; border-bottom:1px solid var(--border);">
+                    <div class="g-bar g-bar-phase" style="position:absolute; left:${off}px; top:6px; width:${w}px; height:18px; background:${color}; opacity:.25; border-left:3px solid ${color}; border-radius:3px;"></div>
+                  </div>
+                </div>`;
+              } else {
+                const t = r.data;
+                const sd = _toDate(t.start_date), ed = _toDate(t.end_date);
+                const off = sd ? _daysBetween(minD, sd)*dayPx : 0;
+                const w = (sd&&ed) ? Math.max(dayPx*0.5, (_daysBetween(sd,ed)+1)*dayPx) : dayPx;
+                const color = phaseColors[t.phase_code]||'#3b82f6';
+                const done = t.status==='completada';
+                const overdueT = !done && ed && ed<today;
+                const prog = t.progress||0;
+                return `<div class="g-row g-row-task" style="display:grid; grid-template-columns:${labelW}px ${totalW}px; min-height:30px;">
+                  <div class="g-lbl" style="padding:6px 10px 6px 26px; font-size:12px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); position:sticky; left:0; background:var(--bg); z-index:2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${esc(t.name)}">
+                    ${t.critical?'<span style="color:var(--red);">●</span> ':''}${esc(t.name)}
+                  </div>
+                  <div class="g-bars" style="position:relative; border-bottom:1px solid var(--border);">
+                    <div class="g-bar" style="position:absolute; left:${off}px; top:7px; width:${w}px; height:16px; background:${overdueT?'var(--red)':done?'var(--green)':color}; border-radius:4px; box-shadow:0 1px 2px rgba(0,0,0,.15); display:flex; align-items:center; padding:0 6px; font-size:10px; color:white; font-weight:600; overflow:hidden; cursor:pointer;" title="${esc(t.name)} · ${t.start_date} → ${t.end_date}" onclick="cvOpenProject('${t.project_id}')">
+                      <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(t.responsible||'')}</span>
+                    </div>
+                    ${prog>0&&!done?`<div style="position:absolute; left:${off}px; top:7px; width:${w*prog/100}px; height:16px; background:rgba(255,255,255,.35); border-radius:4px; pointer-events:none;"></div>`:''}
+                  </div>
+                </div>`;
+              }
+            }).join('')}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px; display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--muted);">
+        <span><span style="display:inline-block; width:12px; height:12px; background:var(--red); border-radius:2px; vertical-align:middle;"></span> Vencida</span>
+        <span><span style="display:inline-block; width:12px; height:12px; background:var(--green); border-radius:2px; vertical-align:middle;"></span> Completa</span>
+        <span><span style="display:inline-block; width:12px; height:12px; background:var(--amber-l); border:1px solid var(--amber); border-radius:2px; vertical-align:middle;"></span> Feriado</span>
+        <span><span style="display:inline-block; width:2px; height:14px; background:var(--red); vertical-align:middle;"></span> Hoy</span>
+        <span><span style="color:var(--red);">●</span> Crítica</span>
+      </div>`;
+    wrap.innerHTML = html;
+  }
+  window.cvRenderGantt = cvRenderGantt;
+
+  // ════════════════════════════════════════════════════════════════
+  // REGENERAR Gantt · recalcula fechas desde checklist y reglas
+  // ════════════════════════════════════════════════════════════════
+  async function cvGenerateGantt(){
+    const sel = document.getElementById('cv-gantt-proj');
+    const projId = sel?.value; if(!projId){ alert('Selecciona un proyecto'); return; }
+    const proj = (CV.projects||[]).find(p=>p.id===projId); if(!proj) return;
+    if(!confirm('¿Regenerar el cronograma del proyecto? Se reemplazan fases y tareas a partir de los checklists actuales.')) return;
+    try{
+      // borrar tareas y fases actuales
+      if(window.supabase){
+        try{
+          await window.supabase.from('deployment_tasks').delete().eq('project_id', projId);
+          await window.supabase.from('deployment_phases').delete().eq('project_id', projId);
+        }catch(e){console.warn(e);}
+      }
+      CV.tasks  = (CV.tasks||[]).filter(t=>t.project_id!==projId);
+      CV.phases = (CV.phases||[]).filter(p=>p.project_id!==projId);
+
+      const hSet = _holidaysSet();
+      const meta = (window.CV_userMeta && window.CV_userMeta()) || {};
+      const now = new Date().toISOString();
+      let cursor = firstBD(proj.start_date||new Date(), hSet);
+      const phasesGen = PHASES.map((ph,idx)=>{
+        const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===ph.code && (t.module==='_todos' || ((proj.components||proj.component_codes)||[]).includes(t.module)));
+        const days = phaseTasks.reduce((a,t)=>a+(t.duration_days||1),0) || 1;
+        const start = new Date(cursor);
+        const end   = addBD(cursor, days, hSet);
+        cursor = nextBD(end, hSet);
+        return {
+          id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('ph_'+Date.now()+'_'+idx),
+          project_id:projId, phase_code:ph.code, phase_name:ph.name, order_idx:idx,
+          start_date:_ymd(start), end_date:_ymd(end), status: idx===0?'activa':'pendiente',
+          progress:0, responsible:proj.responsible, gate_id:null, gate_status:'pendiente',
+          created_at:now, updated_at:now, ...meta
+        };
+      });
+      const tasksGen = [];
+      phasesGen.forEach(phRow=>{
+        const phaseTasks = (CV.checklists||[]).filter(t=>t.phase===phRow.phase_code && (t.module==='_todos' || ((proj.components||proj.component_codes)||[]).includes(t.module)));
+        let tCursor = firstBD(phRow.start_date, hSet);
+        phaseTasks.forEach((tplT,k)=>{
+          const dur = tplT.duration_days||1;
+          const tStart = new Date(tCursor);
+          const tEnd   = addBD(tCursor, dur, hSet);
+          tCursor = nextBD(tEnd, hSet);
+          tasksGen.push({
+            id:(typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.randomUUID():('tk_'+Date.now()+'_'+phRow.phase_code+'_'+k),
+            project_id:projId, phase_id:phRow.id, phase_code:phRow.phase_code,
+            checklist_id:tplT.id||null, name:tplT.name, description:tplT.description||null,
+            module:tplT.module, mandatory:tplT.mandatory!==false, critical:!!tplT.critical,
+            duration_days:dur, responsible: tplT.responsible||proj.responsible,
+            order_idx:k, depends_on:tplT.depends_on||null,
+            start_date:_ymd(tStart), end_date:_ymd(tEnd),
+            status:'pendiente', progress:0,
+            created_at:now, updated_at:now, ...meta
+          });
+        });
+      });
+      proj.end_date = phasesGen[phasesGen.length-1].end_date;
+      proj.current_phase = 'prospecto';
+      proj.progress = 0;
+      proj.updated_at = now;
+      if(window.supabase){
+        try{
+          if(phasesGen.length) await window.supabase.from('deployment_phases').insert(phasesGen);
+          for(let i=0;i<tasksGen.length;i+=200){
+            await window.supabase.from('deployment_tasks').insert(tasksGen.slice(i,i+200));
+          }
+          await window.supabase.from('deployment_projects').update({end_date:proj.end_date, current_phase:'prospecto', progress:0, updated_at:now}).eq('id',projId);
+        }catch(e){console.warn(e);}
+      }
+      CV.phases.push(...phasesGen);
+      CV.tasks.push(...tasksGen);
+      if(window.cvLogAudit) window.cvLogAudit('regenerate','project',projId,{tasks:tasksGen.length});
+      if(window.cvSaveCache) window.cvSaveCache();
+      cvRenderGantt();
+      if(typeof showSync==='function') showSync(true,'Cronograma regenerado');
+    }catch(e){ console.error(e); alert('Error regenerando: '+(e.message||e)); }
+  }
+  window.cvGenerateGantt = cvGenerateGantt;
+
+  // ────────────────────── EXPORTADORES ──────────────────────
+  function cvExportGanttCSV(){
+    const sel = document.getElementById('cv-gantt-proj');
+    const projId = sel?.value; if(!projId){ alert('Selecciona un proyecto'); return; }
+    const tasks = (CV.tasks||[]).filter(t=>t.project_id===projId);
+    if(!tasks.length){ alert('Sin tareas'); return; }
+    const headers = ['Fase','Tarea','Módulo','Inicio','Fin','Días','Responsable','Estado','Avance','Crítica','Obligatoria'];
+    const lines = [headers.join(',')];
+    tasks.forEach(t=>{
+      const ph = PHASES.find(p=>p.code===t.phase_code);
+      lines.push([
+        '"'+(ph?.name||'').replace(/"/g,'""')+'"',
+        '"'+(t.name||'').replace(/"/g,'""')+'"',
+        t.module||'',
+        t.start_date||'',
+        t.end_date||'',
+        t.duration_days||0,
+        '"'+(t.responsible||'').replace(/"/g,'""')+'"',
+        t.status||'',
+        t.progress||0,
+        t.critical?'Sí':'No',
+        t.mandatory?'Sí':'No'
+      ].join(','));
+    });
+    const csv = '\ufeff'+lines.join('\n');
+    const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='gantt_'+projId+'.csv'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 500);
+  }
+  window.cvExportGanttCSV = cvExportGanttCSV;
+
+  function cvExportGanttHTML(){
+    const sel = document.getElementById('cv-gantt-proj');
+    const projId = sel?.value; if(!projId){ alert('Selecciona un proyecto'); return; }
+    const wrap = document.getElementById('cv-gantt-wrap');
+    if(!wrap || !wrap.innerHTML){ alert('Render el Gantt primero'); return; }
+    const proj = (CV.projects||[]).find(p=>p.id===projId);
+    const cli  = (CV.clients||[]).find(c=>c.id===proj?.client_id);
+    const html = `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Gantt · ${esc(proj?.name||'')}</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; padding:20px; background:#fff; color:#111;}
+:root{--bg:#fff;--bg2:#f8fafc;--text:#111;--muted:#64748b;--border:#e2e8f0;--blue:#3b82f6;--blue-l:#dbeafe;--green:#10b981;--green-l:#d1fae5;--amber:#f59e0b;--amber-l:#fef3c7;--red:#ef4444;--red-l:#fee2e2;}
+h1{margin:0 0 6px;} .meta{color:#64748b; margin-bottom:18px;}
+.gantt-wrap{overflow:auto; border:1px solid #e2e8f0; border-radius:8px;}
+.g-row{border-bottom:1px solid #f1f5f9;}
+.g-bar{position:absolute; height:16px; border-radius:4px; box-shadow:0 1px 2px rgba(0,0,0,.15); padding:0 6px; font-size:10px; color:white; font-weight:600; display:flex; align-items:center;}
+.chip{display:inline-block; padding:2px 8px; border-radius:10px; background:#f1f5f9; font-size:11px;}
+@media print{ body{padding:0;} .no-print{display:none;} }
+</style></head><body>
+<h1>${esc(proj?.name||'Gantt')}</h1>
+<div class="meta">${esc(cli?.name||'')} · ${esc(cli?.country||'')}${cli?.city?' · '+esc(cli.city):''} · Generado ${new Date().toLocaleString('es')}</div>
+${wrap.innerHTML}
+<script>setTimeout(()=>window.print(),300)<\/script>
+</body></html>`;
+    const blob = new Blob([html],{type:'text/html;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url,'_blank');
+    setTimeout(()=>URL.revokeObjectURL(url), 30000);
+  }
+  window.cvExportGanttHTML = cvExportGanttHTML;
+
+  function cvPrintGantt(){
+    const wrap = document.getElementById('cv-gantt-wrap');
+    if(!wrap){ alert('Sin Gantt'); return; }
+    const win = window.open('','_blank');
+    win.document.write('<!doctype html><html><head><title>Gantt</title><style>body{font-family:system-ui;padding:14px;}</style></head><body>'+wrap.outerHTML+'<script>setTimeout(()=>window.print(),300)<\/script></body></html>');
+    win.document.close();
+  }
+  window.cvPrintGantt = cvPrintGantt;
+
+})(); // fin IIFE PARTE 3
 </script>
 
 </body>
